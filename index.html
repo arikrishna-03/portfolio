@@ -9,6 +9,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Sora:wght@500;600;700&family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -42,7 +43,7 @@
       <div class="l-photo-wrap">
         <canvas id="profile-orb-canvas" class="profile-orb-canvas" aria-hidden="true"></canvas>
         <div class="l-photo" id="l-photo">
-          <img src="/images/profile_with_icons.png" alt="Arikrishna A">
+          <img src="./images/profile_with_icons.png" alt="Arikrishna A">
         </div>
       </div>
       <div class="l-tag">ABOUT ME</div>
@@ -72,7 +73,7 @@
     <!-- Navigation -->
     <nav id="nav">
       <button class="n-logo" onclick="backToLanding()">
-        <img src="/images/profile_with_icons.png" alt="Arikrishna A">
+        <img src="./images/profile_with_icons.png" alt="Arikrishna A">
       </button>
       <ul class="n-links">
         <li><a onclick="goTo('about')">About</a></li>
@@ -137,8 +138,12 @@
         <div class="sec-h rev rev-d1">Why I Build AI.</div>
         <div class="ai-about-grid rev rev-d1">
           <div class="ai-ab-text">
-            <p>I entered AI &amp; Data Science because I want to solve problems that scale. It's not just about training models; it's about building intelligent systems that can automate tedious tasks, provide deep insights, and genuinely help people.</p>
-            <p>By combining my understanding of <strong>Design</strong> with <strong>AI engineering</strong>, I ensure that the systems I build are not only mathematically robust, but also intuitive and accessible to end-users.</p>
+            <p>I entered AI &amp; Data Science because I want to solve problems that scale. It's not just about training
+              models; it's about building intelligent systems that can automate tedious tasks, provide deep insights,
+              and genuinely help people.</p>
+            <p>By combining my understanding of <strong>Design</strong> with <strong>AI engineering</strong>, I ensure
+              that the systems I build are not only mathematically robust, but also intuitive and accessible to
+              end-users.</p>
           </div>
           <div class="ai-ab-domains">
             <h3>Domains of Interest</h3>
@@ -160,13 +165,20 @@
         <div class="sec-lbl rev">// 02</div>
         <div class="sec-div rev rev-d1"></div>
         <div class="sec-h rev rev-d1">Tech Stack.</div>
-        
+
         <div class="ts-langs rev rev-d1">
-          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"><span>Python</span></div>
-          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java"><span>Java</span></div>
-          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++"><span>C++</span></div>
-          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript"><span>JavaScript</span></div>
-          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL"><span>SQL</span></div>
+          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+              alt="Python"><span>Python</span></div>
+          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
+              alt="Java"><span>Java</span></div>
+          <div class="ts-lang"><img
+              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+              alt="C++"><span>C++</span></div>
+          <div class="ts-lang"><img
+              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+              alt="JavaScript"><span>JavaScript</span></div>
+          <div class="ts-lang"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+              alt="SQL"><span>SQL</span></div>
         </div>
 
         <div class="sk-g">
@@ -206,20 +218,21 @@
         <div class="sec-lbl rev">// 03</div>
         <div class="sec-div rev rev-d1"></div>
         <div class="sec-h rev rev-d1">Real-World AI Systems.</div>
-        
+
         <div class="ai-project-cases">
-          
+
           <!-- Project 1 -->
           <div class="ai-p-case rev rev-d1">
             <div class="apc-img">
-              <img src="/images/ai_attendance.png" alt="Smart Attendance UI">
+              <img src="./images/ai_attendance.png" alt="Smart Attendance UI">
               <div class="apc-overlay">Prototype Screenshot</div>
             </div>
             <div class="apc-content">
               <h3>AI-powered Smart Attendance &amp; Emotion Monitoring System</h3>
               <div class="apc-section">
                 <h4>Problem Statement</h4>
-                <p>Traditional attendance takes time and lacks engagement insights. Teachers cannot dynamically monitor classroom mood to adjust their teaching style.</p>
+                <p>Traditional attendance takes time and lacks engagement insights. Teachers cannot dynamically monitor
+                  classroom mood to adjust their teaching style.</p>
               </div>
               <div class="apc-section">
                 <h4>Solution &amp; Architecture</h4>
@@ -229,7 +242,8 @@
                 <span>Real-time Prediction</span><span>Automated Logging</span><span>Analytics Dashboard</span>
               </div>
               <div class="apc-tech">
-                <span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">TensorFlow</span><span class="tag">React</span>
+                <span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">TensorFlow</span><span
+                  class="tag">React</span>
               </div>
               <div class="apc-impact">
                 <strong>Impact:</strong> Saves 15 mins per class &amp; provides actionable student engagement metrics.
@@ -240,14 +254,15 @@
           <!-- Project 2 -->
           <div class="ai-p-case rev rev-d2">
             <div class="apc-img">
-              <img src="/images/ai_rural.png" alt="Rural Assistant UI">
+              <img src="./images/ai_rural.png" alt="Rural Assistant UI">
               <div class="apc-overlay">Prototype Screenshot</div>
             </div>
             <div class="apc-content">
               <h3>Multilingual AI Assistant for Rural Service Access</h3>
               <div class="apc-section">
                 <h4>Problem Statement</h4>
-                <p>Rural populations often face language and literacy barriers when trying to access government services, healthcare, and agricultural subsidies.</p>
+                <p>Rural populations often face language and literacy barriers when trying to access government
+                  services, healthcare, and agricultural subsidies.</p>
               </div>
               <div class="apc-section">
                 <h4>Solution &amp; Architecture</h4>
@@ -257,10 +272,12 @@
                 <span>Voice UI</span><span>Multilingual</span><span>Offline Fallback</span>
               </div>
               <div class="apc-tech">
-                <span class="tag">HuggingFace</span><span class="tag">FastAPI</span><span class="tag">Whisper</span><span class="tag">Flutter</span>
+                <span class="tag">HuggingFace</span><span class="tag">FastAPI</span><span
+                  class="tag">Whisper</span><span class="tag">Flutter</span>
               </div>
               <div class="apc-impact">
-                <strong>Impact:</strong> Bridges the digital divide, allowing 100% voice-based navigation for illiterate users.
+                <strong>Impact:</strong> Bridges the digital divide, allowing 100% voice-based navigation for illiterate
+                users.
               </div>
             </div>
           </div>
@@ -276,7 +293,8 @@
               <h3>Predictive Analytics Dashboard for E-Commerce</h3>
               <div class="apc-section">
                 <h4>Problem Statement</h4>
-                <p>Small e-commerce businesses struggle with inventory forecasting, leading to stockouts or dead inventory.</p>
+                <p>Small e-commerce businesses struggle with inventory forecasting, leading to stockouts or dead
+                  inventory.</p>
               </div>
               <div class="apc-section">
                 <h4>Solution &amp; Architecture</h4>
@@ -358,9 +376,18 @@
         <div class="sec-div rev rev-d1"></div>
         <div class="sec-h rev rev-d1">Open Source &amp; Experiments.</div>
         <div class="os-grid rev rev-d1">
-          <div class="os-repo"><h4>Mini Utilities</h4><p>Python scripts for daily workflow automation.</p></div>
-          <div class="os-repo"><h4>ML Notebooks</h4><p>Exploratory data analysis and model baselines.</p></div>
-          <div class="os-repo"><h4>API Templates</h4><p>FastAPI boilerplates for ML model serving.</p></div>
+          <div class="os-repo">
+            <h4>Mini Utilities</h4>
+            <p>Python scripts for daily workflow automation.</p>
+          </div>
+          <div class="os-repo">
+            <h4>ML Notebooks</h4>
+            <p>Exploratory data analysis and model baselines.</p>
+          </div>
+          <div class="os-repo">
+            <h4>API Templates</h4>
+            <p>FastAPI boilerplates for ML model serving.</p>
+          </div>
         </div>
       </div>
 
@@ -394,7 +421,8 @@
             <h1 class="ds-title-new">Brand &amp; Visual<br>Systems Designer</h1>
             <h2 class="ds-headline-main">I build complete modern brands from strategy to execution.</h2>
             <div class="ds-hero-desc">
-              Branding, motion, visuals, digital experiences, and marketing systems designed to make brands unforgettable.
+              Branding, motion, visuals, digital experiences, and marketing systems designed to make brands
+              unforgettable.
             </div>
             <div class="ds-hero-cta">
               <button class="c-btn" onclick="goTo('featured-works')">View Projects</button>
@@ -403,9 +431,9 @@
           </div>
           <div class="ds-hero-right">
             <div class="floating-mockups">
-              <div class="mockup mockup-1"><img src="/images/hero_poster.png" alt="Poster Mockup"></div>
-              <div class="mockup mockup-2"><img src="/images/energy_drink.png" alt="Can Mockup"></div>
-              <div class="mockup mockup-3"><img src="/images/luxury_perfume.png" alt="Perfume Mockup"></div>
+              <div class="mockup mockup-1"><img src="./images/hero_poster.png" alt="Poster Mockup"></div>
+              <div class="mockup mockup-2"><img src="./images/energy_drink.png" alt="Can Mockup"></div>
+              <div class="mockup mockup-3"><img src="./images/luxury_perfume.png" alt="Perfume Mockup"></div>
               <!-- Added elements for Spider-Man inspired fusion aesthetics -->
               <div class="ds-glow-element ds-glow-1"></div>
               <div class="ds-glow-element ds-glow-2"></div>
@@ -423,47 +451,52 @@
         <div class="sec-lbl rev">// 01</div>
         <div class="sec-div rev rev-d1"></div>
         <div class="sec-h rev rev-d1">Featured Brands.</div>
-        
+
         <div class="ds-case-g">
           <!-- Project 1 -->
           <div class="ds-case-card rev rev-d1" onclick="toggleCaseStudy('cs-1')">
             <div class="c-img-wrap">
-              <img src="/images/energy_drink.png" alt="Nox Energy">
+              <img src="./images/energy_drink.png" alt="Nox Energy">
               <div class="c-overlay">View Full Branding</div>
             </div>
             <div class="c-info">
               <div class="c-brand">NOX ENERGY</div>
               <div class="c-meta">Futuristic Gaming Energy Drink</div>
-              <div class="c-concept">A cyberpunk-inspired energy drink targeting esports athletes with cinematic red and black motifs.</div>
-              <div class="c-tags"><span class="tag ds-tag">Packaging</span><span class="tag ds-tag">3D Motion</span></div>
+              <div class="c-concept">A cyberpunk-inspired energy drink targeting esports athletes with cinematic red and
+                black motifs.</div>
+              <div class="c-tags"><span class="tag ds-tag">Packaging</span><span class="tag ds-tag">3D Motion</span>
+              </div>
             </div>
           </div>
 
           <!-- Project 2 -->
           <div class="ds-case-card rev rev-d2" onclick="toggleCaseStudy('cs-2')">
             <div class="c-img-wrap">
-              <img src="/images/hero_poster.png" alt="Velora">
+              <img src="./images/hero_poster.png" alt="Velora">
               <div class="c-overlay">View Full Branding</div>
             </div>
             <div class="c-info">
               <div class="c-brand">VELORA</div>
               <div class="c-meta">Luxury Streetwear Fashion</div>
-              <div class="c-concept">High-end fashion identity combining brutalist typography with modern minimal layouts.</div>
+              <div class="c-concept">High-end fashion identity combining brutalist typography with modern minimal
+                layouts.</div>
               <div class="c-tags"><span class="tag ds-tag">Identity</span><span class="tag ds-tag">Apparel</span></div>
             </div>
           </div>
-          
+
           <!-- Project 3 -->
           <div class="ds-case-card rev rev-d3" onclick="toggleCaseStudy('cs-3')">
             <div class="c-img-wrap">
-              <img src="/images/before_after.png" alt="Aether AI">
+              <img src="./images/before_after.png" alt="Aether AI">
               <div class="c-overlay">View Full Branding</div>
             </div>
             <div class="c-info">
               <div class="c-brand">AETHER AI</div>
               <div class="c-meta">Modern AI SaaS Startup</div>
-              <div class="c-concept">Sleek, glassmorphism-driven visual identity for an advanced AI productivity tool.</div>
-              <div class="c-tags"><span class="tag ds-tag">SaaS UI</span><span class="tag ds-tag">Web Design</span></div>
+              <div class="c-concept">Sleek, glassmorphism-driven visual identity for an advanced AI productivity tool.
+              </div>
+              <div class="c-tags"><span class="tag ds-tag">SaaS UI</span><span class="tag ds-tag">Web Design</span>
+              </div>
             </div>
           </div>
 
@@ -479,11 +512,13 @@
           <div class="cs-grid">
             <div class="cs-block">
               <h3>Strategy &amp; Audience</h3>
-              <p>Targeting professional Esports players and late-night creators. The mood is cyberpunk, high-octane, and clinical.</p>
+              <p>Targeting professional Esports players and late-night creators. The mood is cyberpunk, high-octane, and
+                clinical.</p>
             </div>
             <div class="cs-block">
               <h3>Visual Identity</h3>
-              <p>Crimson Red, Deep Black, and Chrome. Bold sans-serif typography designed for high contrast on digital streams.</p>
+              <p>Crimson Red, Deep Black, and Chrome. Bold sans-serif typography designed for high contrast on digital
+                streams.</p>
             </div>
             <div class="cs-block">
               <h3>Packaging Design</h3>
@@ -497,26 +532,32 @@
           <div class="cs-mockups-grid">
             <div class="csm-block">
               <h4>Digital Experience</h4>
-              <div class="csm-img"><img src="/images/hero_poster.png" alt="Web UI"></div>
+              <div class="csm-img"><img src="./images/hero_poster.png" alt="Web UI"></div>
             </div>
             <div class="csm-block">
               <h4>Physical Delivery Showcase</h4>
-              <p class="csm-desc">This is not only digital work. Physical branding assets are also delivered professionally, including business cards, packaging boxes, brochures, shopping bags, merchandise, and brand kits.</p>
-              <div class="csm-img"><img src="/images/energy_drink.png" alt="Physical Mockups"></div>
+              <p class="csm-desc">This is not only digital work. Physical branding assets are also delivered
+                professionally, including business cards, packaging boxes, brochures, shopping bags, merchandise, and
+                brand kits.</p>
+              <div class="csm-img"><img src="./images/energy_drink.png" alt="Physical Mockups"></div>
             </div>
           </div>
         </div>
 
         <!-- Placeholder for other case studies -->
         <div id="cs-2" class="full-case-study" style="display:none;">
-           <button class="cs-close" onclick="toggleCaseStudy('cs-2')">✕ Close Presentation</button>
-           <div class="cs-header"><h2>VELORA</h2><span>Luxury Streetwear Fashion</span></div>
-           <p>Complete brand presentation would be loaded here.</p>
+          <button class="cs-close" onclick="toggleCaseStudy('cs-2')">✕ Close Presentation</button>
+          <div class="cs-header">
+            <h2>VELORA</h2><span>Luxury Streetwear Fashion</span>
+          </div>
+          <p>Complete brand presentation would be loaded here.</p>
         </div>
         <div id="cs-3" class="full-case-study" style="display:none;">
-           <button class="cs-close" onclick="toggleCaseStudy('cs-3')">✕ Close Presentation</button>
-           <div class="cs-header"><h2>AETHER AI</h2><span>Modern AI SaaS Startup</span></div>
-           <p>Complete brand presentation would be loaded here.</p>
+          <button class="cs-close" onclick="toggleCaseStudy('cs-3')">✕ Close Presentation</button>
+          <div class="cs-header">
+            <h2>AETHER AI</h2><span>Modern AI SaaS Startup</span>
+          </div>
+          <p>Complete brand presentation would be loaded here.</p>
         </div>
       </div>
 
@@ -529,31 +570,38 @@
           <div class="dpt-line"></div>
           <div class="dpt-step">
             <div class="dpt-icon">1</div>
-            <h4>Research</h4><p>Deep market analysis</p>
+            <h4>Research</h4>
+            <p>Deep market analysis</p>
           </div>
           <div class="dpt-step">
             <div class="dpt-icon">2</div>
-            <h4>Strategy</h4><p>Positioning &amp; tone</p>
+            <h4>Strategy</h4>
+            <p>Positioning &amp; tone</p>
           </div>
           <div class="dpt-step">
             <div class="dpt-icon">3</div>
-            <h4>Identity</h4><p>Logo &amp; core visual</p>
+            <h4>Identity</h4>
+            <p>Logo &amp; core visual</p>
           </div>
           <div class="dpt-step">
             <div class="dpt-icon">4</div>
-            <h4>Visual System</h4><p>Type, colors, grid</p>
+            <h4>Visual System</h4>
+            <p>Type, colors, grid</p>
           </div>
           <div class="dpt-step">
             <div class="dpt-icon">5</div>
-            <h4>Marketing</h4><p>Ads &amp; social</p>
+            <h4>Marketing</h4>
+            <p>Ads &amp; social</p>
           </div>
           <div class="dpt-step">
             <div class="dpt-icon">6</div>
-            <h4>Digital</h4><p>Web &amp; UI experience</p>
+            <h4>Digital</h4>
+            <p>Web &amp; UI experience</p>
           </div>
           <div class="dpt-step">
             <div class="dpt-icon">7</div>
-            <h4>Production</h4><p>Final physical delivery</p>
+            <h4>Production</h4>
+            <p>Final physical delivery</p>
           </div>
         </div>
       </div>
@@ -563,7 +611,7 @@
         <div class="sec-lbl rev">// 03</div>
         <div class="sec-div rev rev-d1"></div>
         <div class="sec-h rev rev-d1">Capabilities.</div>
-        
+
         <div class="ds-skills-g">
           <div class="ds-skill-card rev rev-d1">
             <h3>BRANDING</h3>
@@ -626,12 +674,15 @@
         <div class="sec-div rev rev-d1"></div>
         <div class="ds-about-split rev rev-d1">
           <div class="ds-abs-img">
-            <img src="/images/profile_with_icons.png" alt="Arikrishna A">
+            <img src="./images/profile_with_icons.png" alt="Arikrishna A">
             <div class="ds-abs-glow"></div>
           </div>
           <div class="ds-abs-text">
-            <h2>I create complete visual systems that combine strategy, storytelling, and cinematic design to help brands stand out in the modern digital world.</h2>
-            <p>From the initial moodboard to the final 3D rendered advertisement, I treat every brand as a premium editorial experience. I don't just make things look good; I build systems that communicate value, evoke emotion, and drive engagement.</p>
+            <h2>I create complete visual systems that combine strategy, storytelling, and cinematic design to help
+              brands stand out in the modern digital world.</h2>
+            <p>From the initial moodboard to the final 3D rendered advertisement, I treat every brand as a premium
+              editorial experience. I don't just make things look good; I build systems that communicate value, evoke
+              emotion, and drive engagement.</p>
           </div>
         </div>
       </div>
@@ -646,10 +697,10 @@
         <div class="sec-h rev rev-d1">Let's Build<br>Something Great.</div>
         <p class="contact-sub rev rev-d2">Whether it's an AI system, a brand identity, or the beautiful intersection of
           both — I'd love to collaborate on something meaningful.</p>
-        
+
         <div class="contact-actions rev rev-d3">
           <a href="mailto:arikrishna@email.com" class="c-email">arikrishna@email.com</a>
-          <a href="/resume.pdf" class="c-btn" download>Download Resume ↓</a>
+          <a href="./resume.pdf" class="c-btn" download>Download Resume ↓</a>
         </div>
 
         <div class="socials rev rev-d4">
@@ -668,7 +719,7 @@
 
   </div><!-- end app -->
 
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 
 </html>
