@@ -783,7 +783,7 @@ window.openAbout = function() {
     ov.classList.add('on');
     
     setTimeout(() => {
-      window.location.href = '/profile.html';
+      window.location.href = './profile.html';
     }, 50);
   }, 750);
 }
