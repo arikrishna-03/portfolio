@@ -32,7 +32,8 @@ html {
 body {
   font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
-  cursor: none
+  cursor: none;
+  zoom: 0.8;
 }
 
 /* ── CURSOR ── */
@@ -42,7 +43,8 @@ body {
   pointer-events: none;
   z-index: 9998;
   width: 100vw;
-  height: 100vh
+  height: 100vh;
+  zoom: 1.25;
 }
 
 #cur {
@@ -55,7 +57,8 @@ body {
   z-index: 10000;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 10px rgba(247, 208, 89, 0.8);
-  transition: transform .15s
+  transition: transform .15s;
+  zoom: 1.25;
 }
 
 #cur-ring {
@@ -67,7 +70,8 @@ body {
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width .2s, height .2s
+  transition: width .2s, height .2s;
+  zoom: 1.25;
 }
 
 body.hover-state #cur {

@@ -325,8 +325,8 @@ const lLeft = document.getElementById('l-left');
 if (lLeft) {
   lLeft.addEventListener('mousemove', e => {
     const r = e.currentTarget.getBoundingClientRect();
-    lmx = e.clientX - r.left;
-    lmy = e.clientY - r.top;
+    lmx = (e.clientX - r.left) / 0.8;
+    lmy = (e.clientY - r.top) / 0.8;
   });
   lLeft.addEventListener('mouseleave', () => {
     lmx = -999;
@@ -694,7 +694,9 @@ function initAI(){
 function drawAI(){
   if(!actx) return;
   actx.clearRect(0,0,ac.width,ac.height);
-  const ox=(amx-ac.width/2)*.015,oy=(amy-ac.height/2)*.015;
+  const zoom = 0.8;
+  const ox = ((amx / zoom) - ac.width / 2) * 0.015;
+  const oy = ((amy / zoom) - ac.height / 2) * 0.015;
   aN.forEach(n=>{
     n.p+=.012;
     n.x+=n.vx+ox*.008;n.y+=n.vy+oy*.008;
