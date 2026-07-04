@@ -1348,11 +1348,16 @@ async function updateCodingStats() {
       const matches = [...svgText.matchAll(/font-size='28px'[^>]*>\s*([\d,]+)\s*<\/text>/g)].map(m => m[1]);
       if (matches && matches.length >= 3) {
         const totalContributions = matches[0];
+        const currentStreak = matches[1];
         const longestStreak = matches[2];
-        const commitsEl = document.getElementById('github-commits');
-        const streakEl = document.getElementById('github-streak');
-        if (commitsEl) commitsEl.textContent = `Contributions: ${totalContributions}`;
-        if (streakEl) streakEl.textContent = `Longest Streak: ${longestStreak} Days`;
+        
+        const contribEl = document.getElementById('github-contrib');
+        const currentStreakEl = document.getElementById('github-current');
+        const longestStreakEl = document.getElementById('github-longest');
+        
+        if (contribEl) contribEl.textContent = `Contributions: ${totalContributions}`;
+        if (currentStreakEl) currentStreakEl.textContent = `Current Streak: ${currentStreak} Days`;
+        if (longestStreakEl) longestStreakEl.textContent = `Longest Streak: ${longestStreak} Days`;
       }
     }
   } catch (error) {
