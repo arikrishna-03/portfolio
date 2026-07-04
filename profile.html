@@ -65,26 +65,25 @@
 
     #cur-ring {
       position: fixed;
-      width: 34px;
-      height: 34px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      border: 1.5px solid rgba(255, 255, 255, 0.5);
+      border: 1.5px solid rgba(255, 255, 255, 0.55);
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%, -50%);
       mix-blend-mode: difference;
-      transition: width 0.2s, height 0.2s;
+      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
       zoom: 1.25;
     }
 
-    body.hover-state #cur {
-      transform: translate(-50%, -50%) scale(2.5);
+    body.hover-state #cur-ring {
+      width: 70px;
+      height: 70px;
+      border-color: rgba(255, 255, 255, 0.85);
     }
 
-    body.hover-state #cur-ring {
-      width: 56px;
-      height: 56px;
-    }
+
 
     /* Page Layout */
     .profile-container {
@@ -103,6 +102,22 @@
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+    .profile-container.fade-out {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(20px);
       }
     }
 
@@ -130,7 +145,7 @@
       width: 100%;
       max-width: 500px;
       aspect-ratio: 1 / 1;
-      border-radius: 20px;
+      border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(100, 175, 240, 0.2);
     }
@@ -237,7 +252,7 @@
 
     .pr-section-title {
       font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 600;
       margin-bottom: 1.5rem;
       color: #fff;
@@ -254,11 +269,16 @@
     }
 
     .pr-text {
-      font-size: 1.05rem;
+      font-size: 1.25rem;
       line-height: 1.8;
       color: var(--text);
       margin-bottom: 1.5rem;
       opacity: 0.85;
+    }
+
+    .pr-text strong {
+      color: var(--accent);
+      font-weight: 600;
     }
 
     .pr-details-grid {
@@ -277,9 +297,10 @@
     }
 
     .pr-detail-item:hover {
-      background: rgba(100, 175, 240, 0.05);
-      border-color: rgba(100, 175, 240, 0.2);
+      background: rgba(100, 175, 240, 0.08);
+      border-color: var(--accent);
       transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(103, 199, 235, 0.35);
     }
 
     .pr-detail-label {
@@ -349,6 +370,43 @@
         font-size: clamp(2rem, 6vw, 3rem);
       }
     }
+
+    /* Scroll to Top Button */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(8, 13, 26, 0.7);
+      border: 1px solid rgba(100, 175, 240, 0.3);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 9990;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .scroll-top-btn.visible {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .scroll-top-btn:hover {
+      background: rgba(100, 175, 240, 0.15);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(103, 199, 235, 0.4);
+      transform: translateY(-3px);
+    }
   </style>
 </head>
 
@@ -380,13 +438,19 @@
           Hi, I'm Arikrishna.
         </p>
         <p class="pr-text">
-          I'm an <strong>AI & Data Science student </strong>and <strong>freelance designer</strong> based in Coimbatore, India. I help businesses and individuals turn ideas into digital experiences through <strong>branding, web development, and AI-powered solutions</strong>.
+          I'm an <strong>AI & Data Science student </strong>and <strong>freelance designer</strong> based in Coimbatore,
+          India. I help businesses and individuals turn ideas into digital experiences through <strong>branding, web
+            development, and AI-powered solutions</strong>.
         </p>
         <p class="pr-text">
-          Over the past year, I've worked with <strong>startups, organizations, and clients to create brand identities, social media creatives, websites, and custom digital solutions</strong>. Alongside design, I enjoy building AI projects and full-stack applications that solve real-world problems.
+          Over the past year, I've worked with <strong>startups, organizations, and clients to create brand identities,
+            social media creatives, websites, and custom digital solutions</strong>. Alongside design, I enjoy building
+          AI projects and full-stack applications that solve real-world problems.
         </p>
         <p class="pr-text">
-          I believe good work is simple, functional, and built with purpose. Whether it's designing a brand, developing a website, or creating an AI solution, my goal is always to deliver something that looks great, works well, and creates real value.
+          I believe good work is simple, functional, and built with purpose. Whether it's designing a brand, developing
+          a website, or creating an AI solution, my goal is always to deliver something that looks great, works well,
+          and creates real value.
         </p>
         <p class="pr-text">
           Let's build something meaningful together.
@@ -397,22 +461,29 @@
         <h2 class="pr-section-title">At a Glance</h2>
         <div class="pr-details-grid">
           <div class="pr-detail-item interactive">
-            <div class="pr-detail-value">🎓 AI & Data Science Student</div>
+            <div class="pr-detail-value">AI & Data Science Student</div>
           </div>
           <div class="pr-detail-item interactive">
-            <div class="pr-detail-value">🎨 Freelance Designer</div>
+            <div class="pr-detail-value">Freelance Designer</div>
           </div>
           <div class="pr-detail-item interactive">
-            <div class="pr-detail-value">💻 Web Developer</div>
+            <div class="pr-detail-value">Web Developer</div>
           </div>
           <div class="pr-detail-item interactive">
-            <div class="pr-detail-value">🤖 AI Builder</div>
+            <div class="pr-detail-value">Video Editor</div>
           </div>
         </div>
       </div>
 
     </div>
   </div>
+
+  <button id="scroll-top-btn" class="scroll-top-btn interactive" aria-label="Scroll to top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5"></line>
+      <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+  </button>
 
   <script>
     // Cursor effect logic for profile page
@@ -440,6 +511,7 @@
     document.addEventListener('mousemove', e => {
       mx = e.clientX;
       my = e.clientY;
+      
       if (firstMove) {
         rx = mx; ry = my;
         tailPoints.forEach(p => { p.x = mx; p.y = my; });
@@ -495,7 +567,68 @@
       el.addEventListener('mouseenter', () => document.body.classList.add('hover-state'));
       el.addEventListener('mouseleave', () => document.body.classList.remove('hover-state'));
     });
+
+    // Back navigation transition logic
+    function goBackWithTransition() {
+      const container = document.querySelector('.profile-container');
+      if (container) {
+        container.classList.add('fade-out');
+      }
+      setTimeout(() => {
+        window.location.href = './';
+      }, 500);
+    }
+
+    const backBtn = document.querySelector('.back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', e => {
+        e.preventDefault();
+        goBackWithTransition();
+      });
+    }
+
+    // Push state to intercept back button/gesture
+    history.pushState({ page: 'profile' }, '', window.location.href);
+
+    window.addEventListener('popstate', (e) => {
+      // The popstate is triggered when user swipes back or clicks browser back
+      goBackWithTransition();
+    });
+
+    // Scroll to top button logic
+    const scrollTopBtn = document.getElementById('scroll-top-btn');
+    const profileRight = document.querySelector('.profile-right');
+
+    if (scrollTopBtn) {
+      function handleScroll() {
+        const windowScroll = window.scrollY || document.documentElement.scrollTop;
+        const rightScroll = profileRight ? profileRight.scrollTop : 0;
+        const scrollPos = Math.max(windowScroll, rightScroll);
+
+        if (scrollPos > 200) {
+          scrollTopBtn.classList.add('visible');
+        } else {
+          scrollTopBtn.classList.remove('visible');
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll);
+      if (profileRight) {
+        profileRight.addEventListener('scroll', handleScroll);
+      }
+
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (profileRight) {
+          profileRight.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    }
+
+
   </script>
+
+
 </body>
 
 </html>

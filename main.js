@@ -25,6 +25,11 @@ const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
 document.addEventListener('mousemove', e => {
   mx = e.clientX;
   my = e.clientY;
+  
+  // Update CSS coordinates for the liquid overlay mask
+  document.documentElement.style.setProperty('--mx', mx + 'px');
+  document.documentElement.style.setProperty('--my', my + 'px');
+  
   if (firstMove) {
     rx = mx; ry = my;
     tailPoints.forEach(p => { p.x = mx; p.y = my; });
@@ -81,138 +86,471 @@ function setupHoverEffects() {
   });
 }
 
-/* ═══════════════ PROFILE ORB (golden particle sphere on photo hover) ═══════════════ */
+/* ═══════════════ PROFILE WEBGL LIQUID (liquid and wavy hover background) ═══════════════ */
 const poc = document.getElementById('profile-orb-canvas');
 const pwrap = document.querySelector('.l-photo-wrap');
-let pocCtx = null;
-let profileOrbRaf = null;
-let profileOrbActive = false;
-let profileOrbPts = [];
-const PROFILE_ORB_N = 920;
 
-function buildProfileOrbPoints(n) {
-  const pts = [];
-  const golden = Math.PI * (3 - Math.sqrt(5));
-  for (let i = 0; i < n; i++) {
-    const y = n === 1 ? 0 : 1 - (2 * i) / (n - 1);
-    const r = Math.sqrt(Math.max(0, 1 - y * y));
-    const th = golden * i;
-    pts.push({
-      bx: Math.cos(th) * r,
-      by: y,
-      bz: Math.sin(th) * r
-    });
+let gl = null;
+let program = null;
+let animationFrameId = null;
+let hoverProgress = 0;
+let isHovered = false;
+let startTime = 0;
+let mousePos = { x: 0, y: 0 };
+let currentMouse = { x: 0, y: 0 };
+
+const vertexShaderSource = `
+  attribute vec2 a_position;
+  varying vec2 v_uv;
+  void main() {
+    v_uv = a_position * 0.5 + 0.5;
+    gl_Position = vec4(a_position, 0.0, 1.0);
   }
-  return pts;
+`;
+
+const fragmentShaderSource = `
+  precision highp float;
+  varying vec2 v_uv;
+  uniform float u_time;
+  uniform vec2 u_resolution;
+  uniform vec2 u_mouse;
+  uniform float u_hover_progress;
+
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+  }
+
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+               mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+  }
+
+  float fbm(vec2 p) {
+    float v = 0.0;
+    float a = 0.5;
+    vec2 shift = vec2(100.0);
+    mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+    for (int i = 0; i < 4; ++i) {
+      v += a * noise(p);
+      p = rot * p * 2.0 + shift;
+      a *= 0.5;
+    }
+    return v;
+  }
+
+  void main() {
+    vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+    
+    // Mouse interaction warping
+    vec2 m = (u_mouse - 0.5 * u_resolution.xy) / u_resolution.y;
+    float distToMouse = length(p - m);
+    if (length(u_mouse) > 0.0) {
+      p -= normalize(p - m) * (smoothstep(0.35, 0.0, distToMouse) * 0.08 * u_hover_progress);
+    }
+    
+    // Swirl coordinates around the black hole event horizon
+    float r_len = length(p);
+    float theta = atan(p.y, p.x);
+    
+    // Tighter swirling close to the center core
+    float swirlStrength = 1.0 / (r_len + 0.05);
+    float angle = theta + swirlStrength - u_time * 1.5;
+    vec2 sw_p = vec2(cos(angle), sin(angle)) * r_len;
+    
+    // Broad coordinate distortion for smooth liquidity
+    vec2 q = vec2(
+      fbm(sw_p * 1.6 + vec2(u_time * 0.08)),
+      fbm(sw_p * 1.6 + vec2(5.2, 1.3) - vec2(u_time * 0.06))
+    );
+    
+    vec2 r = vec2(
+      fbm(sw_p * 1.6 + 3.0 * q + vec2(1.7, 9.2) + vec2(u_time * 0.04)),
+      fbm(sw_p * 1.6 + 3.0 * q + vec2(8.3, 2.8) - vec2(u_time * 0.05))
+    );
+    
+    float f = fbm(sw_p * 1.6 + 3.0 * r);
+    
+    // strictly dark crimson & navy blue color palette (mild/non-irritating)
+    vec3 colCrimson = vec3(0.60, 0.05, 0.08);     // Crimson Red
+    vec3 colNavy = vec3(0.04, 0.18, 0.48);        // Navy Blue
+    vec3 colDarkBg = vec3(0.002, 0.003, 0.008);   // Dark Core void
+    
+    // Flowing blending between crimson and navy
+    float blendVal = clamp(f * f * 3.2, 0.0, 1.0);
+    float mixVal = 0.5 + 0.5 * sin(theta + u_time * 0.8 + length(q) * 2.0);
+    vec3 diskColor = mix(colNavy, colCrimson, mixVal);
+    
+    vec3 col = mix(colDarkBg, diskColor, blendVal);
+    col = mix(col, colNavy * 1.2, clamp(length(q) * r.x * 0.8, 0.0, 1.0));
+    col += diskColor * f * 0.30 * u_hover_progress;
+    
+    // Bright soft white-blue core lensing outline
+    float horizonGlow = smoothstep(0.213, 0.22, r_len) * smoothstep(0.26, 0.22, r_len);
+    vec3 rimColor = vec3(0.82, 0.90, 0.98);
+    col = mix(col, rimColor, horizonGlow * 0.98);
+    
+    // Smooth feathered inner mask to merge with the profile image
+    float innerMask = smoothstep(0.18, 0.23, r_len);
+    
+    // Smooth feathered outer mask to merge with the background void
+    float outerMask = smoothstep(0.46, 0.22, r_len);
+    
+    gl_FragColor = vec4(col, innerMask * outerMask * u_hover_progress);
+  }
+`;
+
+const spaceFragmentShaderSource = `
+  precision highp float;
+  varying vec2 v_uv;
+  uniform float u_time;
+  uniform vec2 u_resolution;
+  uniform vec2 u_mouse;
+  uniform vec2 u_profile_center;
+  uniform float u_hover_progress;
+
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+  }
+
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+               mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+  }
+
+  float fbm(vec2 p) {
+    float v = 0.0;
+    float a = 0.5;
+    vec2 shift = vec2(100.0);
+    mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+    for (int i = 0; i < 4; ++i) {
+      v += a * noise(p);
+      p = rot * p * 2.0 + shift;
+      a *= 0.5;
+    }
+    return v;
+  }
+
+  void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+    
+    // Compute distance vector from profile center in aspect-correct resolution space
+    vec2 p_profile = (gl_FragCoord.xy - u_profile_center) / u_resolution.y;
+    float distFromProfile = length(p_profile);
+    
+    // Mouse coords in resolution-independent space
+    vec2 m = (u_mouse - 0.5 * u_resolution.xy) / u_resolution.y;
+    
+    // Smooth water ripple/wave displacement reacting to mouse
+    float distFromMouse = length(p - m);
+    // Wave parameters: frequency = 45.0, speed = 9.0, amplitude = 0.018
+    // Fades out smoothly from mouse position up to 0.65 radius
+    float wave = sin(distFromMouse * 45.0 - u_time * 9.0) * 0.018 * smoothstep(0.65, 0.0, distFromMouse);
+    if (distFromMouse > 0.001) {
+      p += (p - m) / distFromMouse * wave;
+    }
+    
+    // Apply mouse parallax on top of the ripples
+    p -= m * 0.08 * u_hover_progress;
+    
+    float slowTime = u_time * 0.025;
+    
+    // Smooth purple & indigo FBM dust clouds (sampled using displaced coordinate p)
+    float n1 = fbm(p * 1.5 + vec2(slowTime, slowTime * 0.8));
+    float n2 = fbm(p * 2.2 - vec2(slowTime * 0.6, slowTime * 1.1));
+    float n3 = fbm(p * 0.85 + vec2(-slowTime * 0.4, slowTime * 0.5));
+    
+    vec3 colRedViolet = vec3(0.18, 0.02, 0.12); // Deep Red-Violet
+    vec3 colIndigo = vec3(0.04, 0.08, 0.22);    // Dark Indigo
+    
+    vec3 col = vec3(0.005, 0.005, 0.012);       // Dark space void
+    
+    col = mix(col, colIndigo, n1 * 0.60);
+    col = mix(col, colRedViolet, n2 * 0.50);
+    col = mix(col, colRedViolet * 0.6 + colIndigo * 0.4, n3 * 0.40);
+    
+    col += colIndigo * (n1 * n1 * 0.15);
+    
+    // TWINKLING STAR FIELD (Elegant white and soft light blue, warps with liquid)
+    vec3 starColor1 = vec3(0.95, 0.98, 1.0);    // Bright White-Blue
+    vec3 starColor2 = vec3(0.80, 0.88, 1.0);    // Soft Blue-White
+    
+    // Translate coordinate p back to [0, 1] UV space so stars wobble with the ripples
+    vec2 shiftedUv = p * (u_resolution.y / u_resolution.x) + 0.5;
+    
+    // Tiny sharp stars (twinkling)
+    float starNoise = noise(shiftedUv * 180.0);
+    float stars = smoothstep(0.992, 1.0, starNoise);
+    float twinkle = 0.4 + 0.6 * sin(u_time * 2.2 + starNoise * 100.0);
+    col += starColor1 * stars * twinkle * 0.35;
+    
+    // Soft medium star cluster points (from reference image)
+    float starNoise2 = noise(shiftedUv * 80.0 + vec2(u_time * 0.005, u_time * 0.002));
+    float stars2 = smoothstep(0.996, 1.0, starNoise2);
+    float twinkle2 = 0.3 + 0.7 * sin(u_time * 1.0 + starNoise2 * 80.0);
+    col += starColor2 * stars2 * twinkle2 * 0.25;
+
+    // Smooth circular shockwave/portal centered on profile circle
+    float maxRadius = 1.8;
+    float currentRadius = maxRadius * u_hover_progress;
+    float circleMask = smoothstep(currentRadius, currentRadius - 0.45, distFromProfile);
+    
+    col *= circleMask;
+
+    gl_FragColor = vec4(col, circleMask * u_hover_progress);
+  }
+`;
+
+function compileShaderSource(webglContext, source, type) {
+  const shader = webglContext.createShader(type);
+  webglContext.shaderSource(shader, source);
+  webglContext.compileShader(shader);
+  if (!webglContext.getShaderParameter(shader, webglContext.COMPILE_STATUS)) {
+    console.error('Shader compilation error:', webglContext.getShaderInfoLog(shader));
+    webglContext.deleteShader(shader);
+    return null;
+  }
+  return shader;
 }
 
-function resizeProfileOrb() {
-  if (!poc) return;
-  const w = 580;
-  const h = 580;
+function initWebGL() {
+  if (!poc) return false;
+  gl = poc.getContext('webgl') || poc.getContext('experimental-webgl');
+  if (!gl) {
+    console.warn('WebGL not supported');
+    return false;
+  }
+
+  const vs = compileShaderSource(gl, vertexShaderSource, gl.VERTEX_SHADER);
+  const fs = compileShaderSource(gl, fragmentShaderSource, gl.FRAGMENT_SHADER);
+  if (!vs || !fs) return false;
+
+  program = gl.createProgram();
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error('Program linking error:', gl.getProgramInfoLog(program));
+    return false;
+  }
+
+  gl.useProgram(program);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  const vertices = new Float32Array([
+    -1, -1,
+     1, -1,
+    -1,  1,
+    -1,  1,
+     1, -1,
+     1,  1
+  ]);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+  const aPosition = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(aPosition);
+  gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+
+  return true;
+}
+
+const sCanvas = document.getElementById('landing-space-canvas');
+let sGl = null;
+let sProgram = null;
+
+function initSpaceWebGL() {
+  if (!sCanvas) return false;
+  sGl = sCanvas.getContext('webgl') || sCanvas.getContext('experimental-webgl');
+  if (!sGl) return false;
+
+  const vs = compileShaderSource(sGl, vertexShaderSource, sGl.VERTEX_SHADER);
+  const fs = compileShaderSource(sGl, spaceFragmentShaderSource, sGl.FRAGMENT_SHADER);
+  if (!vs || !fs) return false;
+
+  sProgram = sGl.createProgram();
+  sGl.attachShader(sProgram, vs);
+  sGl.attachShader(sProgram, fs);
+  sGl.linkProgram(sProgram);
+
+  if (!sGl.getProgramParameter(sProgram, sGl.LINK_STATUS)) return false;
+
+  sGl.useProgram(sProgram);
+
+  sGl.enable(sGl.BLEND);
+  sGl.blendFunc(sGl.SRC_ALPHA, sGl.ONE_MINUS_SRC_ALPHA);
+
+  const vertices = new Float32Array([
+    -1, -1,
+     1, -1,
+    -1,  1,
+    -1,  1,
+     1, -1,
+     1,  1
+  ]);
+
+  const buffer = sGl.createBuffer();
+  sGl.bindBuffer(sGl.ARRAY_BUFFER, buffer);
+  sGl.bufferData(sGl.ARRAY_BUFFER, vertices, sGl.STATIC_DRAW);
+
+  const aPosition = sGl.getAttribLocation(sProgram, 'a_position');
+  sGl.enableVertexAttribArray(aPosition);
+  sGl.vertexAttribPointer(aPosition, 2, sGl.FLOAT, false, 0, 0);
+
+  return true;
+}
+
+function resizeWebGL() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  poc.width = Math.floor(w * dpr);
-  poc.height = Math.floor(h * dpr);
-  pocCtx = poc.getContext('2d');
-  if (!pocCtx) return;
-  pocCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-
-function drawProfileOrb(ts) {
-  if (!profileOrbActive || !pocCtx || !poc) {
-    profileOrbRaf = null;
-    return;
+  if (poc && gl) {
+    poc.width = 580 * dpr;
+    poc.height = 580 * dpr;
+    gl.viewport(0, 0, poc.width, poc.height);
   }
-  const t = (ts != null ? ts : performance.now()) * 0.001;
-  const w = 580;
-  const h = 580;
-  pocCtx.clearRect(0, 0, w, h);
-  const cx = w * 0.5;
-  const cy = h * 0.5;
-  const rotY = t * 0.62;
-  const rotX = Math.sin(t * 0.38) * 0.42;
-  const cosY = Math.cos(rotY);
-  const sinY = Math.sin(rotY);
-  const cosX = Math.cos(rotX);
-  const sinX = Math.sin(rotX);
-
-  const projected = [];
-  for (let i = 0; i < profileOrbPts.length; i++) {
-    const p = profileOrbPts[i];
-    const ang = Math.atan2(p.bz, p.bx);
-    const rimBoost = Math.abs(p.by) > 0.42 ? 1 : 0.55;
-    const wave =
-      1 +
-      0.1 * Math.sin(ang * 6 + t * 2.1) * rimBoost +
-      0.06 * Math.sin(p.by * 11 + t * 1.4) +
-      0.045 * Math.sin(ang * 3 - t * 1.1) * Math.sin(p.by * 5 + t * 0.8);
-    let x = p.bx * wave;
-    let y = p.by * wave;
-    let z = p.bz * wave;
-
-    const x1 = x * cosY + z * sinY;
-    const z1 = -x * sinY + z * cosY;
-    const y1 = y;
-    const x2 = x1;
-    const y2 = y1 * cosX - z1 * sinX;
-    const z2 = y1 * sinX + z1 * cosX;
-
-    const inv = 1.38 - z2 * 0.44;
-    const sc = 208;
-    const sx = cx + (x2 / inv) * sc;
-    const sy = cy + (y2 / inv) * sc;
-    const depth = (z2 + 1) * 0.5;
-    projected.push({ sx, sy, depth, z2 });
-  }
-
-  projected.sort((a, b) => a.z2 - b.z2);
-
-  for (let k = 0; k < projected.length; k++) {
-    const q = projected[k];
-    const rad = 0.85 + q.depth * 1.15;
-    const alpha = 0.08 + q.depth * 0.82;
-    pocCtx.fillStyle = `rgba(247, 240, 151, ${alpha * 0.55})`;
-    pocCtx.beginPath();
-    pocCtx.arc(q.sx, q.sy, rad * 1.6, 0, Math.PI * 2);
-    pocCtx.fill();
-  }
-  for (let k = 0; k < projected.length; k++) {
-    const q = projected[k];
-    const rad = 0.55 + q.depth * 0.95;
-    const alpha = 0.2 + q.depth * 0.75;
-    pocCtx.fillStyle = `rgba(255, 250, 180, ${alpha})`;
-    pocCtx.beginPath();
-    pocCtx.arc(q.sx, q.sy, rad * 0.42, 0, Math.PI * 2);
-    pocCtx.fill();
-  }
-
-  profileOrbRaf = requestAnimationFrame(drawProfileOrb);
-}
-
-function startProfileOrb() {
-  profileOrbActive = true;
-  if (!profileOrbPts.length) profileOrbPts = buildProfileOrbPoints(PROFILE_ORB_N);
-  resizeProfileOrb();
-  if (!profileOrbRaf && pocCtx) profileOrbRaf = requestAnimationFrame(drawProfileOrb);
-}
-
-function stopProfileOrb() {
-  profileOrbActive = false;
-  if (profileOrbRaf) cancelAnimationFrame(profileOrbRaf);
-  profileOrbRaf = null;
-  if (poc && pocCtx) {
-    pocCtx.setTransform(1, 0, 0, 1, 0, 0);
-    pocCtx.clearRect(0, 0, poc.width, poc.height);
+  if (sCanvas && sGl) {
+    sCanvas.width = sCanvas.clientWidth * dpr;
+    sCanvas.height = sCanvas.clientHeight * dpr;
+    sGl.viewport(0, 0, sCanvas.width, sCanvas.height);
   }
 }
+
+function renderWebGL(timestamp) {
+  if (isHovered) {
+    hoverProgress += (1 - hoverProgress) * 0.08;
+  } else {
+    hoverProgress += (0 - hoverProgress) * 0.08;
+    if (hoverProgress < 0.001) {
+      hoverProgress = 0;
+      animationFrameId = null;
+      if (gl) {
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      }
+      if (sGl) {
+        sGl.clearColor(0, 0, 0, 0);
+        sGl.clear(sGl.COLOR_BUFFER_BIT);
+      }
+      return;
+    }
+  }
+
+  const time = (timestamp - startTime) * 0.001;
+
+  currentMouse.x += (mousePos.x - currentMouse.x) * 0.08;
+  currentMouse.y += (mousePos.y - currentMouse.y) * 0.08;
+
+  if (gl) {
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(program);
+    gl.uniform1f(gl.getUniformLocation(program, 'u_time'), time);
+    gl.uniform2f(gl.getUniformLocation(program, 'u_resolution'), poc.width, poc.height);
+    gl.uniform2f(gl.getUniformLocation(program, 'u_mouse'), currentMouse.x, currentMouse.y);
+    gl.uniform1f(gl.getUniformLocation(program, 'u_hover_progress'), hoverProgress);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  if (sGl) {
+    sGl.clearColor(0, 0, 0, 0);
+    sGl.clear(sGl.COLOR_BUFFER_BIT);
+    sGl.useProgram(sProgram);
+    sGl.uniform1f(sGl.getUniformLocation(sProgram, 'u_time'), time);
+    sGl.uniform2f(sGl.getUniformLocation(sProgram, 'u_resolution'), sCanvas.width, sCanvas.height);
+    
+    // Find absolute viewport position of the center photo circle
+    const pwrap = document.querySelector('.l-photo-wrap');
+    let pCenterX = sCanvas.width * 0.5;
+    let pCenterY = sCanvas.height * 0.5;
+    if (pwrap) {
+      const rect = pwrap.getBoundingClientRect();
+      const midX = rect.left + rect.width * 0.5;
+      const midY = rect.top + rect.height * 0.5;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      pCenterX = midX * dpr;
+      pCenterY = (window.innerHeight - midY) * dpr; // Y-up WebGL space
+    }
+    sGl.uniform2f(sGl.getUniformLocation(sProgram, 'u_profile_center'), pCenterX, pCenterY);
+
+    const screenMouseX = (currentMouse.x / (poc.width || 1)) * sCanvas.width;
+    const screenMouseY = (currentMouse.y / (poc.height || 1)) * sCanvas.height;
+    sGl.uniform2f(sGl.getUniformLocation(sProgram, 'u_mouse'), screenMouseX, screenMouseY);
+    sGl.uniform1f(sGl.getUniformLocation(sProgram, 'u_hover_progress'), hoverProgress);
+    sGl.drawArrays(sGl.TRIANGLES, 0, 6);
+  }
+
+  animationFrameId = requestAnimationFrame(renderWebGL);
+}
+
+function startLiquidEffect(e) {
+  isHovered = true;
+  const land = document.getElementById('landing');
+  if (land && e && e.currentTarget && e.currentTarget.classList.contains('l-photo-wrap')) {
+    land.classList.add('about-hover');
+  }
+  
+  if (!gl) {
+    initWebGL();
+  }
+  if (!sGl) {
+    initSpaceWebGL();
+  }
+  
+  resizeWebGL();
+  if (!animationFrameId) {
+    startTime = performance.now() - (hoverProgress * 1000);
+    animationFrameId = requestAnimationFrame(renderWebGL);
+  }
+}
+
+function stopLiquidEffect() {
+  isHovered = false;
+  const land = document.getElementById('landing');
+  if (land) land.classList.remove('about-hover');
+}
+
+const landingEl = document.getElementById('landing');
+const lLeftSide = document.getElementById('l-left');
+const lRightSide = document.getElementById('l-right');
 
 if (pwrap && poc) {
-  pwrap.addEventListener('mouseenter', startProfileOrb);
-  pwrap.addEventListener('mouseleave', stopProfileOrb);
-  window.addEventListener('resize', () => {
-    if (profileOrbActive) resizeProfileOrb();
+  pwrap.addEventListener('mouseenter', startLiquidEffect);
+  pwrap.addEventListener('mouseleave', stopLiquidEffect);
+}
+
+if (lLeftSide) {
+  lLeftSide.addEventListener('mouseenter', startLiquidEffect);
+  lLeftSide.addEventListener('mouseleave', stopLiquidEffect);
+}
+
+if (lRightSide) {
+  lRightSide.addEventListener('mouseenter', startLiquidEffect);
+  lRightSide.addEventListener('mouseleave', stopLiquidEffect);
+}
+
+if (landingEl && poc) {
+  landingEl.addEventListener('mousemove', (e) => {
+    const rect = poc.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * poc.width;
+    const y = (1.0 - (e.clientY - rect.top) / rect.height) * poc.height;
+    mousePos.x = x;
+    mousePos.y = y;
   });
 }
+
+window.addEventListener('resize', () => {
+  resizeWebGL();
+});
 
 function wrapLandingTitleChars(el) {
   if (!el || el.dataset.charsDone) return;
@@ -725,8 +1063,11 @@ function drawAI(){
 /* ═══════════════ MODE ═══════════════ */
 let mode=null;
 
-window.enterMode = function(m){
+window.enterMode = function(m, push = true){
   mode=m;
+  if (push) {
+    history.pushState({ mode: m }, '', '#' + m);
+  }
   const ov=document.getElementById('overlay');
   const land=document.getElementById('landing');
   ov.style.background=m==='ai'?'#080d1a':'#140c0e';
@@ -751,7 +1092,8 @@ function setMode(m){
   document.body.classList.add(m==='ai'?'ai-mode':'ds-mode');
   document.getElementById('ai-c').style.display=m==='ai'?'block':'none';
   document.getElementById('ds-c').style.display=m==='design'?'block':'none';
-  document.getElementById('m-txt').textContent=m==='ai'?'Design Mode':'AI Mode';
+  const mTxt = document.getElementById('m-txt');
+  if (mTxt) mTxt.textContent = m === 'ai' ? 'Design Mode' : 'AI Mode';
   document.getElementById('n-skills').style.display=m==='ai'?'':'none';
   document.getElementById('n-lab').style.display=m==='ai'?'':'none';
   document.getElementById('c-lbl').textContent=m==='ai'?'// Get in Touch':'Get in Touch';
@@ -760,6 +1102,7 @@ function setMode(m){
 
 window.switchMode = function(){
   const nm=mode==='ai'?'design':'ai';
+  history.pushState({ mode: nm }, '', '#' + nm);
   const ov=document.getElementById('overlay');
   ov.style.background=nm==='ai'?'#080d1a':'#140c0e';
   ov.classList.add('on');
@@ -790,7 +1133,10 @@ window.openAbout = function() {
   }, 750);
 }
 
-window.backToLanding = function(){
+window.backToLanding = function(push = true){
+  if (push) {
+    history.pushState({ mode: 'landing' }, '', '#');
+  }
   const ov=document.getElementById('overlay');
   const app=document.getElementById('app');
   const land=document.getElementById('landing');
@@ -807,6 +1153,23 @@ window.backToLanding = function(){
     setTimeout(()=>ov.classList.remove('on'),300);
   },380);
 }
+
+window.addEventListener('popstate', (event) => {
+  const hash = window.location.hash;
+  if (hash === '#ai') {
+    if (mode !== 'ai') {
+      window.enterMode('ai', false);
+    }
+  } else if (hash === '#design') {
+    if (mode !== 'design') {
+      window.enterMode('design', false);
+    }
+  } else {
+    if (mode !== null && mode !== 'landing') {
+      window.backToLanding(false);
+    }
+  }
+});
 
 window.goTo = function(id){
   if(mode === 'design') {
@@ -855,6 +1218,36 @@ document.addEventListener('DOMContentLoaded', () => {
   initDesignParticles();
   drawNC();
   drawDC();
+
+  // Handle initial hash routing
+  const hash = window.location.hash;
+  if (hash === '#ai') {
+    window.enterMode('ai', false);
+  } else if (hash === '#design') {
+    window.enterMode('design', false);
+  }
+
+  // Scroll to top button logic
+  const scrollTopBtn = document.getElementById('scroll-top-btn');
+  if (scrollTopBtn) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 200) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // Update Coding Consistency stats dynamically from Codolio
+  updateCodingStats();
 });
 
 window.toggleCaseStudy = function(id) {
@@ -871,3 +1264,70 @@ window.toggleCaseStudy = function(id) {
     el.style.display = 'none';
   }
 }
+
+async function updateCodingStats() {
+  // 1. Fetch Codolio stats (LeetCode, CodeChef, Codolio Total)
+  try {
+    const res = await fetch('https://api.codolio.com/profile?userKey=im_ari.ak03');
+    if (res.ok) {
+      const json = await res.json();
+      if (json.status && json.data) {
+        const platformProfiles = json.data.platformProfiles?.platformProfiles || [];
+
+        // 1.1 LeetCode Stats
+        const leetcode = platformProfiles.find(p => p.platform === 'leetcode');
+        if (leetcode) {
+          const rating = leetcode.userStats?.currentRating;
+          const solved = leetcode.totalQuestionStats?.totalQuestionCounts;
+          const ratingEl = document.getElementById('leetcode-rating');
+          const solvedEl = document.getElementById('leetcode-solved');
+          if (rating && ratingEl) ratingEl.textContent = `Contest Rating: ${rating}`;
+          if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
+        }
+
+        // 1.2 CodeChef Stats
+        const codechef = platformProfiles.find(p => p.platform === 'codechef');
+        if (codechef) {
+          const rating = codechef.userStats?.currentRating;
+          const solved = codechef.totalQuestionStats?.totalQuestionCounts;
+          const ratingEl = document.getElementById('codechef-rating');
+          const solvedEl = document.getElementById('codechef-solved');
+          if (rating && ratingEl) ratingEl.textContent = `Rating: ${rating}`;
+          if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
+        }
+
+        // 1.3 Codolio Stats (Sum of all platforms)
+        const totalSolved = platformProfiles.reduce((sum, p) => {
+          return sum + (p.totalQuestionStats?.totalQuestionCounts || 0);
+        }, 0);
+        if (totalSolved > 0) {
+          const codolioProblemsEl = document.getElementById('codolio-problems');
+          if (codolioProblemsEl) codolioProblemsEl.textContent = `Problems: ${totalSolved}`;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching Codolio stats:', error);
+  }
+
+  // 2. Fetch GitHub stats (Contributions & Streak)
+  try {
+    const res = await fetch('https://github-readme-streak-stats.herokuapp.com/?user=arikrishna-03');
+    if (res.ok) {
+      const svgText = await res.text();
+      const matches = [...svgText.matchAll(/font-size='28px'[^>]*>\s*([\d,]+)\s*<\/text>/g)].map(m => m[1]);
+      if (matches && matches.length >= 3) {
+        const totalContributions = matches[0];
+        const longestStreak = matches[2];
+        const commitsEl = document.getElementById('github-commits');
+        const streakEl = document.getElementById('github-streak');
+        if (commitsEl) commitsEl.textContent = `Contributions: ${totalContributions}`;
+        if (streakEl) streakEl.textContent = `Longest Streak: ${longestStreak} Days`;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching GitHub stats:', error);
+  }
+}
+
+

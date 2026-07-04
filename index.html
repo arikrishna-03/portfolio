@@ -26,6 +26,7 @@
 
   <!-- ═══════ LANDING ═══════ -->
   <div id="landing">
+    <canvas id="landing-space-canvas" class="landing-space-canvas"></canvas>
     <div class="l-side" id="l-left" onclick="enterMode('ai')">
       <div class="landing-fx landing-fx--ai" aria-hidden="true">
         <div class="fx-holo-grid fx-holo-grid--ai"></div>
@@ -85,7 +86,6 @@
         <li><a onclick="goTo('contact')">Contact</a></li>
       </ul>
       <div class="n-right">
-        <button class="m-toggle" onclick="switchMode()"><span id="m-txt">Design Mode</span></button>
         <button class="c-btn" onclick="goTo('contact')">Let's Talk</button>
       </div>
     </nav>
@@ -332,20 +332,6 @@
         </div>
       </div>
 
-      <!-- Real World Thinking -->
-      <div id="real-world" class="sec" style="padding-top:0">
-        <div class="sec-lbl rev">// 05</div>
-        <div class="sec-div rev rev-d1"></div>
-        <div class="sec-h rev rev-d1">Problems I Want To Solve.</div>
-        <div class="rw-grid rev rev-d1">
-          <div class="rw-card">🚀 AI for Agriculture</div>
-          <div class="rw-card">📚 AI for Education</div>
-          <div class="rw-card">🏥 Healthcare Assistant</div>
-          <div class="rw-card">🚦 Smart Traffic Systems</div>
-          <div class="rw-card">🔐 Fraud Detection</div>
-          <div class="rw-card">👁️ Accessibility Tools</div>
-        </div>
-      </div>
 
       <!-- Coding Profiles -->
       <div id="coding-profiles" class="sec" style="padding-top:0">
@@ -355,20 +341,32 @@
         <div class="cp-grid rev rev-d1">
           <a href="https://codolio.com/profile/im_ari.ak03" target="_blank" rel="noopener noreferrer" class="cp-card">
             <div class="cpc-logo">Codolio</div>
-            <div class="cpc-stats"><span>Global Rank: 15,751</span><span>Problems: 933</span></div>
+            <div class="cpc-stats">
+              <span id="codolio-rank">Global Rank: 15,751</span>
+              <span id="codolio-problems">Problems: 933</span>
+            </div>
           </a>
           <a href="https://leetcode.com/u/kit28adc018" target="_blank" rel="noopener noreferrer" class="cp-card">
             <div class="cpc-logo">LeetCode</div>
-            <div class="cpc-stats"><span>Contest Rating: 1440</span><span>Solved: 98</span></div>
+            <div class="cpc-stats">
+              <span id="leetcode-rating">Contest Rating: 1440</span>
+              <span id="leetcode-solved">Solved: 98</span>
+            </div>
           </a>
           <a href="https://www.codechef.com/users/kit28adc018" target="_blank" rel="noopener noreferrer"
             class="cp-card">
             <div class="cpc-logo">CodeChef</div>
-            <div class="cpc-stats"><span>Rating: 1171</span><span>Solved: 810</span></div>
+            <div class="cpc-stats">
+              <span id="codechef-rating">Rating: 1171</span>
+              <span id="codechef-solved">Solved: 810</span>
+            </div>
           </a>
           <a href="https://github.com/arikrishna-03" target="_blank" rel="noopener noreferrer" class="cp-card">
             <div class="cpc-logo">GitHub</div>
-            <div class="cpc-stats"><span>Commits: 850+</span><span>Longest Streak: 42 Days</span></div>
+            <div class="cpc-stats">
+              <span id="github-commits">Commits: 850+</span>
+              <span id="github-streak">Longest Streak: 42 Days</span>
+            </div>
           </a>
         </div>
       </div>
@@ -434,9 +432,6 @@
           </div>
           <div class="ds-hero-right">
             <div class="floating-mockups">
-              <div class="mockup mockup-1"><img src="./images/hero_poster.png" alt="Poster Mockup"></div>
-              <div class="mockup mockup-2"><img src="./images/energy_drink.png" alt="Can Mockup"></div>
-              <div class="mockup mockup-3"><img src="./images/luxury_perfume.png" alt="Perfume Mockup"></div>
               <!-- Added elements for Spider-Man inspired fusion aesthetics -->
               <div class="ds-glow-element ds-glow-1"></div>
               <div class="ds-glow-element ds-glow-2"></div>
@@ -721,6 +716,16 @@
     </footer>
 
   </div><!-- end app -->
+
+  <button id="scroll-top-btn" class="scroll-top-btn interactive" aria-label="Scroll to top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5"></line>
+      <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+  </button>
+
+
 
   <script type="module" src="./main.js"></script>
 </body>
