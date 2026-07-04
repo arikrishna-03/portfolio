@@ -1248,6 +1248,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Update Coding Consistency stats dynamically from Codolio
   updateCodingStats();
+  // Refresh stats every 5 minutes (300000ms) to track regularly without manual reload
+  setInterval(updateCodingStats, 300000);
 });
 
 window.toggleCaseStudy = function(id) {
@@ -1268,7 +1270,7 @@ window.toggleCaseStudy = function(id) {
 async function updateCodingStats() {
   // 1. Fetch Codolio stats (LeetCode, CodeChef, Codolio Total)
   try {
-    const res = await fetch('https://api.codolio.com/profile?userKey=im_ari.ak03');
+    const res = await fetch(`https://api.codolio.com/profile?userKey=im_ari.ak03&_=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const json = await res.json();
       if (json.status && json.data) {
@@ -1342,7 +1344,7 @@ async function updateCodingStats() {
 
   // 2. Fetch GitHub stats (Contributions & Streak)
   try {
-    const res = await fetch('https://github-readme-streak-stats.herokuapp.com/?user=arikrishna-03');
+    const res = await fetch(`https://github-readme-streak-stats.herokuapp.com/?user=arikrishna-03&_=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const svgText = await res.text();
       const matches = [...svgText.matchAll(/font-size='28px'[^>]*>\s*([\d,]+)\s*<\/text>/g)].map(m => m[1]);
