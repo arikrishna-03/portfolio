@@ -1283,6 +1283,12 @@ async function updateCodingStats() {
           const solvedEl = document.getElementById('leetcode-solved');
           if (rating && ratingEl) ratingEl.textContent = `Contest Rating: ${rating}`;
           if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
+
+          const calendar = leetcode.dailyActivityStatsResponse?.submissionCalendar || {};
+          const calculatedActiveDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
+          const activeDays = leetcode.dailyActivityStatsResponse?.totalActiveDays || calculatedActiveDays;
+          const activeEl = document.getElementById('leetcode-active');
+          if (activeDays && activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
         }
 
         // 1.2 CodeChef Stats
@@ -1294,6 +1300,12 @@ async function updateCodingStats() {
           const solvedEl = document.getElementById('codechef-solved');
           if (rating && ratingEl) ratingEl.textContent = `Rating: ${rating}`;
           if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
+
+          const calendar = codechef.dailyActivityStatsResponse?.submissionCalendar || {};
+          const calculatedActiveDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
+          const activeDays = codechef.dailyActivityStatsResponse?.totalActiveDays || calculatedActiveDays;
+          const activeEl = document.getElementById('codechef-active');
+          if (activeDays && activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
         }
 
         // 1.3 Codolio Stats (Sum of all platforms)
@@ -1303,6 +1315,24 @@ async function updateCodingStats() {
         if (totalSolved > 0) {
           const codolioProblemsEl = document.getElementById('codolio-problems');
           if (codolioProblemsEl) codolioProblemsEl.textContent = `Problems: ${totalSolved}`;
+        }
+
+        // Calculate total unique active days across all profiles
+        const allActiveTimestamps = new Set();
+        platformProfiles.forEach(p => {
+          const calendar = p.dailyActivityStatsResponse?.submissionCalendar;
+          if (calendar) {
+            Object.entries(calendar).forEach(([timestampStr, count]) => {
+              if (count > 0) {
+                const dayIndex = Math.floor(parseInt(timestampStr) / 86400);
+                allActiveTimestamps.add(dayIndex);
+              }
+            });
+          }
+        });
+        if (allActiveTimestamps.size > 0) {
+          const codolioActiveEl = document.getElementById('codolio-active');
+          if (codolioActiveEl) codolioActiveEl.textContent = `Active Days: ${allActiveTimestamps.size}`;
         }
       }
     }
