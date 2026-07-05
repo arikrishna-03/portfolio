@@ -925,9 +925,14 @@ body.ds-mode .sec-div {
 }
 
 /* ═══════════ AI MODE ═══════════ */
+body.ai-mode {
+  background-color: var(--ai-bg);
+  background-image: none;
+}
+
 body.ai-mode #app {
   background: var(--ai-bg);
-  color: var(--ai-text)
+  color: var(--ai-text);
 }
 
 /* AI HERO NEW */
@@ -1638,18 +1643,22 @@ body.ai-mode #app {
 
 /* ═══════════ DESIGN MODE ═══════════ */
 body.ds-mode {
-  --ds-bg: #0A0A0A;
-  --ds-bg2: #111111;
+  --ds-bg: #140c0e;
+  --ds-bg2: #1a1014;
   --ds-accent: #E50914;
   /* Crimson Red */
   --ds-accent2: #FF1F2E;
   /* Neon Red */
   --ds-text: #ffffff;
   --ds-muted: #A0A0A0;
+  background-image: linear-gradient(135deg, #140c0e 0%, #090506 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 body.ds-mode #app {
-  background: var(--ds-bg);
+  background: transparent;
   color: var(--ds-text);
 }
 
@@ -1677,8 +1686,7 @@ body.ds-mode h3 {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  background: radial-gradient(circle at 70% 30%, rgba(229, 9, 20, 0.15), transparent 50%),
-    radial-gradient(circle at 30% 70%, rgba(255, 31, 46, 0.1), transparent 50%);
+  background: transparent;
 }
 
 .ds-hero-c-new {
@@ -2070,7 +2078,7 @@ body.ds-mode .scroll-mouse::after {
 .full-case-study {
   margin-top: 3rem;
   padding: 4rem;
-  background: rgba(17, 17, 17, 0.65);
+  background: rgba(20, 12, 14, 0.45);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(229, 9, 20, 0.3);
@@ -2186,13 +2194,7 @@ body.ds-mode .scroll-mouse::after {
 }
 
 .dpt-line {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.1);
-  z-index: 1;
+  display: none;
 }
 
 .dpt-step {
@@ -2200,7 +2202,7 @@ body.ds-mode .scroll-mouse::after {
   z-index: 2;
   text-align: center;
   min-width: 120px;
-  background: var(--ds-bg);
+  background: transparent;
   padding: 1rem;
   transition: transform 0.3s;
 }
@@ -2208,7 +2210,7 @@ body.ds-mode .scroll-mouse::after {
 .dpt-icon {
   width: 50px;
   height: 50px;
-  background: #111;
+  background: var(--ds-bg);
   border: 2px solid rgba(229, 9, 20, 0.3);
   border-radius: 50%;
   margin: 0 auto 1.5rem;
@@ -2251,7 +2253,7 @@ body.ds-mode .scroll-mouse::after {
 }
 
 .ds-skill-card {
-  background: rgba(17, 17, 17, 0.8);
+  background: transparent;
   border: 1px solid rgba(229, 9, 20, 0.2);
   border-radius: 8px;
   padding: 2.5rem;
@@ -2747,7 +2749,7 @@ body.ds-mode .contact-actions .c-btn:hover {
   transform: translateY(20px);
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .scroll-top-btn.visible {
@@ -2893,9 +2895,21 @@ body.ds-mode .scroll-top-btn:hover {
 }
 
 @keyframes apc-pulse {
-  0% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px #00ffaa; }
-  100% { transform: scale(1); opacity: 0.5; }
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 15px #00ffaa;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
 }
 
 .apc-terminal {
@@ -2962,8 +2976,13 @@ body.ds-mode .scroll-top-btn:hover {
 }
 
 @keyframes apc-progress-load {
-  0% { width: 10%; }
-  100% { width: 90%; }
+  0% {
+    width: 10%;
+  }
+
+  100% {
+    width: 90%;
+  }
 }
 
 /* DESIGN PLACEHOLDER */
