@@ -1850,6 +1850,7 @@ body.ds-mode .c-btn.outline:hover {
 }
 
 .ds-glow-element {
+  display: none;
   position: absolute;
   border-radius: 50%;
   filter: blur(40px);
