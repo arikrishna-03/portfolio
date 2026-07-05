@@ -1060,6 +1060,55 @@ function drawAI(){
   aRaf=requestAnimationFrame(drawAI);
 }
 
+/* ═══════════════ DESIGN HERO CANVAS ═══════════════ */
+let dsc,dsctx,dsN=[],dsRaf;
+
+function initDS(){
+  dsc=document.getElementById('ds-canvas');
+  if(!dsc) return;
+  dsctx=dsc.getContext('2d');
+  dsc.width=innerWidth;dsc.height=innerHeight;
+  dsN=[];
+  for(let i=0;i<90;i++) dsN.push({
+    x:Math.random()*dsc.width,y:Math.random()*dsc.height,
+    vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,
+    r:Math.random()*1.4+.4,p:Math.random()*Math.PI*2
+  });
+  cancelAnimationFrame(dsRaf);
+  drawDS();
+}
+
+function drawDS(){
+  if(!dsctx) return;
+  dsctx.clearRect(0,0,dsc.width,dsc.height);
+  const zoom = 0.8;
+  const ox = ((amx / zoom) - dsc.width / 2) * 0.015;
+  const oy = ((amy / zoom) - dsc.height / 2) * 0.015;
+  dsN.forEach(n=>{
+    n.p+=.012;
+    n.x+=n.vx+ox*.008;n.y+=n.vy+oy*.008;
+    if(n.x<0)n.x=dsc.width;if(n.x>dsc.width)n.x=0;
+    if(n.y<0)n.y=dsc.height;if(n.y>dsc.height)n.y=0;
+  });
+  for(let i=0;i<dsN.length;i++) for(let j=i+1;j<dsN.length;j++){
+    const dx=dsN[i].x-dsN[j].x,dy=dsN[i].y-dsN[j].y;
+    const d=Math.sqrt(dx*dx+dy*dy);
+    if(d<95){
+      const op=(1-d/95)*.2;
+      dsctx.beginPath();dsctx.strokeStyle=`rgba(229,9,20,${op})`;
+      dsctx.lineWidth=.4;dsctx.moveTo(dsN[i].x,dsN[i].y);dsctx.lineTo(dsN[j].x,dsN[j].y);dsctx.stroke();
+    }
+  }
+  dsN.forEach(n=>{
+    const g=Math.sin(n.p)*.5+.5;
+    const gr=dsctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*6);
+    gr.addColorStop(0,`rgba(229,9,20,${.15*g})`);gr.addColorStop(1,'rgba(229,9,20,0)');
+    dsctx.beginPath();dsctx.fillStyle=gr;dsctx.arc(n.x,n.y,n.r*6,0,Math.PI*2);dsctx.fill();
+    dsctx.beginPath();dsctx.fillStyle=`rgba(255,31,46,${.45+g*.55})`;dsctx.arc(n.x,n.y,n.r,0,Math.PI*2);dsctx.fill();
+  });
+  dsRaf=requestAnimationFrame(drawDS);
+}
+
 /* ═══════════════ MODE ═══════════════ */
 let mode=null;
 
@@ -1097,7 +1146,15 @@ function setMode(m){
   document.getElementById('n-skills').style.display=m==='ai'?'':'none';
   document.getElementById('n-lab').style.display=m==='ai'?'':'none';
   document.getElementById('c-lbl').textContent=m==='ai'?'// Get in Touch':'Get in Touch';
-  if(m==='ai'){setTimeout(initAI,80)}else{cancelAnimationFrame(aRaf);actx=null}
+  if(m==='ai'){
+    setTimeout(initAI, 80);
+    cancelAnimationFrame(dsRaf);
+    dsctx = null;
+  } else {
+    cancelAnimationFrame(aRaf);
+    actx = null;
+    setTimeout(initDS, 80);
+  }
 }
 
 window.switchMode = function(){
@@ -1206,6 +1263,10 @@ window.addEventListener('resize', () => {
   if (ac && mode === 'ai') {
     ac.width = innerWidth;
     ac.height = innerHeight;
+  }
+  if (dsc && mode === 'design') {
+    dsc.width = innerWidth;
+    dsc.height = innerHeight;
   }
 });
 
