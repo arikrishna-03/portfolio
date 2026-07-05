@@ -1061,52 +1061,152 @@ function drawAI(){
 }
 
 /* ═══════════════ DESIGN HERO CANVAS ═══════════════ */
-let dsc,dsctx,dsN=[],dsRaf;
+let dsc, dsctx, dsRaf;
+let dsParts = [];
+let dsStreaks = [];
+let dsFrames = [];
+const DS_TYPE_CHARS = 'AaGgRrKkMmNnBb';
 
-function initDS(){
-  dsc=document.getElementById('ds-canvas');
-  if(!dsc) return;
-  dsctx=dsc.getContext('2d');
-  dsc.width=innerWidth;dsc.height=innerHeight;
-  dsN=[];
-  for(let i=0;i<90;i++) dsN.push({
-    x:Math.random()*dsc.width,y:Math.random()*dsc.height,
-    vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,
-    r:Math.random()*1.4+.4,p:Math.random()*Math.PI*2
-  });
+function initDS() {
+  dsc = document.getElementById('ds-canvas');
+  if (!dsc) return;
+  dsctx = dsc.getContext('2d');
+  dsc.width = innerWidth;
+  dsc.height = innerHeight;
+  
+  dsParts = [];
+  dsStreaks = [];
+  dsFrames = [];
+  
+  // Initialize design particles (characters)
+  for (let i = 0; i < 30; i++) {
+    dsParts.push({
+      x: Math.random() * dsc.width,
+      y: Math.random() * dsc.height,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8,
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.015,
+      kind: i % 5,
+      s: 0.3 + Math.random() * 0.6,
+      c: DS_TYPE_CHARS[Math.floor(Math.random() * DS_TYPE_CHARS.length)],
+      a: 0.04 + Math.random() * 0.06
+    });
+  }
+  
+  // Initialize neon streaks (lines)
+  for (let i = 0; i < 12; i++) {
+    dsStreaks.push({
+      x: Math.random() * dsc.width,
+      y: Math.random() * dsc.height,
+      len: 50 + Math.random() * 100,
+      ang: Math.random() * Math.PI * 2,
+      sp: 2 + Math.random() * 3,
+      a: 0.04 + Math.random() * 0.05
+    });
+  }
+  
+  // Initialize wireframes (shapes)
+  for (let i = 0; i < 8; i++) {
+    dsFrames.push({
+      x: Math.random() * dsc.width,
+      y: Math.random() * dsc.height,
+      w: 30 + Math.random() * 50,
+      h: 20 + Math.random() * 40,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * 0.005,
+      a: 0.04 + Math.random() * 0.06
+    });
+  }
+  
   cancelAnimationFrame(dsRaf);
   drawDS();
 }
 
-function drawDS(){
-  if(!dsctx) return;
-  dsctx.clearRect(0,0,dsc.width,dsc.height);
+function drawDS() {
+  if (!dsctx || !dsc) return;
+  const t = performance.now();
+  dsctx.clearRect(0, 0, dsc.width, dsc.height);
+  
   const zoom = 0.8;
   const ox = ((amx / zoom) - dsc.width / 2) * 0.015;
   const oy = ((amy / zoom) - dsc.height / 2) * 0.015;
-  dsN.forEach(n=>{
-    n.p+=.012;
-    n.x+=n.vx+ox*.008;n.y+=n.vy+oy*.008;
-    if(n.x<0)n.x=dsc.width;if(n.x>dsc.width)n.x=0;
-    if(n.y<0)n.y=dsc.height;if(n.y>dsc.height)n.y=0;
-  });
-  for(let i=0;i<dsN.length;i++) for(let j=i+1;j<dsN.length;j++){
-    const dx=dsN[i].x-dsN[j].x,dy=dsN[i].y-dsN[j].y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<95){
-      const op=(1-d/95)*.2;
-      dsctx.beginPath();dsctx.strokeStyle=`rgba(229,9,20,${op})`;
-      dsctx.lineWidth=.4;dsctx.moveTo(dsN[i].x,dsN[i].y);dsctx.lineTo(dsN[j].x,dsN[j].y);dsctx.stroke();
-    }
+  
+  // 1. Poster fragments (soft crimson gradient cards)
+  dsctx.globalAlpha = 0.05;
+  for (let i = 0; i < 3; i++) {
+    const px = (dsc.width * (0.2 + i * 0.25) + Math.sin(t * 0.0003 + i) * 15 + ox) % dsc.width;
+    const py = (dsc.height * (0.3 + (i % 2) * 0.25) + oy) % dsc.height;
+    const g = dsctx.createLinearGradient(px, py, px + 90, py + 70);
+    g.addColorStop(0, 'rgba(229, 9, 20, 0.2)');
+    g.addColorStop(1, 'rgba(20, 12, 14, 0.05)');
+    dsctx.fillStyle = g;
+    dsctx.fillRect(px, py, 80 + i * 10, 60);
   }
-  dsN.forEach(n=>{
-    const g=Math.sin(n.p)*.5+.5;
-    const gr=dsctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*6);
-    gr.addColorStop(0,`rgba(229,9,20,${.15*g})`);gr.addColorStop(1,'rgba(229,9,20,0)');
-    dsctx.beginPath();dsctx.fillStyle=gr;dsctx.arc(n.x,n.y,n.r*6,0,Math.PI*2);dsctx.fill();
-    dsctx.beginPath();dsctx.fillStyle=`rgba(255,31,46,${.45+g*.55})`;dsctx.arc(n.x,n.y,n.r,0,Math.PI*2);dsctx.fill();
+  dsctx.globalAlpha = 1;
+  
+  // 2. Neon streaks (lines)
+  dsStreaks.forEach(st => {
+    st.x += Math.cos(st.ang) * st.sp * 0.35 + ox * 0.05;
+    st.y += Math.sin(st.ang) * st.sp * 0.35 + oy * 0.05;
+    if (st.x < -st.len || st.x > dsc.width + st.len || st.y < -st.len || st.y > dsc.height + st.len) {
+      st.x = Math.random() * dsc.width;
+      st.y = Math.random() * dsc.height;
+      st.ang = Math.random() * Math.PI * 2;
+    }
+    const g = dsctx.createLinearGradient(st.x, st.y, st.x + Math.cos(st.ang) * st.len, st.y + Math.sin(st.ang) * st.len);
+    g.addColorStop(0, 'rgba(229, 9, 20, 0)');
+    g.addColorStop(0.5, `rgba(229, 9, 20, ${st.a})`);
+    g.addColorStop(1, 'rgba(20, 12, 14, 0)');
+    dsctx.strokeStyle = g;
+    dsctx.lineWidth = 1;
+    dsctx.beginPath();
+    dsctx.moveTo(st.x, st.y);
+    dsctx.lineTo(st.x + Math.cos(st.ang) * st.len, st.y + Math.sin(st.ang) * st.len);
+    dsctx.stroke();
   });
-  dsRaf=requestAnimationFrame(drawDS);
+  
+  // 3. UI wireframes (shapes)
+  dsFrames.forEach(fr => {
+    fr.x += fr.vx + ox * 0.08;
+    fr.y += fr.vy + oy * 0.08;
+    fr.rot += fr.vr;
+    if (fr.x < -80) fr.x = dsc.width;
+    if (fr.x > dsc.width + 80) fr.x = 0;
+    if (fr.y < -80) fr.y = dsc.height;
+    if (fr.y > dsc.height + 80) fr.y = 0;
+    
+    dsctx.save();
+    dsctx.translate(fr.x, fr.y);
+    dsctx.rotate(fr.rot);
+    dsctx.strokeStyle = `rgba(229, 9, 20, ${fr.a})`;
+    dsctx.lineWidth = 1;
+    dsctx.strokeRect(-fr.w / 2, -fr.h / 2, fr.w, fr.h);
+    dsctx.restore();
+  });
+  
+  // 4. Typographic elements
+  dsParts.forEach(p => {
+    p.x += p.vx + ox * 0.08;
+    p.y += p.vy + oy * 0.08;
+    p.rot += p.vr;
+    if (p.x < -40) p.x = dsc.width;
+    if (p.x > dsc.width + 40) p.x = 0;
+    if (p.y < -40) p.y = dsc.height;
+    if (p.y > dsc.height + 40) p.y = 0;
+    
+    dsctx.save();
+    dsctx.translate(p.x, p.y);
+    dsctx.rotate(p.rot);
+    dsctx.fillStyle = `rgba(255, 255, 255, ${p.a})`;
+    dsctx.font = `600 ${p.s * 1.5}rem DM Sans, sans-serif`;
+    dsctx.fillText(p.c, 0, 0);
+    dsctx.restore();
+  });
+  
+  dsRaf = requestAnimationFrame(drawDS);
 }
 
 /* ═══════════════ MODE ═══════════════ */
