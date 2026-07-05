@@ -1137,41 +1137,53 @@ function drawDS() {
   // 1. Poster fragments (soft crimson gradient cards)
   dsctx.globalAlpha = 0.05;
   for (let i = 0; i < 3; i++) {
-    const px = (dsc.width * (0.2 + i * 0.25) + Math.sin(t * 0.0003 + i) * 15 + ox) % dsc.width;
-    const py = (dsc.height * (0.3 + (i % 2) * 0.25) + oy) % dsc.height;
-    const g = dsctx.createLinearGradient(px, py, px + 90, py + 70);
+    const px = (dsc.width * (0.2 + i * 0.25) + Math.sin(t * 0.0003 + i) * 15) % dsc.width;
+    const py = (dsc.height * (0.3 + (i % 2) * 0.25)) % dsc.height;
+    
+    // Apply non-cumulative mouse offset during draw
+    const drawX = px + ox * 0.2;
+    const drawY = py + oy * 0.2;
+    
+    const g = dsctx.createLinearGradient(drawX, drawY, drawX + 90, drawY + 70);
     g.addColorStop(0, 'rgba(229, 9, 20, 0.2)');
     g.addColorStop(1, 'rgba(20, 12, 14, 0.05)');
     dsctx.fillStyle = g;
-    dsctx.fillRect(px, py, 80 + i * 10, 60);
+    dsctx.fillRect(drawX, drawY, 80 + i * 10, 60);
   }
   dsctx.globalAlpha = 1;
   
   // 2. Neon streaks (lines)
   dsStreaks.forEach(st => {
-    st.x += Math.cos(st.ang) * st.sp * 0.35 + ox * 0.05;
-    st.y += Math.sin(st.ang) * st.sp * 0.35 + oy * 0.05;
+    st.x += Math.cos(st.ang) * st.sp * 0.35;
+    st.y += Math.sin(st.ang) * st.sp * 0.35;
     if (st.x < -st.len || st.x > dsc.width + st.len || st.y < -st.len || st.y > dsc.height + st.len) {
       st.x = Math.random() * dsc.width;
       st.y = Math.random() * dsc.height;
       st.ang = Math.random() * Math.PI * 2;
     }
-    const g = dsctx.createLinearGradient(st.x, st.y, st.x + Math.cos(st.ang) * st.len, st.y + Math.sin(st.ang) * st.len);
+    
+    // Apply non-cumulative mouse offset during draw
+    const drawX1 = st.x + ox * 0.1;
+    const drawY1 = st.y + oy * 0.1;
+    const drawX2 = st.x + Math.cos(st.ang) * st.len + ox * 0.1;
+    const drawY2 = st.y + Math.sin(st.ang) * st.len + oy * 0.1;
+    
+    const g = dsctx.createLinearGradient(drawX1, drawY1, drawX2, drawY2);
     g.addColorStop(0, 'rgba(229, 9, 20, 0)');
     g.addColorStop(0.5, `rgba(229, 9, 20, ${st.a})`);
     g.addColorStop(1, 'rgba(20, 12, 14, 0)');
     dsctx.strokeStyle = g;
     dsctx.lineWidth = 1;
     dsctx.beginPath();
-    dsctx.moveTo(st.x, st.y);
-    dsctx.lineTo(st.x + Math.cos(st.ang) * st.len, st.y + Math.sin(st.ang) * st.len);
+    dsctx.moveTo(drawX1, drawY1);
+    dsctx.lineTo(drawX2, drawY2);
     dsctx.stroke();
   });
   
   // 3. UI wireframes (shapes)
   dsFrames.forEach(fr => {
-    fr.x += fr.vx + ox * 0.08;
-    fr.y += fr.vy + oy * 0.08;
+    fr.x += fr.vx;
+    fr.y += fr.vy;
     fr.rot += fr.vr;
     if (fr.x < -80) fr.x = dsc.width;
     if (fr.x > dsc.width + 80) fr.x = 0;
@@ -1179,7 +1191,8 @@ function drawDS() {
     if (fr.y > dsc.height + 80) fr.y = 0;
     
     dsctx.save();
-    dsctx.translate(fr.x, fr.y);
+    // Apply non-cumulative mouse offset during translate
+    dsctx.translate(fr.x + ox * 0.15, fr.y + oy * 0.15);
     dsctx.rotate(fr.rot);
     dsctx.strokeStyle = `rgba(229, 9, 20, ${fr.a})`;
     dsctx.lineWidth = 1;
@@ -1189,8 +1202,8 @@ function drawDS() {
   
   // 4. Typographic elements
   dsParts.forEach(p => {
-    p.x += p.vx + ox * 0.08;
-    p.y += p.vy + oy * 0.08;
+    p.x += p.vx;
+    p.y += p.vy;
     p.rot += p.vr;
     if (p.x < -40) p.x = dsc.width;
     if (p.x > dsc.width + 40) p.x = 0;
@@ -1198,7 +1211,8 @@ function drawDS() {
     if (p.y > dsc.height + 40) p.y = 0;
     
     dsctx.save();
-    dsctx.translate(p.x, p.y);
+    // Apply non-cumulative mouse offset during translate
+    dsctx.translate(p.x + ox * 0.15, p.y + oy * 0.15);
     dsctx.rotate(p.rot);
     dsctx.fillStyle = `rgba(255, 255, 255, ${p.a})`;
     dsctx.font = `600 ${p.s * 1.5}rem DM Sans, sans-serif`;
@@ -1448,10 +1462,9 @@ async function updateCodingStats() {
           if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
 
           const calendar = leetcode.dailyActivityStatsResponse?.submissionCalendar || {};
-          const calculatedActiveDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
-          const activeDays = leetcode.dailyActivityStatsResponse?.totalActiveDays || calculatedActiveDays;
+          const activeDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
           const activeEl = document.getElementById('leetcode-active');
-          if (activeDays && activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
+          if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
         }
 
         // 1.2 CodeChef Stats
@@ -1465,10 +1478,9 @@ async function updateCodingStats() {
           if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
 
           const calendar = codechef.dailyActivityStatsResponse?.submissionCalendar || {};
-          const calculatedActiveDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
-          const activeDays = codechef.dailyActivityStatsResponse?.totalActiveDays || calculatedActiveDays;
+          const activeDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
           const activeEl = document.getElementById('codechef-active');
-          if (activeDays && activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
+          if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
         }
 
         // 1.3 Codolio Stats (Sum of all platforms)
@@ -1503,16 +1515,54 @@ async function updateCodingStats() {
     console.error('Error fetching Codolio stats:', error);
   }
 
-  // 2. Fetch GitHub stats (Contributions & Streak)
+  // 2. Fetch GitHub stats (Contributions & Streak) in real-time directly from GitHub
   try {
-    const res = await fetch(`https://github-readme-streak-stats.herokuapp.com/?user=arikrishna-03&_=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch('https://github-contributions-api.jogruber.de/v4/arikrishna-03');
     if (res.ok) {
-      const svgText = await res.text();
-      const matches = [...svgText.matchAll(/font-size='28px'[^>]*>\s*([\d,]+)\s*<\/text>/g)].map(m => m[1]);
-      if (matches && matches.length >= 3) {
-        const totalContributions = matches[0];
-        const currentStreak = matches[1];
-        const longestStreak = matches[2];
+      const json = await res.json();
+      if (json && json.contributions) {
+        // Calculate total contributions (sum of counts)
+        const totalContributions = Object.values(json.total || {}).reduce((a, b) => a + b, 0);
+        
+        // Sort contributions by date ascending
+        const sorted = json.contributions.sort((a, b) => a.date.localeCompare(b.date));
+        
+        // Filter active days
+        const activeDays = sorted.filter(c => c.count > 0);
+        
+        // Map to day indices
+        const dayIndices = activeDays.map(c => Math.floor(new Date(c.date).getTime() / 1000 / 86400)).sort((a, b) => a - b);
+        
+        let longestStreak = 0;
+        let currentStreak = 0;
+        
+        if (dayIndices.length > 0) {
+          let tempStreak = 1;
+          for (let i = 1; i < dayIndices.length; i++) {
+            if (dayIndices[i] === dayIndices[i - 1] + 1) {
+              tempStreak++;
+            } else if (dayIndices[i] > dayIndices[i - 1] + 1) {
+              longestStreak = Math.max(longestStreak, tempStreak);
+              tempStreak = 1;
+            }
+          }
+          longestStreak = Math.max(longestStreak, tempStreak);
+          
+          const todayIndex = Math.floor(Date.now() / 1000 / 86400);
+          const lastActiveDay = dayIndices[dayIndices.length - 1];
+          
+          // Allow current streak if last active day is today or yesterday
+          if (lastActiveDay === todayIndex || lastActiveDay === todayIndex - 1) {
+            currentStreak = 1;
+            for (let i = dayIndices.length - 2; i >= 0; i--) {
+              if (dayIndices[i] === dayIndices[i + 1] - 1) {
+                currentStreak++;
+              } else {
+                break;
+              }
+            }
+          }
+        }
         
         const contribEl = document.getElementById('github-contrib');
         const currentStreakEl = document.getElementById('github-current');
@@ -1524,7 +1574,7 @@ async function updateCodingStats() {
       }
     }
   } catch (error) {
-    console.error('Error fetching GitHub stats:', error);
+    console.error('Error fetching GitHub stats in real time:', error);
   }
 }
 
