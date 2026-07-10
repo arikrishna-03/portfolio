@@ -1462,7 +1462,7 @@ async function updateCodingStats() {
           if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
 
           const calendar = leetcode.dailyActivityStatsResponse?.submissionCalendar || {};
-          const activeDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
+          const activeDays = Object.keys(calendar).length;
           const activeEl = document.getElementById('leetcode-active');
           if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
         }
@@ -1478,7 +1478,7 @@ async function updateCodingStats() {
           if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
 
           const calendar = codechef.dailyActivityStatsResponse?.submissionCalendar || {};
-          const activeDays = Object.entries(calendar).filter(([_, count]) => count > 0).length;
+          const activeDays = Object.keys(calendar).length;
           const activeEl = document.getElementById('codechef-active');
           if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
         }
@@ -1497,11 +1497,9 @@ async function updateCodingStats() {
         platformProfiles.forEach(p => {
           const calendar = p.dailyActivityStatsResponse?.submissionCalendar;
           if (calendar) {
-            Object.entries(calendar).forEach(([timestampStr, count]) => {
-              if (count > 0) {
-                const dayIndex = Math.floor(parseInt(timestampStr) / 86400);
-                allActiveTimestamps.add(dayIndex);
-              }
+            Object.keys(calendar).forEach(timestampStr => {
+              const dayIndex = Math.floor(parseInt(timestampStr) / 86400);
+              allActiveTimestamps.add(dayIndex);
             });
           }
         });
