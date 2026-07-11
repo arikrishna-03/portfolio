@@ -2548,12 +2548,6 @@ body.ai-mode footer {
   border-top: 1px solid rgba(255, 255, 255, .04)
 }
 
-body.ai-mode #contact,
-body.ai-mode #n-contact,
-body.ai-mode #nav-talk {
-  display: none !important;
-}
-
 body.ds-mode footer {
   color: var(--ds-muted);
   border-top: 1px solid rgba(223, 31, 45, .08)
