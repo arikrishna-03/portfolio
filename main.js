@@ -1259,7 +1259,8 @@ function setMode(m){
   if (mTxt) mTxt.textContent = m === 'ai' ? 'Design Mode' : 'AI Mode';
   document.getElementById('n-skills').style.display=m==='ai'?'':'none';
   document.getElementById('n-lab').style.display=m==='ai'?'':'none';
-  document.getElementById('c-lbl').textContent=m==='ai'?'// Get in Touch':'Get in Touch';
+  const cLbl = document.getElementById('c-lbl');
+  if (cLbl) cLbl.textContent=m==='ai'?'// Get in Touch':'Get in Touch';
   if(m==='ai'){
     setTimeout(initAI, 80);
     cancelAnimationFrame(dsRaf);
