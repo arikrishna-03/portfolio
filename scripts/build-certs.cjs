@@ -138,7 +138,7 @@ function parseCertMeta(filename, parentDir, urlPath) {
   return {
     title,
     platform,
-    path: `/certification/${urlPath}`
+    path: `./certification/${urlPath}`
   };
 }
 

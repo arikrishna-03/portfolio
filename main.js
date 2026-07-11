@@ -1628,7 +1628,7 @@ async function updateCodingStats() {
 
 async function loadCertifications() {
   try {
-    const res = await fetch('/certifications.json');
+    const res = await fetch('./certifications.json');
     if (res.ok) {
       const certs = await res.json();
       const certsGrid = document.getElementById('certs-grid');
