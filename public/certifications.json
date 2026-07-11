@@ -55,6 +55,11 @@
     "path": "/certification/2026/Introduction to Software Engineering.pdf"
   },
   {
+    "title": "Practice Strings Milestone",
+    "platform": "CodeChef",
+    "path": "/certification/2026/kit28adc018-Practice Strings.pdf"
+  },
+  {
     "title": "Mineral Forecasting AI",
     "platform": "Certification",
     "path": "/certification/2026/Mineral Forecasting.pdf"
@@ -87,16 +92,16 @@
   {
     "title": "Internship Appreciation",
     "platform": "InAmigos Foundation",
-    "path": "/certification/IN AMIGOS/Appreciation Certificate.pdf"
+    "path": "/certification/internship/Appreciation Certificate.pdf"
   },
   {
     "title": "Internship Completion",
     "platform": "InAmigos Foundation",
-    "path": "/certification/IN AMIGOS/Completion Certificate.pdf"
+    "path": "/certification/internship/Completion Certificate.pdf"
   },
   {
     "title": "Internship Completion",
     "platform": "USR Machineries",
-    "path": "/certification/USR MACHINERIES/Usr machineries.pdf"
+    "path": "/certification/internship/Usr machineries.pdf"
   }
 ]

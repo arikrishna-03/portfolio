@@ -1,14 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
+const localDriveDir = 'A:\\my files\\Certificate';
 const srcDir = path.join(__dirname, '..', 'certification');
 const destDir = path.join(__dirname, '..', 'public', 'certification');
 const jsonDest = path.join(__dirname, '..', 'public', 'certifications.json');
-
-// Ensure source directory exists
-if (!fs.existsSync(srcDir)) {
-  fs.mkdirSync(srcDir, { recursive: true });
-}
 
 // Helper to recursively copy directories
 function copyDir(src, dest) {
@@ -25,6 +21,21 @@ function copyDir(src, dest) {
     } else {
       fs.copyFileSync(srcPath, destPath);
     }
+  }
+}
+
+// 0. Auto-sync from local Google Drive folder if available
+if (fs.existsSync(localDriveDir)) {
+  console.log(`Syncing from local Google Drive folder: ${localDriveDir}...`);
+  // Ensure source folder exists or clear it to match latest Drive state
+  if (fs.existsSync(srcDir)) {
+    fs.rmSync(srcDir, { recursive: true, force: true });
+  }
+  copyDir(localDriveDir, srcDir);
+} else {
+  // Ensure source directory exists
+  if (!fs.existsSync(srcDir)) {
+    fs.mkdirSync(srcDir, { recursive: true });
   }
 }
 
@@ -55,10 +66,13 @@ function parseCertMeta(filename, parentDir, urlPath) {
   let title = filename;
   let platform = 'Certification';
 
+  const nameUpper = filename.toUpperCase();
+  const parentUpper = parentDir.toUpperCase();
+
   // Determine Platform/Issuer based on folder or keywords
-  if (parentDir.toUpperCase() === 'IN AMIGOS') {
+  if (parentUpper === 'IN AMIGOS' || nameUpper.includes('INAMIGOS') || (parentUpper === 'INTERNSHIP' && (nameUpper.includes('APPRECIATION') || nameUpper.includes('COMPLETION')))) {
     platform = 'InAmigos Foundation';
-  } else if (parentDir.toUpperCase() === 'USR MACHINERIES') {
+  } else if (parentUpper === 'USR MACHINERIES' || nameUpper.includes('USR MACHINERIES')) {
     platform = 'USR Machineries';
   } else if (/coursera/i.test(filename)) {
     platform = 'Coursera';
@@ -75,7 +89,6 @@ function parseCertMeta(filename, parentDir, urlPath) {
   }
 
   // Prettify titles based on specific file patterns
-  const nameUpper = filename.toUpperCase();
   if (nameUpper.includes('PARTICIPATION CERTIFICATE')) {
     title = 'Participation Certificate';
   } else if (nameUpper.includes('INTRO AI')) {
@@ -88,6 +101,8 @@ function parseCertMeta(filename, parentDir, urlPath) {
     title = 'Java Programming Course';
   } else if (nameUpper.includes('500 DIFFICULTY RATING')) {
     title = '500 Difficulty Rating Milestone';
+  } else if (nameUpper.includes('PRACTICE STRINGS')) {
+    title = 'Practice Strings Milestone';
   } else if (nameUpper.includes('REVERSE CODING X')) {
     title = 'Reverse Coding X Competition';
   } else if (nameUpper.includes('TATA CRUCIBLE')) {
@@ -108,7 +123,7 @@ function parseCertMeta(filename, parentDir, urlPath) {
     title = 'Internship Appreciation';
   } else if (nameUpper.includes('COMPLETION CERTIFICATE')) {
     title = 'Internship Completion';
-  } else if (nameUpper.includes('USR MACHINERIES')) {
+  } else if (nameUpper.includes('USR MACHINERIES') || nameUpper.includes('USR')) {
     title = 'Internship Completion';
   } else {
     // General clean up
