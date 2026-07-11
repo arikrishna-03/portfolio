@@ -1425,6 +1425,9 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCodingStats();
   // Refresh stats every 5 minutes (300000ms) to track regularly without manual reload
   setInterval(updateCodingStats, 300000);
+
+  // Load certifications dynamically from JSON database
+  loadCertifications();
 });
 
 window.toggleCaseStudy = function(id) {
@@ -1506,6 +1509,48 @@ async function updateCodingStats() {
         if (allActiveTimestamps.size > 0) {
           const codolioActiveEl = document.getElementById('codolio-active');
           if (codolioActiveEl) codolioActiveEl.textContent = `Active Days: ${allActiveTimestamps.size}`;
+          
+          // Calculate Codolio streaks from active days calendar
+          const sortedDays = Array.from(allActiveTimestamps).sort((a, b) => a - b);
+          let longestCodolioStreak = 0;
+          let currentCodolioStreak = 0;
+          if (sortedDays.length > 0) {
+            let tempStreak = 1;
+            for (let i = 1; i < sortedDays.length; i++) {
+              if (sortedDays[i] === sortedDays[i - 1] + 1) {
+                tempStreak++;
+              } else if (sortedDays[i] > sortedDays[i - 1] + 1) {
+                longestCodolioStreak = Math.max(longestCodolioStreak, tempStreak);
+                tempStreak = 1;
+              }
+            }
+            longestCodolioStreak = Math.max(longestCodolioStreak, tempStreak);
+
+            const todayIndex = Math.floor(Date.now() / 1000 / 86400);
+            const lastActiveDay = sortedDays[sortedDays.length - 1];
+
+            if (lastActiveDay === todayIndex || lastActiveDay === todayIndex - 1) {
+              currentCodolioStreak = 1;
+              for (let i = sortedDays.length - 2; i >= 0; i--) {
+                if (sortedDays[i] === sortedDays[i + 1] - 1) {
+                  currentCodolioStreak++;
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+          
+          const aiStreakEl = document.getElementById('ai-streak');
+          if (aiStreakEl) {
+            const activeStreak = currentCodolioStreak > 0 ? currentCodolioStreak : longestCodolioStreak;
+            aiStreakEl.textContent = `${activeStreak} Days`;
+          }
+        }
+
+        const aiSolvedEl = document.getElementById('ai-solved');
+        if (aiSolvedEl && totalSolved > 0) {
+          aiSolvedEl.textContent = `${totalSolved}+`;
         }
       }
     }
@@ -1569,10 +1614,34 @@ async function updateCodingStats() {
         if (contribEl) contribEl.textContent = `Contributions: ${totalContributions}`;
         if (currentStreakEl) currentStreakEl.textContent = `Current Streak: ${currentStreak} Days`;
         if (longestStreakEl) longestStreakEl.textContent = `Longest Streak: ${longestStreak} Days`;
+
+        const aiCommitsEl = document.getElementById('ai-commits');
+        if (aiCommitsEl && totalContributions > 0) {
+          aiCommitsEl.textContent = `${totalContributions}+`;
+        }
       }
     }
   } catch (error) {
     console.error('Error fetching GitHub stats in real time:', error);
+  }
+}
+
+async function loadCertifications() {
+  try {
+    const res = await fetch('/certifications.json');
+    if (res.ok) {
+      const certs = await res.json();
+      const certsGrid = document.getElementById('certs-grid');
+      if (certsGrid && Array.isArray(certs)) {
+        certsGrid.innerHTML = certs.map(c => `
+          <a href="${c.path}" target="_blank" rel="noopener noreferrer" class="cert-item interactive">
+            ${c.title} <span>- ${c.platform}</span>
+          </a>
+        `).join('');
+      }
+    }
+  } catch (error) {
+    console.error('Error loading certifications:', error);
   }
 }
 

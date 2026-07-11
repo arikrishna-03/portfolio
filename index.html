@@ -120,9 +120,9 @@
                 </div>
               </div>
               <div class="ai-widget stats-widget">
-                <div class="sw-row"><span>Problems Solved</span><strong>250+</strong></div>
-                <div class="sw-row"><span>Coding Streak</span><strong>42 Days</strong></div>
-                <div class="sw-row"><span>GitHub Commits</span><strong>850+</strong></div>
+                <div class="sw-row"><span>Problems Solved</span><strong id="ai-solved">250+</strong></div>
+                <div class="sw-row"><span>Coding Streak</span><strong id="ai-streak">42 Days</strong></div>
+                <div class="sw-row"><span>GitHub Commits</span><strong id="ai-commits">850+</strong></div>
               </div>
             </div>
           </div>
@@ -241,18 +241,6 @@
         </div>
       </div>
 
-      <!-- Build Process -->
-      <div id="build-process" class="sec" style="padding-top:0">
-        <div class="sec-h rev rev-d1">The Engineering Workflow.</div>
-        <div class="bp-timeline rev rev-d1">
-          <div class="bpt-step"><span>01</span>Research &amp; Dataset</div>
-          <div class="bpt-step"><span>02</span>Data Cleaning</div>
-          <div class="bpt-step"><span>03</span>Model Training</div>
-          <div class="bpt-step"><span>04</span>Testing &amp; Eval</div>
-          <div class="bpt-step"><span>05</span>API Deployment</div>
-          <div class="bpt-step"><span>06</span>UI Integration</div>
-        </div>
-      </div>
 
 
       <!-- Coding Profiles -->
@@ -296,34 +284,12 @@
         </div>
       </div>
 
-      <!-- GitHub Open Source -->
-      <div id="open-source" class="sec" style="padding-top:0">
-
-        <div class="sec-h rev rev-d1">Open Source &amp; Experiments.</div>
-        <div class="os-grid rev rev-d1">
-          <div class="os-repo">
-            <h4>Mini Utilities</h4>
-            <p>Python scripts for daily workflow automation.</p>
-          </div>
-          <div class="os-repo">
-            <h4>ML Notebooks</h4>
-            <p>Exploratory data analysis and model baselines.</p>
-          </div>
-          <div class="os-repo">
-            <h4>API Templates</h4>
-            <p>FastAPI boilerplates for ML model serving.</p>
-          </div>
-        </div>
-      </div>
-
       <!-- Certifications -->
       <div id="certs" class="sec" style="padding-top:0">
 
-        <div class="sec-h rev rev-d1">Certifications.</div>
-        <div class="cert-list rev rev-d1">
-          <div class="cert-item">Machine Learning Specialization <span>- DeepLearning.AI</span></div>
-          <div class="cert-item">Data Science Professional Certificate <span>- IBM</span></div>
-          <div class="cert-item">Cloud Foundations <span>- AWS</span></div>
+        <div class="sec-h rev rev-d1">Certifications &amp; Achievements.</div>
+        <div class="cert-list rev rev-d1" id="certs-grid">
+          <!-- Dynamically populated from certifications.json -->
         </div>
       </div>
 
@@ -342,7 +308,9 @@
         <div class="ds-hero-c-new">
           <div class="ds-hero-left">
             <div class="ds-greet">ARIKRISHNA A</div>
-            <h1 class="ds-title-new">Brand &amp; Visual<br>Systems Designer</h1>
+            <div class="ds-title-wrapper">
+              <h1 class="ds-title-new">Brand &amp; Visual<br>Systems Designer</h1>
+            </div>
             <h2 class="ds-headline-main">I build complete modern brands from strategy to execution.</h2>
             <div class="ds-hero-desc">
               Branding, motion, visuals, digital experiences, and marketing systems designed to make brands
@@ -519,16 +487,22 @@
           both — I'd love to collaborate on something meaningful.</p>
 
         <div class="contact-actions rev rev-d3">
-          <a href="mailto:arikrishna@email.com" class="c-email">arikrishna@email.com</a>
+          <a href="mailto:akarishak182@gmail.com" class="c-email">akarishak182@gmail.com</a>
           <a href="./resume.pdf" class="c-btn" download>Download Resume ↓</a>
         </div>
 
         <div class="socials rev rev-d4">
-          <a href="#" class="soc-a">LinkedIn</a>
-          <a href="#" class="soc-a">GitHub</a>
-          <a href="#" class="soc-a">Codolio</a>
-          <a href="#" class="soc-a">LeetCode</a>
-          <a href="#" class="soc-a">Behance</a>
+          <a href="https://www.linkedin.com/in/arikrishna37" target="_blank" rel="noopener noreferrer"
+            class="soc-a">LinkedIn</a>
+          <a href="https://github.com/arikrishna-03" target="_blank" rel="noopener noreferrer" class="soc-a">GitHub</a>
+          <a href="https://codolio.com/profile/im_ari.ak03" target="_blank" rel="noopener noreferrer"
+            class="soc-a">Codolio</a>
+          <a href="https://leetcode.com/u/kit28adc018/" target="_blank" rel="noopener noreferrer"
+            class="soc-a">LeetCode</a>
+          <a href="https://www.behance.net/arikrish03" target="_blank" rel="noopener noreferrer"
+            class="soc-a">Behance</a>
+          <a href="https://www.codechef.com/users/kit28adc018" target="_blank" rel="noopener noreferrer"
+            class="soc-a">CodeChef</a>
         </div>
       </div>
     </div>
