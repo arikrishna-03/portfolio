@@ -1,0 +1,1107 @@
+﻿{
+    "status":  {
+                   "success":  true,
+                   "code":  200,
+                   "message":  ""
+               },
+    "data":  {
+                 "id":  76497,
+                 "email":  "kit28.24bad018@gmail.com",
+                 "imageUrl":  null,
+                 "firstName":  "Arikrishna",
+                 "secondName":  "A",
+                 "profileViews":  33,
+                 "profileName":  "im_ari.ak03",
+                 "userDetails":  {
+                                     "email":  "kit28.24bad018@gmail.com",
+                                     "socialLogin":  true,
+                                     "githubProfile":  "arikrishna-03",
+                                     "userPersonalDetails":  {
+                                                                 "bio":  "Aspiring UI/UX Designer \u0026 Full-Stack Developer pursuing AI \u0026 Data Science. Skilled in coding \u0026 design, freelancing as a designer-developer, and aiming to build innovative digital solutions",
+                                                                 "country":  "India",
+                                                                 "college":  null,
+                                                                 "degree":  "Bachelor of Technology",
+                                                                 "branch":  "Artificial Intelligence",
+                                                                 "imageUrl":  null,
+                                                                 "yearOfGraduation":  "2025",
+                                                                 "jobPreference":  0,
+                                                                 "collegeDetails":  {
+                                                                                        "id":  "676321c72a7094ce517abdc6",
+                                                                                        "collegeName":  "Kalaignar Karunanidhi Institute of Technology"
+                                                                                    }
+                                                             },
+                                     "socialMediaProfileList":  [
+                                                                    {
+                                                                        "socialMediaPlatform":  "linkedIn",
+                                                                        "handle":  "arikrishna-a-9b607535a"
+                                                                    },
+                                                                    {
+                                                                        "socialMediaPlatform":  "resume",
+                                                                        "handle":  ""
+                                                                    },
+                                                                    {
+                                                                        "socialMediaPlatform":  "twitter",
+                                                                        "handle":  ""
+                                                                    },
+                                                                    {
+                                                                        "socialMediaPlatform":  "website",
+                                                                        "handle":  "https://animaxmultimedia.com/students/arikrishna/"
+                                                                    }
+                                                                ]
+                                 },
+                 "platformProfiles":  {
+                                          "id":  "kit28.24bad018@gmail.com",
+                                          "platformProfiles":  [
+                                                                   {
+                                                                       "platform":  "hackerrank",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  null,
+                                                                                         "currentRating":  null,
+                                                                                         "maxRating":  null,
+                                                                                         "rank":  null,
+                                                                                         "maxRank":  null,
+                                                                                         "titlePhoto":  null,
+                                                                                         "handle":  "kit28_24bad018",
+                                                                                         "university":  null,
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  null,
+                                                                                         "level":  null,
+                                                                                         "userLevelName":  null
+                                                                                     },
+                                                                       "badgeStats":  {
+                                                                                          "error":  null,
+                                                                                          "badgeList":  [
+                                                                                                            {
+                                                                                                                "name":  "Python",
+                                                                                                                "shortName":  null,
+                                                                                                                "displayName":  null,
+                                                                                                                "hoverText":  null,
+                                                                                                                "creationDate":  null,
+                                                                                                                "category":  null,
+                                                                                                                "icon":  null,
+                                                                                                                "stars":  2
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "name":  "30 Days of Code",
+                                                                                                                "shortName":  null,
+                                                                                                                "displayName":  null,
+                                                                                                                "hoverText":  null,
+                                                                                                                "creationDate":  null,
+                                                                                                                "category":  null,
+                                                                                                                "icon":  null,
+                                                                                                                "stars":  1
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "name":  "C",
+                                                                                                                "shortName":  null,
+                                                                                                                "displayName":  null,
+                                                                                                                "hoverText":  null,
+                                                                                                                "creationDate":  null,
+                                                                                                                "category":  null,
+                                                                                                                "icon":  null,
+                                                                                                                "stars":  2
+                                                                                                            }
+                                                                                                        ]
+                                                                                      },
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "DSA"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  null,
+                                                                       "totalQuestionStats":  {
+                                                                                                  "totalQuestionCounts":  16,
+                                                                                                  "easyQuestionCounts":  0,
+                                                                                                  "mediumQuestionCounts":  0,
+                                                                                                  "hardQuestionCounts":  0,
+                                                                                                  "basicQuestionCounts":  null,
+                                                                                                  "schoolQuestionCounts":  null,
+                                                                                                  "error":  null
+                                                                                              },
+                                                                       "contestActivityStats":  null,
+                                                                       "dailyActivityStatsResponse":  null,
+                                                                       "certificateStats":  {
+                                                                                                "certificates":  [
+                                                                                                                     {
+                                                                                                                         "name":  "Java (Basic)",
+                                                                                                                         "type":  "skill",
+                                                                                                                         "imageUrl":  "https://downloads.hackerrank.com/certificates/00f56b5fc008"
+                                                                                                                     },
+                                                                                                                     {
+                                                                                                                         "name":  "Python (Basic)",
+                                                                                                                         "type":  "skill",
+                                                                                                                         "imageUrl":  null
+                                                                                                                     }
+                                                                                                                 ]
+                                                                                            },
+                                                                       "lastUpdatedAt":  799954251,
+                                                                       "categoryQuestionStats":  {
+                                                                                                     "categoryQuestionStatList":  [
+                                                                                                                                      {
+                                                                                                                                          "category":  "Python",
+                                                                                                                                          "count":  6
+                                                                                                                                      },
+                                                                                                                                      {
+                                                                                                                                          "category":  "30 Days of Code",
+                                                                                                                                          "count":  2
+                                                                                                                                      },
+                                                                                                                                      {
+                                                                                                                                          "category":  "C",
+                                                                                                                                          "count":  8
+                                                                                                                                      }
+                                                                                                                                  ]
+                                                                                                 },
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   },
+                                                                   {
+                                                                       "platform":  "codechef",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  1,
+                                                                                         "currentRating":  1171,
+                                                                                         "maxRating":  1203,
+                                                                                         "rank":  null,
+                                                                                         "maxRank":  null,
+                                                                                         "titlePhoto":  null,
+                                                                                         "handle":  "kit28adc018",
+                                                                                         "university":  null,
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  null,
+                                                                                         "level":  null,
+                                                                                         "userLevelName":  null
+                                                                                     },
+                                                                       "badgeStats":  {
+                                                                                          "error":  null,
+                                                                                          "badgeList":  [
+                                                                                                            {
+                                                                                                                "name":  "Contest Contender - Silver Badge",
+                                                                                                                "shortName":  null,
+                                                                                                                "displayName":  "Received for participating in 25 Contests",
+                                                                                                                "hoverText":  null,
+                                                                                                                "creationDate":  null,
+                                                                                                                "category":  null,
+                                                                                                                "icon":  "https://cdn.codechef.com/images/badges/contest/silver.svg",
+                                                                                                                "stars":  null
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "name":  "Problem Solver - Gold Badge",
+                                                                                                                "shortName":  null,
+                                                                                                                "displayName":  "Received for solving 500 Problems",
+                                                                                                                "hoverText":  null,
+                                                                                                                "creationDate":  null,
+                                                                                                                "category":  null,
+                                                                                                                "icon":  "https://cdn.codechef.com/images/badges/problem/gold.svg",
+                                                                                                                "stars":  null
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "name":  "Daily Streak - Gold Badge",
+                                                                                                                "shortName":  null,
+                                                                                                                "displayName":  "Received for maintaining a streak of 50 days",
+                                                                                                                "hoverText":  null,
+                                                                                                                "creationDate":  null,
+                                                                                                                "category":  null,
+                                                                                                                "icon":  "https://cdn.codechef.com/images/badges/streak/gold.svg",
+                                                                                                                "stars":  null
+                                                                                                            }
+                                                                                                        ]
+                                                                                      },
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "CP"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  null,
+                                                                       "totalQuestionStats":  {
+                                                                                                  "totalQuestionCounts":  819,
+                                                                                                  "easyQuestionCounts":  null,
+                                                                                                  "mediumQuestionCounts":  null,
+                                                                                                  "hardQuestionCounts":  null,
+                                                                                                  "basicQuestionCounts":  null,
+                                                                                                  "schoolQuestionCounts":  null,
+                                                                                                  "error":  null
+                                                                                              },
+                                                                       "contestActivityStats":  {
+                                                                                                    "contestActivityList":  [
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 191 (Rated)",
+                                                                                                                                    "rating":  736,
+                                                                                                                                    "contestDate":  1750204800,
+                                                                                                                                    "rank":  14540
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 192 (Rated)",
+                                                                                                                                    "rating":  792,
+                                                                                                                                    "contestDate":  1750809600,
+                                                                                                                                    "rank":  11993
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 193 (Rated)",
+                                                                                                                                    "rating":  807,
+                                                                                                                                    "contestDate":  1751414400,
+                                                                                                                                    "rank":  15679
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 194 (Rated)",
+                                                                                                                                    "rating":  841,
+                                                                                                                                    "contestDate":  1752364800,
+                                                                                                                                    "rank":  8855
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 196 (Rated)",
+                                                                                                                                    "rating":  827,
+                                                                                                                                    "contestDate":  1753228800,
+                                                                                                                                    "rank":  22198
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  " Starters 197 (Rated)",
+                                                                                                                                    "rating":  863,
+                                                                                                                                    "contestDate":  1753833600,
+                                                                                                                                    "rank":  18410
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 198 (Rated)",
+                                                                                                                                    "rating":  924,
+                                                                                                                                    "contestDate":  1754438400,
+                                                                                                                                    "rank":  11085
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 200 (Rated)",
+                                                                                                                                    "rating":  937,
+                                                                                                                                    "contestDate":  1755648000,
+                                                                                                                                    "rank":  18496
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 201 (Rated)",
+                                                                                                                                    "rating":  972,
+                                                                                                                                    "contestDate":  1756252800,
+                                                                                                                                    "rank":  11907
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 203 (Rated)",
+                                                                                                                                    "rating":  983,
+                                                                                                                                    "contestDate":  1757462400,
+                                                                                                                                    "rank":  19246
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 204 (Rated)",
+                                                                                                                                    "rating":  1031,
+                                                                                                                                    "contestDate":  1758067200,
+                                                                                                                                    "rank":  7153
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 205 (Rated)",
+                                                                                                                                    "rating":  1075,
+                                                                                                                                    "contestDate":  1758672000,
+                                                                                                                                    "rank":  6976
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 206 (Rated)",
+                                                                                                                                    "rating":  1061,
+                                                                                                                                    "contestDate":  1759276800,
+                                                                                                                                    "rank":  13766
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 207 (Rated)",
+                                                                                                                                    "rating":  1058,
+                                                                                                                                    "contestDate":  1759881600,
+                                                                                                                                    "rank":  17272
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 211 (Rated)",
+                                                                                                                                    "rating":  1026,
+                                                                                                                                    "contestDate":  1762300800,
+                                                                                                                                    "rank":  22723
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 213 (Rated)",
+                                                                                                                                    "rating":  1040,
+                                                                                                                                    "contestDate":  1763510400,
+                                                                                                                                    "rank":  10541
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 215 (Rated)",
+                                                                                                                                    "rating":  1086,
+                                                                                                                                    "contestDate":  1764720000,
+                                                                                                                                    "rank":  2468
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 216 (Rated)",
+                                                                                                                                    "rating":  1131,
+                                                                                                                                    "contestDate":  1765324800,
+                                                                                                                                    "rank":  4242
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 217 (Rated)",
+                                                                                                                                    "rating":  1162,
+                                                                                                                                    "contestDate":  1765929600,
+                                                                                                                                    "rank":  6508
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 219 (Rated)",
+                                                                                                                                    "rating":  1182,
+                                                                                                                                    "contestDate":  1767139200,
+                                                                                                                                    "rank":  5372
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 220 (Rated)",
+                                                                                                                                    "rating":  1158,
+                                                                                                                                    "contestDate":  1767744000,
+                                                                                                                                    "rank":  16950
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 224 (Rated)",
+                                                                                                                                    "rating":  1157,
+                                                                                                                                    "contestDate":  1770163200,
+                                                                                                                                    "rank":  18669
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 225 (Rated)",
+                                                                                                                                    "rating":  1175,
+                                                                                                                                    "contestDate":  1770768000,
+                                                                                                                                    "rank":  13920
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 226",
+                                                                                                                                    "rating":  1203,
+                                                                                                                                    "contestDate":  1771372800,
+                                                                                                                                    "rank":  9664
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Starters 227 (Rated)",
+                                                                                                                                    "rating":  1171,
+                                                                                                                                    "contestDate":  1771977600,
+                                                                                                                                    "rank":  27868
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                },
+                                                                       "dailyActivityStatsResponse":  {
+                                                                                                          "activeYears":  null,
+                                                                                                          "submissionCalendar":  {
+                                                                                                                                     "1770076800":  2,
+                                                                                                                                     "1770249600":  2,
+                                                                                                                                     "1770422400":  1,
+                                                                                                                                     "1753833600":  13,
+                                                                                                                                     "1762214400":  1,
+                                                                                                                                     "1770595200":  2,
+                                                                                                                                     "1770768000":  4,
+                                                                                                                                     "1770940800":  1,
+                                                                                                                                     "1771113600":  2,
+                                                                                                                                     "1771286400":  2,
+                                                                                                                                     "1771459200":  1,
+                                                                                                                                     "1771632000":  1,
+                                                                                                                                     "1771804800":  0,
+                                                                                                                                     "1771977600":  3,
+                                                                                                                                     "1756252800":  5,
+                                                                                                                                     "1764806400":  73,
+                                                                                                                                     "1781568000":  1,
+                                                                                                                                     "1781740800":  3,
+                                                                                                                                     "1781913600":  1,
+                                                                                                                                     "1765324800":  3,
+                                                                                                                                     "1782086400":  1,
+                                                                                                                                     "1765497600":  18,
+                                                                                                                                     "1782259200":  1,
+                                                                                                                                     "1765670400":  6,
+                                                                                                                                     "1782432000":  1,
+                                                                                                                                     "1757289600":  7,
+                                                                                                                                     "1757462400":  4,
+                                                                                                                                     "1765843200":  5,
+                                                                                                                                     "1782604800":  2,
+                                                                                                                                     "1757635200":  26,
+                                                                                                                                     "1766016000":  5,
+                                                                                                                                     "1782777600":  1,
+                                                                                                                                     "1766188800":  0,
+                                                                                                                                     "1782950400":  1,
+                                                                                                                                     "1757808000":  24,
+                                                                                                                                     "1757980800":  51,
+                                                                                                                                     "1766361600":  1,
+                                                                                                                                     "1783123200":  1,
+                                                                                                                                     "1783296000":  4,
+                                                                                                                                     "1758153600":  71,
+                                                                                                                                     "1766534400":  0,
+                                                                                                                                     "1758326400":  46,
+                                                                                                                                     "1766707200":  10,
+                                                                                                                                     "1783468800":  1,
+                                                                                                                                     "1758499200":  25,
+                                                                                                                                     "1766880000":  14,
+                                                                                                                                     "1750291200":  21,
+                                                                                                                                     "1758672000":  16,
+                                                                                                                                     "1767052800":  23,
+                                                                                                                                     "1750464000":  23,
+                                                                                                                                     "1758844800":  0,
+                                                                                                                                     "1767225600":  22,
+                                                                                                                                     "1750636800":  22,
+                                                                                                                                     "1759017600":  13,
+                                                                                                                                     "1767398400":  7,
+                                                                                                                                     "1767571200":  11,
+                                                                                                                                     "1750809600":  2,
+                                                                                                                                     "1759190400":  2,
+                                                                                                                                     "1759363200":  0,
+                                                                                                                                     "1767744000":  3,
+                                                                                                                                     "1767916800":  0,
+                                                                                                                                     "1768089600":  5,
+                                                                                                                                     "1759881600":  3,
+                                                                                                                                     "1768262400":  0,
+                                                                                                                                     "1768435200":  4,
+                                                                                                                                     "1768608000":  82,
+                                                                                                                                     "1768780800":  30,
+                                                                                                                                     "1768953600":  17,
+                                                                                                                                     "1752364800":  3,
+                                                                                                                                     "1769126400":  15,
+                                                                                                                                     "1769299200":  14,
+                                                                                                                                     "1769472000":  6,
+                                                                                                                                     "1769644800":  2,
+                                                                                                                                     "1769817600":  21,
+                                                                                                                                     "1769990400":  3,
+                                                                                                                                     "1753228800":  4,
+                                                                                                                                     "1770163200":  2,
+                                                                                                                                     "1770336000":  2,
+                                                                                                                                     "1770508800":  10,
+                                                                                                                                     "1762300800":  2,
+                                                                                                                                     "1770681600":  1,
+                                                                                                                                     "1770854400":  2,
+                                                                                                                                     "1754265600":  38,
+                                                                                                                                     "1771027200":  4,
+                                                                                                                                     "1754438400":  3,
+                                                                                                                                     "1771200000":  2,
+                                                                                                                                     "1771372800":  4,
+                                                                                                                                     "1771545600":  0,
+                                                                                                                                     "1771718400":  0,
+                                                                                                                                     "1771891200":  0,
+                                                                                                                                     "1763510400":  2,
+                                                                                                                                     "1772064000":  0,
+                                                                                                                                     "1755648000":  2,
+                                                                                                                                     "1756166400":  13,
+                                                                                                                                     "1756339200":  16,
+                                                                                                                                     "1764720000":  4,
+                                                                                                                                     "1781481600":  13,
+                                                                                                                                     "1781654400":  1,
+                                                                                                                                     "1781827200":  1,
+                                                                                                                                     "1782000000":  1,
+                                                                                                                                     "1782172800":  0,
+                                                                                                                                     "1765584000":  6,
+                                                                                                                                     "1782345600":  1,
+                                                                                                                                     "1765756800":  3,
+                                                                                                                                     "1782518400":  0,
+                                                                                                                                     "1765929600":  3,
+                                                                                                                                     "1782691200":  3,
+                                                                                                                                     "1757721600":  3,
+                                                                                                                                     "1766102400":  6,
+                                                                                                                                     "1782864000":  3,
+                                                                                                                                     "1783036800":  1,
+                                                                                                                                     "1757894400":  24,
+                                                                                                                                     "1766275200":  8,
+                                                                                                                                     "1758067200":  10,
+                                                                                                                                     "1766448000":  20,
+                                                                                                                                     "1783209600":  2,
+                                                                                                                                     "1758240000":  16,
+                                                                                                                                     "1766620800":  17,
+                                                                                                                                     "1783382400":  2,
+                                                                                                                                     "1758412800":  15,
+                                                                                                                                     "1766793600":  8,
+                                                                                                                                     "1758585600":  18,
+                                                                                                                                     "1766966400":  18,
+                                                                                                                                     "1750204800":  4,
+                                                                                                                                     "1750377600":  34,
+                                                                                                                                     "1758758400":  16,
+                                                                                                                                     "1767139200":  2,
+                                                                                                                                     "1750550400":  35,
+                                                                                                                                     "1758931200":  0,
+                                                                                                                                     "1767312000":  37,
+                                                                                                                                     "1750723200":  19,
+                                                                                                                                     "1759104000":  20,
+                                                                                                                                     "1767484800":  6,
+                                                                                                                                     "1750896000":  0,
+                                                                                                                                     "1759276800":  3,
+                                                                                                                                     "1767657600":  1,
+                                                                                                                                     "1767830400":  13,
+                                                                                                                                     "1768003200":  6,
+                                                                                                                                     "1751414400":  5,
+                                                                                                                                     "1768176000":  18,
+                                                                                                                                     "1768348800":  18,
+                                                                                                                                     "1768521600":  6,
+                                                                                                                                     "1768694400":  11,
+                                                                                                                                     "1768867200":  25,
+                                                                                                                                     "1769040000":  2,
+                                                                                                                                     "1769212800":  20,
+                                                                                                                                     "1769385600":  9,
+                                                                                                                                     "1769558400":  6,
+                                                                                                                                     "1769731200":  2,
+                                                                                                                                     "1769904000":  35
+                                                                                                                                 },
+                                                                                                          "maxStreak":  null,
+                                                                                                          "totalActiveDays":  null,
+                                                                                                          "error":  null,
+                                                                                                          "timestamp":  null,
+                                                                                                          "ratingWiseDistribution":  null,
+                                                                                                          "topicWiseDistribution":  null
+                                                                                                      },
+                                                                       "certificateStats":  null,
+                                                                       "lastUpdatedAt":  101501206,
+                                                                       "categoryQuestionStats":  null,
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   },
+                                                                   {
+                                                                       "platform":  "leetcode",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  null,
+                                                                                         "currentRating":  1440,
+                                                                                         "maxRating":  1555,
+                                                                                         "rank":  null,
+                                                                                         "maxRank":  "576244",
+                                                                                         "titlePhoto":  "https://assets.leetcode.com/users/kit28adc018/avatar_1757754136.png",
+                                                                                         "handle":  "kit28adc018",
+                                                                                         "university":  null,
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  [
+                                                                                                              "Java",
+                                                                                                              "Python",
+                                                                                                              "JavaScript",
+                                                                                                              "Python3"
+                                                                                                          ],
+                                                                                         "level":  null,
+                                                                                         "userLevelName":  null
+                                                                                     },
+                                                                       "badgeStats":  {
+                                                                                          "error":  null,
+                                                                                          "badgeList":  [
+                                                                                                            {
+                                                                                                                "name":  "Annual Badge",
+                                                                                                                "shortName":  "50 Days Badge 2026",
+                                                                                                                "displayName":  "50 Days Badge 2026",
+                                                                                                                "hoverText":  "50 Days Badge 2026",
+                                                                                                                "creationDate":  1782864000,
+                                                                                                                "category":  "ANNUAL",
+                                                                                                                "icon":  "https://assets.leetcode.com/static_assets/others/50_1080_1080.png",
+                                                                                                                "stars":  null
+                                                                                                            }
+                                                                                                        ]
+                                                                                      },
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "CP",
+                                                                                                             "DSA"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  {
+                                                                                                  "topicWiseDistribution":  {
+                                                                                                                                "Two Pointers":  10,
+                                                                                                                                "String":  22,
+                                                                                                                                "Math":  14,
+                                                                                                                                "BFS":  8,
+                                                                                                                                "Segment Tree":  1,
+                                                                                                                                "DFS":  11,
+                                                                                                                                "Backtracking":  1,
+                                                                                                                                "Matrix":  3,
+                                                                                                                                "Dynamic Programming":  10,
+                                                                                                                                "Graph Theory":  3,
+                                                                                                                                "Bit Manipulation":  9,
+                                                                                                                                "Divide and Conquer":  5,
+                                                                                                                                "Topological Sort":  1,
+                                                                                                                                "Sliding Window":  3,
+                                                                                                                                "HashMap and Set":  16,
+                                                                                                                                "Trie":  1,
+                                                                                                                                "Shortest Path":  2,
+                                                                                                                                "Trees":  11,
+                                                                                                                                "Enumeration":  3,
+                                                                                                                                "Binary Tree":  11,
+                                                                                                                                "Queue and Stacks":  6,
+                                                                                                                                "Binary Search":  7,
+                                                                                                                                "Recursion":  2,
+                                                                                                                                "Sorting":  10,
+                                                                                                                                "Greedy Algorithms":  4,
+                                                                                                                                "Simulation":  3,
+                                                                                                                                "Linked Lists":  4,
+                                                                                                                                "Arrays":  45,
+                                                                                                                                "Union-Find":  2
+                                                                                                                            }
+                                                                                              },
+                                                                       "totalQuestionStats":  {
+                                                                                                  "totalQuestionCounts":  95,
+                                                                                                  "easyQuestionCounts":  65,
+                                                                                                  "mediumQuestionCounts":  25,
+                                                                                                  "hardQuestionCounts":  5,
+                                                                                                  "basicQuestionCounts":  null,
+                                                                                                  "schoolQuestionCounts":  null,
+                                                                                                  "error":  null
+                                                                                              },
+                                                                       "contestActivityStats":  {
+                                                                                                    "contestActivityList":  [
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 474",
+                                                                                                                                    "rating":  1473,
+                                                                                                                                    "contestDate":  1762050600,
+                                                                                                                                    "rank":  15229
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 475",
+                                                                                                                                    "rating":  1517,
+                                                                                                                                    "contestDate":  1762655400,
+                                                                                                                                    "rank":  7057
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 476",
+                                                                                                                                    "rating":  1547,
+                                                                                                                                    "contestDate":  1763260200,
+                                                                                                                                    "rank":  7019
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 477",
+                                                                                                                                    "rating":  1555,
+                                                                                                                                    "contestDate":  1763865000,
+                                                                                                                                    "rank":  8635
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 479",
+                                                                                                                                    "rating":  1507,
+                                                                                                                                    "contestDate":  1765074600,
+                                                                                                                                    "rank":  23660
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 484",
+                                                                                                                                    "rating":  1487,
+                                                                                                                                    "contestDate":  1768098600,
+                                                                                                                                    "rank":  18571
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 486",
+                                                                                                                                    "rating":  1453,
+                                                                                                                                    "contestDate":  1769308200,
+                                                                                                                                    "rank":  21101
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 507",
+                                                                                                                                    "rating":  1440,
+                                                                                                                                    "contestDate":  1782009000,
+                                                                                                                                    "rank":  15609
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 508",
+                                                                                                                                    "rating":  1440,
+                                                                                                                                    "contestDate":  1782613800,
+                                                                                                                                    "rank":  13098
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                },
+                                                                       "dailyActivityStatsResponse":  {
+                                                                                                          "activeYears":  [
+                                                                                                                              2025,
+                                                                                                                              2026
+                                                                                                                          ],
+                                                                                                          "submissionCalendar":  {
+                                                                                                                                     "1768089600":  3,
+                                                                                                                                     "1768176000":  1,
+                                                                                                                                     "1768694400":  2,
+                                                                                                                                     "1768780800":  7,
+                                                                                                                                     "1768867200":  1,
+                                                                                                                                     "1768953600":  1,
+                                                                                                                                     "1769040000":  1,
+                                                                                                                                     "1769126400":  3,
+                                                                                                                                     "1769212800":  2,
+                                                                                                                                     "1769299200":  1,
+                                                                                                                                     "1769385600":  2,
+                                                                                                                                     "1769472000":  1,
+                                                                                                                                     "1769558400":  2,
+                                                                                                                                     "1769644800":  1,
+                                                                                                                                     "1769731200":  2,
+                                                                                                                                     "1769904000":  5,
+                                                                                                                                     "1769990400":  3,
+                                                                                                                                     "1770076800":  2,
+                                                                                                                                     "1770163200":  1,
+                                                                                                                                     "1770249600":  4,
+                                                                                                                                     "1770336000":  1,
+                                                                                                                                     "1770422400":  2,
+                                                                                                                                     "1770508800":  2,
+                                                                                                                                     "1770595200":  3,
+                                                                                                                                     "1770681600":  4,
+                                                                                                                                     "1770768000":  1,
+                                                                                                                                     "1770854400":  2,
+                                                                                                                                     "1770940800":  1,
+                                                                                                                                     "1771027200":  1,
+                                                                                                                                     "1771113600":  1,
+                                                                                                                                     "1771200000":  1,
+                                                                                                                                     "1771286400":  7,
+                                                                                                                                     "1771372800":  4,
+                                                                                                                                     "1771459200":  1,
+                                                                                                                                     "1771632000":  1,
+                                                                                                                                     "1781481600":  1,
+                                                                                                                                     "1781568000":  1,
+                                                                                                                                     "1781654400":  1,
+                                                                                                                                     "1781740800":  1,
+                                                                                                                                     "1781827200":  1,
+                                                                                                                                     "1781913600":  1,
+                                                                                                                                     "1782000000":  1,
+                                                                                                                                     "1782086400":  2,
+                                                                                                                                     "1782259200":  1,
+                                                                                                                                     "1782345600":  1,
+                                                                                                                                     "1782432000":  2,
+                                                                                                                                     "1782604800":  1,
+                                                                                                                                     "1782691200":  2,
+                                                                                                                                     "1782777600":  1,
+                                                                                                                                     "1782864000":  2,
+                                                                                                                                     "1782950400":  1,
+                                                                                                                                     "1783036800":  4,
+                                                                                                                                     "1783123200":  1,
+                                                                                                                                     "1783209600":  3,
+                                                                                                                                     "1783296000":  4,
+                                                                                                                                     "1783382400":  1,
+                                                                                                                                     "1783468800":  6,
+                                                                                                                                     "1758499200":  2,
+                                                                                                                                     "1762041600":  1,
+                                                                                                                                     "1762646400":  2,
+                                                                                                                                     "1763251200":  2,
+                                                                                                                                     "1763856000":  1,
+                                                                                                                                     "1765065600":  2,
+                                                                                                                                     "1765670400":  3,
+                                                                                                                                     "1765929600":  2,
+                                                                                                                                     "1766275200":  7,
+                                                                                                                                     "1766361600":  3
+                                                                                                                                 },
+                                                                                                          "maxStreak":  19,
+                                                                                                          "totalActiveDays":  57,
+                                                                                                          "error":  null,
+                                                                                                          "timestamp":  668549910,
+                                                                                                          "ratingWiseDistribution":  null,
+                                                                                                          "topicWiseDistribution":  null
+                                                                                                      },
+                                                                       "certificateStats":  null,
+                                                                       "lastUpdatedAt":  408827917,
+                                                                       "categoryQuestionStats":  null,
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   },
+                                                                   {
+                                                                       "platform":  "geeksforgeeks",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  null,
+                                                                                         "currentRating":  null,
+                                                                                         "maxRating":  null,
+                                                                                         "rank":  null,
+                                                                                         "maxRank":  null,
+                                                                                         "titlePhoto":  "https://media.geeksforgeeks.org/img-practice/user_web-1598433228.svg",
+                                                                                         "handle":  "kit2824prjr",
+                                                                                         "university":  "Kalaignar Karunanidhi Institute of Technology (KIT) Coimbatore",
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  null,
+                                                                                         "level":  null,
+                                                                                         "userLevelName":  null
+                                                                                     },
+                                                                       "badgeStats":  null,
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "CP",
+                                                                                                             "DSA"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  {
+                                                                                                  "topicWiseDistribution":  {
+                                                                                                                                "CPP":  4,
+                                                                                                                                "python":  3,
+                                                                                                                                "python-strings":  1,
+                                                                                                                                "python-conditionals":  1,
+                                                                                                                                "Strings":  1
+                                                                                                                            }
+                                                                                              },
+                                                                       "totalQuestionStats":  {
+                                                                                                  "totalQuestionCounts":  8,
+                                                                                                  "easyQuestionCounts":  4,
+                                                                                                  "mediumQuestionCounts":  0,
+                                                                                                  "hardQuestionCounts":  0,
+                                                                                                  "basicQuestionCounts":  4,
+                                                                                                  "schoolQuestionCounts":  0,
+                                                                                                  "error":  null
+                                                                                              },
+                                                                       "contestActivityStats":  null,
+                                                                       "dailyActivityStatsResponse":  {
+                                                                                                          "activeYears":  null,
+                                                                                                          "submissionCalendar":  {
+                                                                                                                                     "1758067200":  3,
+                                                                                                                                     "1758153600":  1,
+                                                                                                                                     "1759363200":  4
+                                                                                                                                 },
+                                                                                                          "maxStreak":  2,
+                                                                                                          "totalActiveDays":  null,
+                                                                                                          "error":  null,
+                                                                                                          "timestamp":  null,
+                                                                                                          "ratingWiseDistribution":  null,
+                                                                                                          "topicWiseDistribution":  null
+                                                                                                      },
+                                                                       "certificateStats":  null,
+                                                                       "lastUpdatedAt":  87382339,
+                                                                       "categoryQuestionStats":  null,
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   },
+                                                                   {
+                                                                       "platform":  "codeforces",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  null,
+                                                                                         "currentRating":  988,
+                                                                                         "maxRating":  988,
+                                                                                         "rank":  "newbie",
+                                                                                         "maxRank":  "newbie",
+                                                                                         "titlePhoto":  "https://userpic.codeforces.org/no-title.jpg",
+                                                                                         "handle":  "kit28adc018",
+                                                                                         "university":  null,
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  null,
+                                                                                         "level":  null,
+                                                                                         "userLevelName":  null
+                                                                                     },
+                                                                       "badgeStats":  null,
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "CP"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  null,
+                                                                       "totalQuestionStats":  {
+                                                                                                  "totalQuestionCounts":  5,
+                                                                                                  "easyQuestionCounts":  null,
+                                                                                                  "mediumQuestionCounts":  null,
+                                                                                                  "hardQuestionCounts":  null,
+                                                                                                  "basicQuestionCounts":  null,
+                                                                                                  "schoolQuestionCounts":  null,
+                                                                                                  "error":  null
+                                                                                              },
+                                                                       "contestActivityStats":  {
+                                                                                                    "contestActivityList":  [
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Codeforces Global Round 31 (Div. 1 + Div. 2)",
+                                                                                                                                    "rating":  544,
+                                                                                                                                    "contestDate":  1766163900,
+                                                                                                                                    "rank":  3505
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Good Bye 2025",
+                                                                                                                                    "rating":  747,
+                                                                                                                                    "contestDate":  1766856900,
+                                                                                                                                    "rank":  17509
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Codeforces Round 1072 (Div. 3)",
+                                                                                                                                    "rating":  955,
+                                                                                                                                    "contestDate":  1768236600,
+                                                                                                                                    "rank":  10682
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Codeforces Round 1107 (Div. 3)",
+                                                                                                                                    "rating":  988,
+                                                                                                                                    "contestDate":  1782838200,
+                                                                                                                                    "rank":  19067
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                },
+                                                                       "dailyActivityStatsResponse":  {
+                                                                                                          "activeYears":  null,
+                                                                                                          "submissionCalendar":  {
+                                                                                                                                     "1782777600":  1,
+                                                                                                                                     "1768176000":  2,
+                                                                                                                                     "1766102400":  2,
+                                                                                                                                     "1766793600":  1
+                                                                                                                                 },
+                                                                                                          "maxStreak":  0,
+                                                                                                          "totalActiveDays":  null,
+                                                                                                          "error":  null,
+                                                                                                          "timestamp":  null,
+                                                                                                          "ratingWiseDistribution":  {
+                                                                                                                                         "1100":  1,
+                                                                                                                                         "800":  3
+                                                                                                                                     },
+                                                                                                          "topicWiseDistribution":  {
+                                                                                                                                        "brute force":  1,
+                                                                                                                                        "strings":  1,
+                                                                                                                                        "greedy":  2,
+                                                                                                                                        "math":  3,
+                                                                                                                                        "number theory":  2
+                                                                                                                                    }
+                                                                                                      },
+                                                                       "certificateStats":  null,
+                                                                       "lastUpdatedAt":  291378279,
+                                                                       "categoryQuestionStats":  null,
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   },
+                                                                   {
+                                                                       "platform":  "atcoder",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  null,
+                                                                                         "currentRating":  null,
+                                                                                         "maxRating":  null,
+                                                                                         "rank":  null,
+                                                                                         "maxRank":  null,
+                                                                                         "titlePhoto":  null,
+                                                                                         "handle":  "kit28adc018",
+                                                                                         "university":  null,
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  null,
+                                                                                         "level":  null,
+                                                                                         "userLevelName":  null
+                                                                                     },
+                                                                       "badgeStats":  null,
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "CP"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  null,
+                                                                       "totalQuestionStats":  null,
+                                                                       "contestActivityStats":  null,
+                                                                       "dailyActivityStatsResponse":  null,
+                                                                       "certificateStats":  null,
+                                                                       "lastUpdatedAt":  614560884,
+                                                                       "categoryQuestionStats":  null,
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   },
+                                                                   {
+                                                                       "platform":  "codestudio",
+                                                                       "email":  null,
+                                                                       "userStats":  {
+                                                                                         "stars":  null,
+                                                                                         "currentRating":  null,
+                                                                                         "maxRating":  1500,
+                                                                                         "rank":  null,
+                                                                                         "maxRank":  "Beginner",
+                                                                                         "titlePhoto":  "https://files.codingninjas.in/active_-badges_-contest-rating-2-1717001720.png",
+                                                                                         "handle":  "a757dbc9-c568-4ade-b253-4a7800f18a05",
+                                                                                         "university":  null,
+                                                                                         "contestBadgeName":  null,
+                                                                                         "languageList":  null,
+                                                                                         "level":  7,
+                                                                                         "userLevelName":  "Expert"
+                                                                                     },
+                                                                       "badgeStats":  {
+                                                                                          "error":  false,
+                                                                                          "badgeList":  [
+
+                                                                                                        ]
+                                                                                      },
+                                                                       "platformDetails":  {
+                                                                                               "types":  [
+                                                                                                             "DSA",
+                                                                                                             "CP"
+                                                                                                         ]
+                                                                                           },
+                                                                       "topicAnalysisStats":  null,
+                                                                       "totalQuestionStats":  {
+                                                                                                  "totalQuestionCounts":  7,
+                                                                                                  "easyQuestionCounts":  7,
+                                                                                                  "mediumQuestionCounts":  0,
+                                                                                                  "hardQuestionCounts":  0,
+                                                                                                  "basicQuestionCounts":  null,
+                                                                                                  "schoolQuestionCounts":  null,
+                                                                                                  "error":  false
+                                                                                              },
+                                                                       "contestActivityStats":  {
+                                                                                                    "contestActivityList":  [
+                                                                                                                                {
+                                                                                                                                    "contestName":  "Weekly Contest 215",
+                                                                                                                                    "rating":  1500,
+                                                                                                                                    "contestDate":  1769698860,
+                                                                                                                                    "rank":  null
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                },
+                                                                       "dailyActivityStatsResponse":  {
+                                                                                                          "activeYears":  null,
+                                                                                                          "submissionCalendar":  {
+                                                                                                                                     "1770076800":  10,
+                                                                                                                                     "1770163200":  5,
+                                                                                                                                     "1770249600":  8,
+                                                                                                                                     "1770336000":  7,
+                                                                                                                                     "1770422400":  3,
+                                                                                                                                     "1770508800":  1,
+                                                                                                                                     "1770595200":  1,
+                                                                                                                                     "1770681600":  1,
+                                                                                                                                     "1770768000":  1,
+                                                                                                                                     "1770854400":  2,
+                                                                                                                                     "1770940800":  1,
+                                                                                                                                     "1771027200":  1,
+                                                                                                                                     "1771113600":  2,
+                                                                                                                                     "1771200000":  2,
+                                                                                                                                     "1771286400":  1,
+                                                                                                                                     "1771372800":  1,
+                                                                                                                                     "1771459200":  1,
+                                                                                                                                     "1771545600":  1,
+                                                                                                                                     "1771632000":  2,
+                                                                                                                                     "1771718400":  1,
+                                                                                                                                     "1765929600":  5,
+                                                                                                                                     "1766016000":  8,
+                                                                                                                                     "1766102400":  4,
+                                                                                                                                     "1766188800":  9,
+                                                                                                                                     "1766275200":  5,
+                                                                                                                                     "1766361600":  7,
+                                                                                                                                     "1766448000":  1,
+                                                                                                                                     "1766534400":  1,
+                                                                                                                                     "1766620800":  5,
+                                                                                                                                     "1766707200":  5,
+                                                                                                                                     "1766793600":  10,
+                                                                                                                                     "1766880000":  5,
+                                                                                                                                     "1766966400":  5,
+                                                                                                                                     "1767052800":  5,
+                                                                                                                                     "1767139200":  5,
+                                                                                                                                     "1767225600":  5,
+                                                                                                                                     "1767312000":  5,
+                                                                                                                                     "1767398400":  5,
+                                                                                                                                     "1767484800":  5,
+                                                                                                                                     "1767571200":  5,
+                                                                                                                                     "1767657600":  5,
+                                                                                                                                     "1767744000":  1,
+                                                                                                                                     "1767830400":  5,
+                                                                                                                                     "1767916800":  1,
+                                                                                                                                     "1768003200":  21,
+                                                                                                                                     "1768089600":  19,
+                                                                                                                                     "1768176000":  7,
+                                                                                                                                     "1768262400":  1,
+                                                                                                                                     "1768348800":  5,
+                                                                                                                                     "1768435200":  5,
+                                                                                                                                     "1768521600":  7,
+                                                                                                                                     "1768608000":  5,
+                                                                                                                                     "1768694400":  8,
+                                                                                                                                     "1768780800":  14,
+                                                                                                                                     "1768867200":  7,
+                                                                                                                                     "1768953600":  5,
+                                                                                                                                     "1769040000":  5,
+                                                                                                                                     "1769126400":  5,
+                                                                                                                                     "1769212800":  2,
+                                                                                                                                     "1769299200":  6,
+                                                                                                                                     "1769385600":  48,
+                                                                                                                                     "1769472000":  19,
+                                                                                                                                     "1769558400":  5,
+                                                                                                                                     "1769644800":  5,
+                                                                                                                                     "1769731200":  4,
+                                                                                                                                     "1769817600":  2,
+                                                                                                                                     "1769904000":  3,
+                                                                                                                                     "1769990400":  3
+                                                                                                                                 },
+                                                                                                          "maxStreak":  68,
+                                                                                                          "totalActiveDays":  null,
+                                                                                                          "error":  null,
+                                                                                                          "timestamp":  null,
+                                                                                                          "ratingWiseDistribution":  null,
+                                                                                                          "topicWiseDistribution":  null
+                                                                                                      },
+                                                                       "certificateStats":  null,
+                                                                       "lastUpdatedAt":  307162553,
+                                                                       "categoryQuestionStats":  null,
+                                                                       "isVerified":  true,
+                                                                       "sheetProgress":  null,
+                                                                       "submissionOff":  null
+                                                                   }
+                                                               ]
+                                      }
+             }
+}
