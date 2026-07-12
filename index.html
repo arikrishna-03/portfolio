@@ -612,6 +612,24 @@
 
   </div><!-- end app -->
 
+  <!-- Certification Viewer Modal -->
+  <div id="cert-viewer-modal" class="cert-modal-overlay" aria-hidden="true">
+    <div class="cert-modal-container">
+      <button id="cert-modal-close-btn" class="cert-modal-close" aria-label="Close modal">&times;</button>
+      <div class="cert-modal-header">
+        <h3 id="cert-modal-title" class="cert-modal-title">Certification Name</h3>
+        <span id="cert-modal-subtitle" class="cert-modal-subtitle">Platform Name</span>
+      </div>
+      <div class="cert-modal-body">
+        <iframe id="cert-modal-iframe" class="cert-modal-iframe" title="Certification PDF"></iframe>
+      </div>
+      <div class="cert-modal-footer">
+        <a id="cert-modal-download-link" href="#" target="_blank" rel="noopener noreferrer" class="cert-modal-btn secondary">Open in New Tab</a>
+        <button id="cert-modal-close-action" class="cert-modal-btn primary">Close</button>
+      </div>
+    </div>
+  </div>
+
   <button id="scroll-top-btn" class="scroll-top-btn interactive" aria-label="Scroll to top">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
       stroke-linecap="round" stroke-linejoin="round">

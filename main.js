@@ -1635,10 +1635,77 @@ async function loadCertifications() {
       const certsGrid = document.getElementById('certs-grid');
       if (certsGrid && Array.isArray(certs)) {
         certsGrid.innerHTML = certs.map(c => `
-          <a href="${c.path}" target="_blank" rel="noopener noreferrer" class="cert-item interactive">
+          <a href="${c.path}" class="cert-item interactive" data-title="${c.title}" data-platform="${c.platform}">
             ${c.title} <span>- ${c.platform}</span>
           </a>
         `).join('');
+
+        // Wire up modal events
+        const modal = document.getElementById('cert-viewer-modal');
+        const modalIframe = document.getElementById('cert-modal-iframe');
+        const modalTitle = document.getElementById('cert-modal-title');
+        const modalSubtitle = document.getElementById('cert-modal-subtitle');
+        const modalDownloadLink = document.getElementById('cert-modal-download-link');
+
+        if (modal && modalIframe && modalTitle && modalSubtitle && modalDownloadLink) {
+          const closeButtons = [
+            document.getElementById('cert-modal-close-btn'),
+            document.getElementById('cert-modal-close-action')
+          ];
+
+          const openModal = (title, platform, path) => {
+            modalTitle.textContent = title;
+            modalSubtitle.textContent = platform;
+            modalIframe.src = path;
+            modalDownloadLink.href = path;
+            
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('cert-modal-open');
+          };
+
+          const closeModal = () => {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('cert-modal-open');
+            modalIframe.src = 'about:blank';
+          };
+
+          // Handle clicks on certifications
+          certsGrid.querySelectorAll('.cert-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+              e.preventDefault();
+              const path = item.getAttribute('href');
+              const title = item.getAttribute('data-title');
+              const platform = item.getAttribute('data-platform');
+              openModal(title, platform, path);
+            });
+          });
+
+          // Wire up close buttons
+          closeButtons.forEach(btn => {
+            if (btn) btn.addEventListener('click', closeModal);
+          });
+
+          // Close modal when clicking on the overlay background
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+              closeModal();
+            }
+          });
+
+          // Close modal on Escape key press
+          window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+              closeModal();
+            }
+          });
+
+          // Re-trigger hover binding on new interactive elements
+          if (typeof setupHoverEffects === 'function') {
+            setupHoverEffects();
+          }
+        }
       }
     }
   } catch (error) {
