@@ -1647,3 +1647,28 @@ async function loadCertifications() {
 }
 
 
+/* ═══════════════ SKILL CONFIDENCE BARS ═══════════════ */
+(function initSkillBars() {
+  const cards = document.querySelectorAll('.sk-cat--bars');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    let animated = false;
+
+    card.addEventListener('mouseenter', () => {
+      if (animated) return;
+      animated = true;
+
+      // Animate all fills in this card simultaneously
+      card.querySelectorAll('[class*="sk-bar-fill"]').forEach((fill, i) => {
+        const target = fill.dataset.width || '0';
+        // Stagger slightly so bars sweep in one after another
+        setTimeout(() => {
+          fill.style.width = target + '%';
+        }, i * 60);
+      });
+    });
+  });
+})();
+
+
