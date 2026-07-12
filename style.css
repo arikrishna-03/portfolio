@@ -32,11 +32,15 @@ html {
 body {
   font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto;
   zoom: 0.8;
 }
 
-/* ── CURSOR ── */
+/* ── CURSOR (Hidden by default, enabled via media query) ── */
+#cur, #cur-ring, #cursor-tail {
+  display: none !important;
+}
+
 #cursor-tail {
   position: fixed;
   inset: 0;
@@ -72,6 +76,19 @@ body {
   transform: translate(-50%, -50%);
   transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease;
   zoom: 1.25;
+}
+
+/* Enable custom cursor only on screens >= 1024x600 */
+@media (min-width: 1024px) and (min-height: 600px) {
+  body, 
+  body .cert-modal-overlay, 
+  body .cert-modal-container {
+    cursor: none !important;
+  }
+  
+  #cur, #cur-ring, #cursor-tail {
+    display: block !important;
+  }
 }
 
 body.hover-state #cur {
@@ -1780,7 +1797,8 @@ body.ai-mode #app {
   .ai-p-case,
   .rw-grid,
   .cp-grid,
-  .os-grid {
+  .os-grid,
+  .sk-g {
     flex-direction: column;
     grid-template-columns: 1fr;
   }
@@ -3256,7 +3274,6 @@ body.ds-mode .scroll-top-btn:hover {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s;
-  cursor: none;
 }
 
 .cert-modal-overlay.active {
@@ -3278,7 +3295,6 @@ body.ds-mode .scroll-top-btn:hover {
   overflow: hidden;
   transform: scale(0.94) translateY(20px);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  cursor: none;
 }
 
 .cert-modal-overlay.active .cert-modal-container {
@@ -3394,4 +3410,49 @@ body.ds-mode .scroll-top-btn:hover {
 /* Prevent body scrolling when modal is active */
 body.cert-modal-open {
   overflow: hidden;
-}
+}
+
+/* Responsive adjustments for modal and nav links on smaller viewports */
+@media(max-width: 900px) {
+  .cert-modal-container {
+    width: 95%;
+    height: 80vh;
+  }
+}
+
+@media(max-width: 600px) {
+  .n-links {
+    gap: 1.2rem;
+  }
+  
+  .n-links a {
+    font-size: .66rem;
+    letter-spacing: .08em;
+  }
+  
+  .cert-modal-container {
+    width: 96%;
+    height: 85vh;
+    border-radius: 14px;
+  }
+  
+  .cert-modal-header {
+    padding: 1.2rem 1.5rem;
+  }
+  
+  .cert-modal-title {
+    font-size: 1.1rem;
+  }
+  
+  .cert-modal-footer {
+    padding: 1rem 1.5rem;
+    justify-content: center;
+  }
+  
+  .cert-modal-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.6rem 1rem;
+  }
+}
+
