@@ -39,6 +39,17 @@ document.addEventListener('mousemove', e => {
   if (cur) cur.style.top = my + 'px';
 });
 
+// Hide custom cursor when mouse leaves the document window, show when it enters
+document.addEventListener('mouseleave', () => {
+  if (cur) cur.style.opacity = '0';
+  if (ring) ring.style.opacity = '0';
+});
+document.addEventListener('mouseenter', () => {
+  if (cur) cur.style.opacity = '1';
+  if (ring) ring.style.opacity = '1';
+});
+
+
 (function tick() {
   rx += (mx - rx) * 0.11;
   ry += (my - ry) * 0.11;
@@ -1656,7 +1667,9 @@ async function loadCertifications() {
           const openModal = (title, platform, path) => {
             modalTitle.textContent = title;
             modalSubtitle.textContent = platform;
-            modalIframe.src = path;
+            
+            // Append view options to fit page perfectly without truncation, toolbars or sidebars
+            modalIframe.src = path + '#toolbar=0&navpanes=0&view=Fit';
             modalDownloadLink.href = path;
             
             modal.classList.add('active');
@@ -1669,6 +1682,10 @@ async function loadCertifications() {
             modal.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('cert-modal-open');
             modalIframe.src = 'about:blank';
+            
+            // Ensure cursor is visible again upon modal close
+            if (cur) cur.style.opacity = '1';
+            if (ring) ring.style.opacity = '1';
           };
 
           // Handle clicks on certifications
@@ -1699,6 +1716,16 @@ async function loadCertifications() {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
               closeModal();
             }
+          });
+
+          // Hide custom cursor when mouse is inside the iframe, show when outside
+          modalIframe.addEventListener('mouseenter', () => {
+            if (cur) cur.style.opacity = '0';
+            if (ring) ring.style.opacity = '0';
+          });
+          modalIframe.addEventListener('mouseleave', () => {
+            if (cur) cur.style.opacity = '1';
+            if (ring) ring.style.opacity = '1';
           });
 
           // Re-trigger hover binding on new interactive elements

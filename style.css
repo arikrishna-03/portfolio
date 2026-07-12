@@ -57,7 +57,7 @@ body {
   z-index: 10000;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 10px rgba(247, 208, 89, 0.8);
-  transition: transform .15s;
+  transition: transform .15s, opacity .25s ease;
   zoom: 1.25;
 }
 
@@ -70,7 +70,7 @@ body {
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width .2s ease, height .2s ease, border-color .2s ease;
+  transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease;
   zoom: 1.25;
 }
 
