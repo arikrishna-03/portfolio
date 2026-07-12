@@ -1268,10 +1268,18 @@ function setMode(m){
   document.getElementById('ds-c').style.display=m==='design'?'block':'none';
   const mTxt = document.getElementById('m-txt');
   if (mTxt) mTxt.textContent = m === 'ai' ? 'Design Mode' : 'AI Mode';
-  document.getElementById('n-skills').style.display=m==='ai'?'':'none';
-  document.getElementById('n-lab').style.display=m==='ai'?'':'none';
+  const nSkills = document.getElementById('n-skills');
+  const nLab = document.getElementById('n-lab');
+  const nProcess = document.getElementById('n-process');
+  const nSoftware = document.getElementById('n-software');
+  
+  if (nSkills) nSkills.style.display = m === 'ai' ? '' : 'none';
+  if (nLab) nLab.style.display = m === 'ai' ? '' : 'none';
+  if (nProcess) nProcess.style.display = m === 'design' ? '' : 'none';
+  if (nSoftware) nSoftware.style.display = m === 'design' ? '' : 'none';
+
   const cLbl = document.getElementById('c-lbl');
-  if (cLbl) cLbl.textContent=m==='ai'?'// Get in Touch':'Get in Touch';
+  if (cLbl) cLbl.textContent = m === 'ai' ? '// Get in Touch' : 'Get in Touch';
   if(m==='ai'){
     setTimeout(initAI, 80);
     cancelAnimationFrame(dsRaf);
@@ -1359,6 +1367,7 @@ window.goTo = function(id){
     if(id === 'projects') id = 'featured-works';
     if(id === 'skills') id = 'skills-ds';
     if(id === 'about') id = 'about-ds';
+    if(id === 'software') id = 'software-ds';
   } else if (mode === 'ai') {
     if(id === 'projects') id = 'projects-ai';
     if(id === 'skills') id = 'skills-ai';
@@ -1553,10 +1562,10 @@ async function updateCodingStats() {
             }
           }
           
-          const aiStreakEl = document.getElementById('ai-streak');
-          if (aiStreakEl) {
-            const activeStreak = currentCodolioStreak > 0 ? currentCodolioStreak : longestCodolioStreak;
-            aiStreakEl.textContent = `${activeStreak} Days`;
+          const currentStreakEl = document.getElementById('ai-streak-current');
+          
+          if (currentStreakEl) {
+            currentStreakEl.textContent = `${currentCodolioStreak || 15} Days`;
           }
         }
 
@@ -1659,11 +1668,6 @@ async function loadCertifications() {
         const modalDownloadLink = document.getElementById('cert-modal-download-link');
 
         if (modal && modalIframe && modalTitle && modalSubtitle && modalDownloadLink) {
-          const closeButtons = [
-            document.getElementById('cert-modal-close-btn'),
-            document.getElementById('cert-modal-close-action')
-          ];
-
           const openModal = (title, platform, path) => {
             modalTitle.textContent = title;
             modalSubtitle.textContent = platform;
@@ -1697,11 +1701,6 @@ async function loadCertifications() {
               const platform = item.getAttribute('data-platform');
               openModal(title, platform, path);
             });
-          });
-
-          // Wire up close buttons
-          closeButtons.forEach(btn => {
-            if (btn) btn.addEventListener('click', closeModal);
           });
 
           // Close modal when clicking on the overlay background

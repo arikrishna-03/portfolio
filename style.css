@@ -54,7 +54,7 @@ body {
   border-radius: 50%;
   background: #F7D059;
   pointer-events: none;
-  z-index: 10000;
+  z-index: 999999;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 10px rgba(247, 208, 89, 0.8);
   transition: transform .15s, opacity .25s ease;
@@ -68,7 +68,7 @@ body {
   border-radius: 50%;
   border: 1.5px solid rgba(247, 208, 89, 0.55);
   pointer-events: none;
-  z-index: 9999;
+  z-index: 999998;
   transform: translate(-50%, -50%);
   transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease;
   zoom: 1.25;
@@ -1761,9 +1761,9 @@ body.ai-mode #app {
 
 .cert-item:hover {
   background: rgba(20, 30, 50, 0.8);
-  border-left-color: white;
+  border-left-color: var(--ai-accent);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(229, 9, 20, 0.15);
+  box-shadow: 0 4px 25px rgba(103, 199, 235, 0.35), 0 0 15px rgba(103, 199, 235, 0.15);
 }
 
 .cert-item span {
@@ -3256,6 +3256,7 @@ body.ds-mode .scroll-top-btn:hover {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s;
+  cursor: none;
 }
 
 .cert-modal-overlay.active {
@@ -3277,6 +3278,7 @@ body.ds-mode .scroll-top-btn:hover {
   overflow: hidden;
   transform: scale(0.94) translateY(20px);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: none;
 }
 
 .cert-modal-overlay.active .cert-modal-container {
