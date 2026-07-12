@@ -1,6 +1,6 @@
 import './style.css';
 
-/* ═══════════════ CURSOR & TAIL ═══════════════ */
+/* ═══════════════ CURSOR & TAIL (Mouse — Desktop) ═══════════════ */
 const cur = document.getElementById('cur');
 const ring = document.getElementById('cur-ring');
 const tailCanvas = document.getElementById('cursor-tail');
@@ -22,9 +22,22 @@ let mx=-100, my=-100, rx=-100, ry=-100;
 let firstMove = true;
 const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
 
-document.addEventListener('mousemove', e => {
-  mx = e.clientX;
-  my = e.clientY;
+function showCursor() {
+  if (cur) cur.style.opacity = '1';
+  if (ring) ring.style.opacity = '1';
+  if (tailCanvas) tailCanvas.style.opacity = '1';
+}
+
+function hideCursor() {
+  if (cur) cur.style.opacity = '0';
+  if (ring) ring.style.opacity = '0';
+  if (tailCanvas) tailCanvas.style.opacity = '0';
+}
+
+
+function updateCursorPos(clientX, clientY) {
+  mx = clientX;
+  my = clientY;
   
   // Update CSS coordinates for the liquid overlay mask
   document.documentElement.style.setProperty('--mx', mx + 'px');
@@ -37,17 +50,48 @@ document.addEventListener('mousemove', e => {
   }
   if (cur) cur.style.left = mx + 'px';
   if (cur) cur.style.top = my + 'px';
+}
+
+// Mouse events
+document.addEventListener('mousemove', e => {
+  updateCursorPos(e.clientX, e.clientY);
+  showCursor();
 });
 
-// Hide custom cursor when mouse leaves the document window, show when it enters
 document.addEventListener('mouseleave', () => {
-  if (cur) cur.style.opacity = '0';
-  if (ring) ring.style.opacity = '0';
+  hideCursor();
 });
+
 document.addEventListener('mouseenter', () => {
-  if (cur) cur.style.opacity = '1';
-  if (ring) ring.style.opacity = '1';
+  showCursor();
 });
+
+// Touch events (same smooth cursor on touch devices)
+let touchHideTimer = null;
+
+document.addEventListener('touchstart', e => {
+  if (e.touches[0]) {
+    if (touchHideTimer) clearTimeout(touchHideTimer);
+    firstMove = true; // resets tail coordinates to avoid stretching from last touch
+    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
+    showCursor();
+  }
+}, { passive: true });
+
+
+document.addEventListener('touchmove', e => {
+  if (e.touches[0]) {
+    if (touchHideTimer) clearTimeout(touchHideTimer);
+    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
+    showCursor();
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  touchHideTimer = setTimeout(() => {
+    hideCursor();
+  }, 600);
+}, { passive: true });
 
 
 (function tick() {
@@ -59,7 +103,7 @@ document.addEventListener('mouseenter', () => {
   if (tailCtx && !firstMove) {
     tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
     
-    // Smoothly follow the mouse with the head of the tail
+    // Smoothly follow the pointer with the head of the tail
     tailPoints[0].x += (mx - tailPoints[0].x) * 0.6;
     tailPoints[0].y += (my - tailPoints[0].y) * 0.6;
     
@@ -90,12 +134,81 @@ document.addEventListener('mouseenter', () => {
   requestAnimationFrame(tick);
 })();
 
+
+/* ═══════════════ MOBILE NAV HAMBURGER ═══════════════ */
+window.toggleMobileMenu = function() {
+  const links = document.getElementById('n-links-ul');
+  const burger = document.getElementById('n-hamburger');
+  if (!links || !burger) return;
+  const isOpen = links.classList.contains('mobile-open');
+  if (isOpen) {
+    links.classList.remove('mobile-open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-label', 'Open navigation');
+  } else {
+    links.classList.add('mobile-open');
+    burger.classList.add('open');
+    burger.setAttribute('aria-label', 'Close navigation');
+  }
+};
+
+window.closeMobileMenu = function() {
+  const links = document.getElementById('n-links-ul');
+  const burger = document.getElementById('n-hamburger');
+  if (!links || !burger) return;
+  links.classList.remove('mobile-open');
+  burger.classList.remove('open');
+  burger.setAttribute('aria-label', 'Open navigation');
+};
+
+/* ═══════════════ MOBILE LANDING PAGE TAP BEHAVIOR ═══════════════ */
+// On mobile, left side tap highlights AI, right side tap highlights Design
+function setupMobileLanding() {
+  const landingEl2 = document.getElementById('landing');
+  const lLeft2 = document.getElementById('l-left');
+  const lRight2 = document.getElementById('l-right');
+  if (!landingEl2 || !lLeft2 || !lRight2) return;
+
+  function isMobile() { return window.innerWidth <= 767; }
+
+  lLeft2.addEventListener('touchstart', e => {
+    if (!isMobile()) return;
+    // Toggle expand
+    if (landingEl2.classList.contains('mobile-ai')) {
+      landingEl2.classList.remove('mobile-ai');
+    } else {
+      landingEl2.classList.remove('mobile-ds');
+      landingEl2.classList.add('mobile-ai');
+    }
+  }, { passive: true });
+
+  lRight2.addEventListener('touchstart', e => {
+    if (!isMobile()) return;
+    if (landingEl2.classList.contains('mobile-ds')) {
+      landingEl2.classList.remove('mobile-ds');
+    } else {
+      landingEl2.classList.remove('mobile-ai');
+      landingEl2.classList.add('mobile-ds');
+    }
+  }, { passive: true });
+
+  // Reset on resize to desktop
+  window.addEventListener('resize', () => {
+    if (!isMobile()) {
+      landingEl2.classList.remove('mobile-ai', 'mobile-ds');
+    }
+  });
+}
+
+setupMobileLanding();
+
 function setupHoverEffects() {
   document.querySelectorAll('a,button,.l-side,.l-center,.l-photo-wrap,.ai-pc,.ds-pc,.ai-stat,.sk-cat,.lab-c,.tool-chip,.ds-case-card,.t-card,.sw-icon,.hc-card,.pt-step').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('hover-state'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hover-state'));
   });
 }
+
 
 /* ═══════════════ PROFILE WEBGL LIQUID (liquid and wavy hover background) ═══════════════ */
 const poc = document.getElementById('profile-orb-canvas');
@@ -537,16 +650,23 @@ const lRightSide = document.getElementById('l-right');
 if (pwrap && poc) {
   pwrap.addEventListener('mouseenter', startLiquidEffect);
   pwrap.addEventListener('mouseleave', stopLiquidEffect);
+  // Touch support for profile orb
+  pwrap.addEventListener('touchstart', startLiquidEffect, { passive: true });
+  pwrap.addEventListener('touchend', stopLiquidEffect, { passive: true });
 }
 
 if (lLeftSide) {
   lLeftSide.addEventListener('mouseenter', startLiquidEffect);
   lLeftSide.addEventListener('mouseleave', stopLiquidEffect);
+  lLeftSide.addEventListener('touchstart', startLiquidEffect, { passive: true });
+  lLeftSide.addEventListener('touchend', stopLiquidEffect, { passive: true });
 }
 
 if (lRightSide) {
   lRightSide.addEventListener('mouseenter', startLiquidEffect);
   lRightSide.addEventListener('mouseleave', stopLiquidEffect);
+  lRightSide.addEventListener('touchstart', startLiquidEffect, { passive: true });
+  lRightSide.addEventListener('touchend', stopLiquidEffect, { passive: true });
 }
 
 if (landingEl && poc) {
@@ -557,7 +677,17 @@ if (landingEl && poc) {
     mousePos.x = x;
     mousePos.y = y;
   });
+  // Touch parallax for landing canvas
+  landingEl.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    const rect = poc.getBoundingClientRect();
+    const x = ((t.clientX - rect.left) / rect.width) * poc.width;
+    const y = (1.0 - (t.clientY - rect.top) / rect.height) * poc.height;
+    mousePos.x = x;
+    mousePos.y = y;
+  }, { passive: true });
 }
+
 
 window.addEventListener('resize', () => {
   resizeWebGL();
@@ -1024,6 +1154,9 @@ if (dc) dctx = dc.getContext('2d');
 let ac,actx,aN=[],aRaf;
 let amx=innerWidth/2,amy=innerHeight/2;
 document.addEventListener('mousemove',e=>{amx=e.clientX;amy=e.clientY});
+// Touch parallax for AI hero canvas
+document.addEventListener('touchmove',e=>{if(e.touches[0]){amx=e.touches[0].clientX;amy=e.touches[0].clientY;}},{passive:true});
+
 
 function initAI(){
   ac=document.getElementById('ai-canvas');

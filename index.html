@@ -21,6 +21,7 @@
   <div id="cur"></div>
   <div id="cur-ring"></div>
 
+
   <!-- Overlay -->
   <div id="overlay"></div>
 
@@ -78,14 +79,17 @@
       <button class="n-logo" onclick="backToLanding()">
         <img src="./images/profile_with_icons.png" alt="Arikrishna A">
       </button>
-      <ul class="n-links">
-        <li><a onclick="goTo('about')">About</a></li>
-        <li><a onclick="goTo('projects')">Projects</a></li>
-        <li id="n-process" style="display:none"><a onclick="goTo('process')">Agency Process</a></li>
-        <li id="n-software" style="display:none"><a onclick="goTo('software')">Software</a></li>
-        <li id="n-skills"><a onclick="goTo('skills')">Skills</a></li>
-        <li id="n-lab" style="display:none"><a onclick="goTo('lab')">Tech Lab</a></li>
+      <ul class="n-links" id="n-links-ul">
+        <li><a onclick="goTo('about'); closeMobileMenu()">About</a></li>
+        <li><a onclick="goTo('projects'); closeMobileMenu()">Projects</a></li>
+        <li id="n-process" style="display:none"><a onclick="goTo('process'); closeMobileMenu()">Agency Process</a></li>
+        <li id="n-software" style="display:none"><a onclick="goTo('software'); closeMobileMenu()">Software</a></li>
+        <li id="n-skills"><a onclick="goTo('skills'); closeMobileMenu()">Skills</a></li>
+        <li id="n-lab" style="display:none"><a onclick="goTo('lab'); closeMobileMenu()">Tech Lab</a></li>
       </ul>
+      <button class="n-hamburger" id="n-hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
       <div class="n-right"></div>
     </nav>
 

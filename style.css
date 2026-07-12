@@ -36,9 +36,18 @@ body {
   zoom: 0.8;
 }
 
-/* ── CURSOR (Hidden by default, enabled via media query) ── */
+/* Remove zoom on mobile — it breaks layout */
+@media (max-width: 1023px) {
+  body {
+    zoom: 1;
+  }
+}
+
+/* ── CURSOR (Enabled on all screens/devices) ── */
 #cur, #cur-ring, #cursor-tail {
-  display: none !important;
+  display: block;
+  opacity: 0; /* starts hidden until first movement or touch */
+  transition: opacity .25s ease;
 }
 
 #cursor-tail {
@@ -48,7 +57,6 @@ body {
   z-index: 9998;
   width: 100vw;
   height: 100vh;
-  zoom: 1.25;
 }
 
 #cur {
@@ -62,7 +70,6 @@ body {
   transform: translate(-50%, -50%);
   box-shadow: 0 0 10px rgba(247, 208, 89, 0.8);
   transition: transform .15s, opacity .25s ease;
-  zoom: 1.25;
 }
 
 #cur-ring {
@@ -75,21 +82,25 @@ body {
   z-index: 999998;
   transform: translate(-50%, -50%);
   transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease;
-  zoom: 1.25;
 }
 
-/* Enable custom cursor only on screens >= 1024x600 */
-@media (min-width: 1024px) and (min-height: 600px) {
+/* Compends zoom only on desktop viewport size to match body zoom 0.8 */
+@media (min-width: 1024px) {
+  #cur, #cur-ring, #cursor-tail {
+    zoom: 1.25;
+  }
+}
+
+
+/* Hide native cursor only on screens with a fine pointer (mouse) */
+@media (pointer: fine) {
   body, 
   body .cert-modal-overlay, 
   body .cert-modal-container {
     cursor: none !important;
   }
-  
-  #cur, #cur-ring, #cursor-tail {
-    display: block !important;
-  }
 }
+
 
 body.hover-state #cur {
   transform: translate(-50%, -50%) scale(2.5)
@@ -172,6 +183,71 @@ body.hover-state #cur-ring {
 #landing:has(#l-right:hover) #l-left {
   flex: 1 1 15%;
 }
+
+/* ── MOBILE LANDING: Keep horizontal (same as desktop), just scale elements down ── */
+@media (max-width: 767px) {
+  /* Landing stays flex-row — no vertical stacking */
+  #landing {
+    flex-direction: row;
+  }
+
+  .l-side {
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+
+  /* Tap-expand state on mobile touch */
+  #landing.mobile-ai #l-left   { flex: 1 1 75% !important; }
+  #landing.mobile-ai #l-right  { flex: 1 1 25% !important; }
+  #landing.mobile-ds #l-right  { flex: 1 1 75% !important; }
+  #landing.mobile-ds #l-left   { flex: 1 1 25% !important; }
+
+  /* Scale the center photo down so it doesn't crowd the halves */
+  .l-photo {
+    width: 90px;
+    height: 90px;
+  }
+
+  .profile-orb-canvas {
+    width: 260px;
+    height: 260px;
+    margin: -130px 0 0 -130px;
+  }
+
+  .l-center {
+    top: clamp(30%, 38vh, 44%);
+    transform: translate(-50%, calc(-50% - 60px));
+  }
+
+  .s-label {
+    margin-top: clamp(80px, 14vh, 160px);
+    gap: 0.5rem;
+  }
+
+  .s-title {
+    font-size: clamp(1rem, 4.5vw, 1.5rem);
+    line-height: 1.1;
+  }
+
+  .s-enter {
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+  }
+
+  /* Always show the enter hint on mobile (no hover on touch) */
+  .l-side .s-enter {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+
+  /* Hide shrunk-side label when tap-expanded */
+  #landing.mobile-ai #l-right .s-label,
+  #landing.mobile-ds #l-left .s-label {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 
 /* divider line */
 .l-divider-line {
@@ -3455,4 +3531,427 @@ body.cert-modal-open {
     padding: 0.6rem 1rem;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   COMPREHENSIVE MOBILE RESPONSIVENESS
+   ═══════════════════════════════════════════════ */
+
+/* ── Mobile Nav Hamburger ── */
+.n-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 600;
+}
+
+.n-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+body.ai-mode .n-hamburger span { background: var(--ai-text); }
+body.ds-mode .n-hamburger span { background: var(--ds-text); }
+
+.n-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.n-hamburger.open span:nth-child(2) { opacity: 0; }
+.n-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* Mobile slide-in nav menu */
+.n-links.mobile-open {
+  display: flex !important;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 550;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  animation: mobileMenuIn 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+body.ai-mode .n-links.mobile-open {
+  background: rgba(8, 13, 26, 0.96);
+}
+body.ds-mode .n-links.mobile-open {
+  background: rgba(20, 12, 14, 0.96);
+}
+
+.n-links.mobile-open a {
+  font-size: 1.4rem !important;
+  letter-spacing: 0.15em !important;
+}
+
+@keyframes mobileMenuIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .n-hamburger {
+    display: flex;
+  }
+
+  nav {
+    padding: 1rem 1.2rem;
+  }
+
+  .n-links {
+    display: none;
+  }
+}
+
+/* ── AI Hero \u2014 Mobile ── */
+@media (max-width: 767px) {
+  .ai-hero-new {
+    min-height: 100svh;
+    padding: 80px 1.2rem 3rem;
+    align-items: flex-start;
+  }
+
+  .ai-hero-c-new {
+    flex-direction: column !important;
+    gap: 2.5rem;
+    padding-top: 0;
+  }
+
+  .ai-hero-left {
+    max-width: 100%;
+  }
+
+  .ai-greet {
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.6rem;
+  }
+
+  .ai-title-new {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    margin-bottom: 1rem;
+  }
+
+  .ai-hero-desc {
+    font-size: 0.95rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .ai-hero-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ai-widget-stack {
+    max-width: 100%;
+    gap: 1.2rem;
+  }
+
+  .terminal-widget .tw-body {
+    font-size: 0.78rem;
+    padding: 1rem;
+  }
+
+  .stats-widget {
+    padding: 1rem 1.2rem;
+  }
+
+  /* DS Hero \u2014 Mobile */
+  .ds-hero-new {
+    min-height: 100svh;
+    padding: 80px 1.2rem 3rem;
+    align-items: flex-start;
+  }
+
+  .ds-hero-c-new {
+    flex-direction: column !important;
+    gap: 2rem;
+    padding-top: 0;
+  }
+
+  .ds-hero-left {
+    max-width: 100%;
+  }
+
+  .ds-greet {
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.6rem;
+  }
+
+  .ds-title-new {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+  }
+
+  .ds-headline-main {
+    font-size: 1.1rem;
+  }
+
+  .ds-hero-desc {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ds-hero-cta {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .ds-hero-right {
+    display: none; /* hide floating mockups on small screens */
+  }
+
+  /* General section padding on mobile */
+  .sec {
+    padding: 3rem 1.2rem;
+  }
+
+  .sec-h {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    margin-bottom: 2rem;
+  }
+
+  /* About AI grid \u2014 stack */
+  .ai-about-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .ai-ab-text p {
+    font-size: 0.95rem;
+  }
+
+  /* Tech stack langs */
+  .ts-langs {
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .ts-lang {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .ts-lang img {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Skill bars grid \u2014 1 column */
+  .sk-g {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Coding profiles \u2014 1 column */
+  .cp-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .cp-card {
+    padding: 1.2rem 1.5rem;
+    min-height: auto;
+  }
+
+  .cpc-logo {
+    font-size: 1.2rem;
+  }
+
+  .cpc-stats span {
+    font-size: 0.78rem;
+  }
+
+  /* Certs grid */
+  .cert-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* AI placeholder card */
+  .ai-placeholder-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .apc-info h3 {
+    font-size: 1.2rem;
+  }
+
+  .apc-info p {
+    font-size: 0.9rem;
+  }
+
+  /* DS placeholder */
+  .ds-placeholder-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .dpc-title {
+    font-size: 1.6rem;
+  }
+
+  .dpc-desc {
+    font-size: 0.95rem;
+  }
+
+  /* Design process timeline \u2014 scrollable */
+  .ds-process-timeline {
+    gap: 0;
+    padding: 2rem 0;
+    justify-content: flex-start;
+  }
+
+  .dpt-step {
+    min-width: 100px;
+    padding: 0.75rem;
+  }
+
+  .dpt-step h4 {
+    font-size: 0.8rem;
+  }
+
+  .dpt-step p {
+    font-size: 0.75rem;
+  }
+
+  /* Design skills grid \u2014 2 columns on mobile */
+  .ds-skills-g {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .ds-skill-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .ds-skill-card h3 {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .ds-skill-card ul li {
+    font-size: 0.85rem;
+  }
+
+  /* Software arsenal */
+  .ds-software-grid {
+    gap: 1.2rem;
+  }
+
+  .dsw-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.4rem;
+  }
+
+  /* About split \u2014 stack */
+  .ds-about-split {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .ds-abs-text h2 {
+    font-size: 1.4rem;
+  }
+
+  .ds-abs-text p {
+    font-size: 0.95rem;
+  }
+
+  /* C button sizing on mobile */
+  .c-btn {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* Scroll top button */
+  .scroll-top-btn {
+    bottom: 1.2rem;
+    right: 1.2rem;
+    width: 42px;
+    height: 42px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 1.5rem 1rem;
+    font-size: 0.68rem;
+  }
+
+  /* Domain tags */
+  .domain-tags span {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.9rem;
+  }
+}
+
+/* ── Tablet (768\u2013900px) ── */
+@media (min-width: 768px) and (max-width: 900px) {
+  .ai-hero-c-new,
+  .ds-hero-c-new {
+    flex-direction: column !important;
+    gap: 3rem;
+  }
+
+  .ai-hero-new,
+  .ds-hero-new {
+    padding: 90px 2rem 3rem;
+    align-items: flex-start;
+  }
+
+  .sk-g {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-skills-g {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ds-about-split {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .sec {
+    padding: 4rem 2rem;
+  }
+}
+
+/* ── Very small phones (<375px) ── */
+@media (max-width: 374px) {
+  .ai-title-new {
+    font-size: 1.8rem;
+  }
+
+  .ds-title-new {
+    font-size: 1.6rem;
+  }
+
+  .ds-skills-g {
+    grid-template-columns: 1fr;
+  }
+
+  .dsw-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+  }
+
+  .s-title {
+    font-size: 1rem;
+  }
+}
+
 
