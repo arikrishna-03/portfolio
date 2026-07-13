@@ -667,87 +667,91 @@
   </button>
 
   <script>
+    const isTouch = !window.matchMedia('(any-pointer: fine)').matches;
+
     // Cursor effect logic for profile page
     const cur = document.getElementById('cur');
     const ring = document.getElementById('cur-ring');
     const tailCanvas = document.getElementById('cursor-tail');
     let tailCtx = null;
 
-    if (tailCanvas) {
-      tailCtx = tailCanvas.getContext('2d');
-      tailCanvas.width = window.innerWidth;
-      tailCanvas.height = window.innerHeight;
-      window.addEventListener('resize', () => {
-        if (tailCanvas) {
-          tailCanvas.width = window.innerWidth;
-          tailCanvas.height = window.innerHeight;
+    if (!isTouch) {
+      if (tailCanvas) {
+        tailCtx = tailCanvas.getContext('2d');
+        tailCanvas.width = window.innerWidth;
+        tailCanvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+          if (tailCanvas) {
+            tailCanvas.width = window.innerWidth;
+            tailCanvas.height = window.innerHeight;
+          }
+        });
+      }
+
+      let mx = -100, my = -100, rx = -100, ry = -100;
+      let firstMove = true;
+      const tailPoints = Array(8).fill().map(() => ({ x: -100, y: -100 }));
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+
+        if (firstMove) {
+          rx = mx; ry = my;
+          tailPoints.forEach(p => { p.x = mx; p.y = my; });
+          firstMove = false;
+        }
+        if (cur) {
+          cur.style.left = mx + 'px';
+          cur.style.top = my + 'px';
         }
       });
+
+      (function tick() {
+        rx += (mx - rx) * 0.11;
+        ry += (my - ry) * 0.11;
+        if (ring) {
+          ring.style.left = rx + 'px';
+          ring.style.top = ry + 'px';
+        }
+
+        if (tailCtx && !firstMove) {
+          tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
+
+          tailPoints[0].x += (mx - tailPoints[0].x) * 0.6;
+          tailPoints[0].y += (my - tailPoints[0].y) * 0.6;
+
+          for (let i = 1; i < tailPoints.length; i++) {
+            tailPoints[i].x += (tailPoints[i - 1].x - tailPoints[i].x) * 0.5;
+            tailPoints[i].y += (tailPoints[i - 1].y - tailPoints[i].y) * 0.5;
+          }
+
+          tailCtx.lineCap = 'round';
+          tailCtx.lineJoin = 'round';
+
+          for (let i = 1; i < tailPoints.length - 1; i++) {
+            tailCtx.beginPath();
+            tailCtx.moveTo(tailPoints[i - 1].x, tailPoints[i - 1].y);
+            const xc = (tailPoints[i].x + tailPoints[i + 1].x) / 2;
+            const yc = (tailPoints[i].y + tailPoints[i + 1].y) / 2;
+            tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
+
+            const progress = 1 - (i / tailPoints.length);
+            tailCtx.lineWidth = progress * 7;
+            tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`; // Golden
+            tailCtx.stroke();
+          }
+        }
+
+        requestAnimationFrame(tick);
+      })();
+
+      // Hover effect for interactive elements
+      document.querySelectorAll('.interactive, a, .profile-square-wrap').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('hover-state'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('hover-state'));
+      });
     }
-
-    let mx = -100, my = -100, rx = -100, ry = -100;
-    let firstMove = true;
-    const tailPoints = Array(8).fill().map(() => ({ x: -100, y: -100 }));
-
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX;
-      my = e.clientY;
-
-      if (firstMove) {
-        rx = mx; ry = my;
-        tailPoints.forEach(p => { p.x = mx; p.y = my; });
-        firstMove = false;
-      }
-      if (cur) {
-        cur.style.left = mx + 'px';
-        cur.style.top = my + 'px';
-      }
-    });
-
-    (function tick() {
-      rx += (mx - rx) * 0.11;
-      ry += (my - ry) * 0.11;
-      if (ring) {
-        ring.style.left = rx + 'px';
-        ring.style.top = ry + 'px';
-      }
-
-      if (tailCtx && !firstMove) {
-        tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
-
-        tailPoints[0].x += (mx - tailPoints[0].x) * 0.6;
-        tailPoints[0].y += (my - tailPoints[0].y) * 0.6;
-
-        for (let i = 1; i < tailPoints.length; i++) {
-          tailPoints[i].x += (tailPoints[i - 1].x - tailPoints[i].x) * 0.5;
-          tailPoints[i].y += (tailPoints[i - 1].y - tailPoints[i].y) * 0.5;
-        }
-
-        tailCtx.lineCap = 'round';
-        tailCtx.lineJoin = 'round';
-
-        for (let i = 1; i < tailPoints.length - 1; i++) {
-          tailCtx.beginPath();
-          tailCtx.moveTo(tailPoints[i - 1].x, tailPoints[i - 1].y);
-          const xc = (tailPoints[i].x + tailPoints[i + 1].x) / 2;
-          const yc = (tailPoints[i].y + tailPoints[i + 1].y) / 2;
-          tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
-
-          const progress = 1 - (i / tailPoints.length);
-          tailCtx.lineWidth = progress * 7;
-          tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`; // Golden
-          tailCtx.stroke();
-        }
-      }
-
-      requestAnimationFrame(tick);
-    })();
-
-    // Hover effect for interactive elements
-    document.querySelectorAll('.interactive, a, .profile-square-wrap').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('hover-state'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('hover-state'));
-    });
 
     // Back navigation transition logic
     function goBackWithTransition() {
@@ -793,9 +797,9 @@
         }
       }
 
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('scroll', handleScroll, { passive: true });
       if (profileRight) {
-        profileRight.addEventListener('scroll', handleScroll);
+        profileRight.addEventListener('scroll', handleScroll, { passive: true });
       }
 
       scrollTopBtn.addEventListener('click', () => {

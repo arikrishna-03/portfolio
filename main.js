@@ -1,4 +1,5 @@
-import './style.css';
+const isTouch = !window.matchMedia('(any-pointer: fine)').matches;
+let landingActive = true;
 
 /* ═══════════════ CURSOR & TAIL (Mouse — Desktop) ═══════════════ */
 const cur = document.getElementById('cur');
@@ -6,133 +7,103 @@ const ring = document.getElementById('cur-ring');
 const tailCanvas = document.getElementById('cursor-tail');
 let tailCtx = null;
 
-if (tailCanvas) {
-  tailCtx = tailCanvas.getContext('2d');
-  tailCanvas.width = window.innerWidth;
-  tailCanvas.height = window.innerHeight;
-  window.addEventListener('resize', () => {
-    if (tailCanvas) {
-      tailCanvas.width = window.innerWidth;
-      tailCanvas.height = window.innerHeight;
+if (!isTouch) {
+  if (tailCanvas) {
+    tailCtx = tailCanvas.getContext('2d');
+    tailCanvas.width = window.innerWidth;
+    tailCanvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+      if (tailCanvas) {
+        tailCanvas.width = window.innerWidth;
+        tailCanvas.height = window.innerHeight;
+      }
+    });
+  }
+
+  let mx=-100, my=-100, rx=-100, ry=-100;
+  let firstMove = true;
+  const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
+
+  function showCursor() {
+    if (cur) cur.style.opacity = '1';
+    if (ring) ring.style.opacity = '1';
+    if (tailCanvas) tailCanvas.style.opacity = '1';
+  }
+
+  function hideCursor() {
+    if (cur) cur.style.opacity = '0';
+    if (ring) ring.style.opacity = '0';
+    if (tailCanvas) tailCanvas.style.opacity = '0';
+  }
+
+  function updateCursorPos(clientX, clientY) {
+    mx = clientX;
+    my = clientY;
+    
+    if (firstMove) {
+      rx = mx; ry = my;
+      tailPoints.forEach(p => { p.x = mx; p.y = my; });
+      firstMove = false;
     }
+    if (cur) cur.style.left = mx + 'px';
+    if (cur) cur.style.top = my + 'px';
+  }
+
+  // Mouse events
+  document.addEventListener('mousemove', e => {
+    updateCursorPos(e.clientX, e.clientY);
+    showCursor();
   });
-}
 
-let mx=-100, my=-100, rx=-100, ry=-100;
-let firstMove = true;
-const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
-
-function showCursor() {
-  if (cur) cur.style.opacity = '1';
-  if (ring) ring.style.opacity = '1';
-  if (tailCanvas) tailCanvas.style.opacity = '1';
-}
-
-function hideCursor() {
-  if (cur) cur.style.opacity = '0';
-  if (ring) ring.style.opacity = '0';
-  if (tailCanvas) tailCanvas.style.opacity = '0';
-}
-
-
-function updateCursorPos(clientX, clientY) {
-  mx = clientX;
-  my = clientY;
-  
-  // Update CSS coordinates for the liquid overlay mask
-  document.documentElement.style.setProperty('--mx', mx + 'px');
-  document.documentElement.style.setProperty('--my', my + 'px');
-  
-  if (firstMove) {
-    rx = mx; ry = my;
-    tailPoints.forEach(p => { p.x = mx; p.y = my; });
-    firstMove = false;
-  }
-  if (cur) cur.style.left = mx + 'px';
-  if (cur) cur.style.top = my + 'px';
-}
-
-// Mouse events
-document.addEventListener('mousemove', e => {
-  updateCursorPos(e.clientX, e.clientY);
-  showCursor();
-});
-
-document.addEventListener('mouseleave', () => {
-  hideCursor();
-});
-
-document.addEventListener('mouseenter', () => {
-  showCursor();
-});
-
-// Touch events (same smooth cursor on touch devices)
-let touchHideTimer = null;
-
-document.addEventListener('touchstart', e => {
-  if (e.touches[0]) {
-    if (touchHideTimer) clearTimeout(touchHideTimer);
-    firstMove = true; // resets tail coordinates to avoid stretching from last touch
-    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
-    showCursor();
-  }
-}, { passive: true });
-
-
-document.addEventListener('touchmove', e => {
-  if (e.touches[0]) {
-    if (touchHideTimer) clearTimeout(touchHideTimer);
-    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
-    showCursor();
-  }
-}, { passive: true });
-
-document.addEventListener('touchend', () => {
-  touchHideTimer = setTimeout(() => {
+  document.addEventListener('mouseleave', () => {
     hideCursor();
-  }, 600);
-}, { passive: true });
+  });
 
+  document.addEventListener('mouseenter', () => {
+    showCursor();
+  });
 
-(function tick() {
-  rx += (mx - rx) * 0.11;
-  ry += (my - ry) * 0.11;
-  if (ring) ring.style.left = rx + 'px';
-  if (ring) ring.style.top = ry + 'px';
-  
-  if (tailCtx && !firstMove) {
-    tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
+  (function tick() {
+    rx += (mx - rx) * 0.11;
+    ry += (my - ry) * 0.11;
+    if (ring) ring.style.left = rx + 'px';
+    if (ring) ring.style.top = ry + 'px';
     
-    // Smoothly follow the pointer with the head of the tail
-    tailPoints[0].x += (mx - tailPoints[0].x) * 0.6;
-    tailPoints[0].y += (my - tailPoints[0].y) * 0.6;
-    
-    // Each subsequent point follows the one before it
-    for (let i = 1; i < tailPoints.length; i++) {
-      tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * 0.5;
-      tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * 0.5;
-    }
-    
-    tailCtx.lineCap = 'round';
-    tailCtx.lineJoin = 'round';
-    
-    // Draw fading bezier curves
-    for (let i = 1; i < tailPoints.length - 1; i++) {
-      tailCtx.beginPath();
-      tailCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
-      const xc = (tailPoints[i].x + tailPoints[i+1].x) / 2;
-      const yc = (tailPoints[i].y + tailPoints[i+1].y) / 2;
-      tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
+    if (tailCtx && !firstMove) {
+      tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
       
-      const progress = 1 - (i / tailPoints.length);
-      tailCtx.lineWidth = progress * 7; // Tapers from 7px down to 0
-      tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`;
-      tailCtx.stroke();
+      // Smoothly follow the pointer with the head of the tail
+      tailPoints[0].x += (mx - tailPoints[0].x) * 0.6;
+      tailPoints[0].y += (my - tailPoints[0].y) * 0.6;
+      
+      // Each subsequent point follows the one before it
+      for (let i = 1; i < tailPoints.length; i++) {
+        tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * 0.5;
+        tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * 0.5;
+      }
+      
+      tailCtx.lineCap = 'round';
+      tailCtx.lineJoin = 'round';
+      
+      // Draw fading bezier curves
+      for (let i = 1; i < tailPoints.length - 1; i++) {
+        tailCtx.beginPath();
+        tailCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
+        const xc = (tailPoints[i].x + tailPoints[i+1].x) / 2;
+        const yc = (tailPoints[i].y + tailPoints[i+1].y) / 2;
+        tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
+        
+        const progress = 1 - (i / tailPoints.length);
+        tailCtx.lineWidth = progress * 7; // Tapers from 7px down to 0
+        tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`;
+        tailCtx.stroke();
+      }
     }
-  }
-  
-  requestAnimationFrame(tick);
-})();
+    
+    requestAnimationFrame(tick);
+  })();
+}
+
 
 
 /* ═══════════════ MOBILE NAV HAMBURGER ═══════════════ */
@@ -203,6 +174,7 @@ function setupMobileLanding() {
 setupMobileLanding();
 
 function setupHoverEffects() {
+  if (isTouch) return;
   document.querySelectorAll('a,button,.l-side,.l-center,.l-photo-wrap,.ai-pc,.ds-pc,.ai-stat,.sk-cat,.lab-c,.tool-chip,.ds-case-card,.t-card,.sw-icon,.hc-card,.pt-step').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('hover-state'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hover-state'));
@@ -536,6 +508,7 @@ function initSpaceWebGL() {
 }
 
 function resizeWebGL() {
+  if (isTouch) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   if (poc && gl) {
     poc.width = 580 * dpr;
@@ -623,6 +596,8 @@ function startLiquidEffect(e) {
     land.classList.add('about-hover');
   }
   
+  if (isTouch) return;
+  
   if (!gl) {
     initWebGL();
   }
@@ -669,7 +644,7 @@ if (lRightSide) {
   lRightSide.addEventListener('touchend', stopLiquidEffect, { passive: true });
 }
 
-if (landingEl && poc) {
+if (!isTouch && landingEl && poc) {
   landingEl.addEventListener('mousemove', (e) => {
     const rect = poc.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * poc.width;
@@ -677,15 +652,6 @@ if (landingEl && poc) {
     mousePos.x = x;
     mousePos.y = y;
   });
-  // Touch parallax for landing canvas
-  landingEl.addEventListener('touchmove', (e) => {
-    const t = e.touches[0];
-    const rect = poc.getBoundingClientRect();
-    const x = ((t.clientX - rect.left) / rect.width) * poc.width;
-    const y = (1.0 - (t.clientY - rect.top) / rect.height) * poc.height;
-    mousePos.x = x;
-    mousePos.y = y;
-  }, { passive: true });
 }
 
 
@@ -763,7 +729,7 @@ function makeCircuits() {
 }
 
 function initNodes() {
-  if (!nc) return;
+  if (isTouch || !nc) return;
   resizeNC();
   nodes = [];
   for (let i = 0; i < N; i++) {
@@ -838,7 +804,7 @@ function drawBrainOutline(ctx, w, h, t) {
 }
 
 function drawNC() {
-  if (!nctx || !nc) return;
+  if (isTouch || !nctx || !nc || !landingActive) return;
   nctx.clearRect(0, 0, nc.width, nc.height);
   const t = performance.now();
 
@@ -990,7 +956,7 @@ function resizeDC() {
 }
 
 function initDesignParticles() {
-  if (!dc) return;
+  if (isTouch || !dc) return;
   resizeDC();
   dParts = [];
   dStreaks = [];
@@ -1033,7 +999,7 @@ function initDesignParticles() {
 }
 
 function drawDC() {
-  if (!dctx || !dc) return;
+  if (isTouch || !dctx || !dc || !landingActive) return;
   const t = performance.now();
   dctx.clearRect(0, 0, dc.width, dc.height);
 
@@ -1164,7 +1130,8 @@ function initAI(){
   actx=ac.getContext('2d');
   ac.width=innerWidth;ac.height=innerHeight;
   aN=[];
-  for(let i=0;i<90;i++) aN.push({
+  const nodeCount = window.innerWidth < 768 ? 25 : 90;
+  for(let i=0;i<nodeCount;i++) aN.push({
     x:Math.random()*ac.width,y:Math.random()*ac.height,
     vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,
     r:Math.random()*1.4+.4,p:Math.random()*Math.PI*2
@@ -1222,8 +1189,13 @@ function initDS() {
   dsStreaks = [];
   dsFrames = [];
   
+  const isMobile = window.innerWidth < 768;
+  const partsCount = isMobile ? 10 : 30;
+  const streaksCount = isMobile ? 4 : 12;
+  const framesCount = isMobile ? 3 : 8;
+  
   // Initialize design particles (characters)
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < partsCount; i++) {
     dsParts.push({
       x: Math.random() * dsc.width,
       y: Math.random() * dsc.height,
@@ -1239,7 +1211,7 @@ function initDS() {
   }
   
   // Initialize neon streaks (lines)
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < streaksCount; i++) {
     dsStreaks.push({
       x: Math.random() * dsc.width,
       y: Math.random() * dsc.height,
@@ -1251,7 +1223,7 @@ function initDS() {
   }
   
   // Initialize wireframes (shapes)
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < framesCount; i++) {
     dsFrames.push({
       x: Math.random() * dsc.width,
       y: Math.random() * dsc.height,
@@ -1372,6 +1344,7 @@ let mode=null;
 
 window.enterMode = function(m, push = true){
   mode=m;
+  landingActive = false;
   if (push) {
     history.pushState({ mode: m }, '', '#' + m);
   }
@@ -1473,6 +1446,12 @@ window.backToLanding = function(push = true){
     land.style.display='flex';
     land.classList.remove('exit');
     cancelAnimationFrame(aRaf);actx=null;
+    cancelAnimationFrame(dsRaf);dsctx=null;
+    landingActive = true;
+    if (!isTouch) {
+      drawNC();
+      drawDC();
+    }
     window.scrollTo(0,0);
     setTimeout(()=>ov.classList.remove('on'),300);
   },380);
@@ -1513,8 +1492,8 @@ window.goTo = function(id){
 /* ═══════════════ SCROLL ═══════════════ */
 window.addEventListener('scroll',()=>{
   const nav = document.getElementById('nav');
-  if(nav) nav.classList.toggle('sc',scrollY>60);
-});
+  if(nav) nav.classList.toggle('sc',window.scrollY>60);
+}, { passive: true });
 
 function initReveal(){
   document.querySelectorAll('.rev').forEach(el=>{el.classList.remove('vis')});
@@ -1525,7 +1504,11 @@ function initReveal(){
 }
 
 /* ═══════════════ INIT ═══════════════ */
+let prevWidth = window.innerWidth;
 window.addEventListener('resize', () => {
+  if (window.innerWidth === prevWidth) return;
+  prevWidth = window.innerWidth;
+  
   initNodes();
   initDesignParticles();
   if (ac && mode === 'ai') {
@@ -1545,8 +1528,10 @@ document.addEventListener('DOMContentLoaded', () => {
   wrapLandingTitleChars(document.getElementById('title-ds'));
   initNodes();
   initDesignParticles();
-  drawNC();
-  drawDC();
+  if (!isTouch) {
+    drawNC();
+    drawDC();
+  }
 
   // Handle initial hash routing
   const hash = window.location.hash;
@@ -1565,7 +1550,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         scrollTopBtn.classList.remove('visible');
       }
-    });
+    }, { passive: true });
 
     scrollTopBtn.addEventListener('click', () => {
       window.scrollTo({

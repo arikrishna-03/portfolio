@@ -101,6 +101,28 @@ body {
   }
 }
 
+/* Disable custom cursor & WebGL canvases on mobile devices without any fine pointer (like a mouse) for peak performance */
+@media not (any-pointer: fine) {
+  #cur, #cur-ring, #cursor-tail {
+    display: none !important;
+  }
+  .profile-orb-canvas,
+  .landing-space-canvas {
+    display: none !important;
+  }
+}
+
+/* GPU promotion for buttery smooth transitions */
+#landing,
+#app,
+.l-side,
+.l-photo-wrap,
+#overlay,
+.n-links.mobile-open {
+  will-change: transform, opacity;
+}
+
+
 
 body.hover-state #cur {
   transform: translate(-50%, -50%) scale(2.5)
