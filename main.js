@@ -1,3 +1,8 @@
+// Google Drive Real-Time Sync Config
+// Paste your deployed Google Apps Script URL here to fetch certifications from Google Drive in real-time.
+// If left empty, the portfolio falls back to the static ./certifications.json database.
+const GOOGLE_DRIVE_SCRIPT_URL = '';
+
 const isTouch = !window.matchMedia('(any-pointer: fine)').matches || 
                 ('ontouchstart' in window) || 
                 navigator.maxTouchPoints > 0;
@@ -1811,7 +1816,8 @@ async function updateCodingStats() {
 
 async function loadCertifications() {
   try {
-    const res = await fetch('./certifications.json');
+    const fetchUrl = GOOGLE_DRIVE_SCRIPT_URL || './certifications.json';
+    const res = await fetch(fetchUrl);
     if (res.ok) {
       const certs = await res.json();
       const certsGrid = document.getElementById('certs-grid');
@@ -1834,9 +1840,13 @@ async function loadCertifications() {
             modalTitle.textContent = title;
             modalSubtitle.textContent = platform;
             
-            // Append view options to fit page perfectly without truncation, toolbars or sidebars
-            modalIframe.src = path + '#toolbar=0&navpanes=0&view=Fit';
-            modalDownloadLink.href = path;
+            // Append PDF options only for local files, keep Google Drive URLs clean
+            if (path.startsWith('http') || path.startsWith('//')) {
+              modalIframe.src = path;
+            } else {
+              modalIframe.src = path + '#toolbar=0&navpanes=0&view=Fit';
+            }
+            modalDownloadLink.href = path.replace('/preview', '/view');
             
             modal.classList.add('active');
             modal.setAttribute('aria-hidden', 'false');
