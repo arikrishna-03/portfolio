@@ -7,102 +7,123 @@ const ring = document.getElementById('cur-ring');
 const tailCanvas = document.getElementById('cursor-tail');
 let tailCtx = null;
 
-if (!isTouch) {
-  if (tailCanvas) {
-    tailCtx = tailCanvas.getContext('2d');
-    tailCanvas.width = window.innerWidth;
-    tailCanvas.height = window.innerHeight;
-    window.addEventListener('resize', () => {
-      if (tailCanvas) {
-        tailCanvas.width = window.innerWidth;
-        tailCanvas.height = window.innerHeight;
-      }
-    });
-  }
-
-  let mx=-100, my=-100, rx=-100, ry=-100;
-  let firstMove = true;
-  const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
-
-  function showCursor() {
-    if (cur) cur.style.opacity = '1';
-    if (ring) ring.style.opacity = '1';
-    if (tailCanvas) tailCanvas.style.opacity = '1';
-  }
-
-  function hideCursor() {
-    if (cur) cur.style.opacity = '0';
-    if (ring) ring.style.opacity = '0';
-    if (tailCanvas) tailCanvas.style.opacity = '0';
-  }
-
-  function updateCursorPos(clientX, clientY) {
-    mx = clientX;
-    my = clientY;
-    
-    if (firstMove) {
-      rx = mx; ry = my;
-      tailPoints.forEach(p => { p.x = mx; p.y = my; });
-      firstMove = false;
+if (tailCanvas) {
+  tailCtx = tailCanvas.getContext('2d');
+  tailCanvas.width = window.innerWidth;
+  tailCanvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    if (tailCanvas) {
+      tailCanvas.width = window.innerWidth;
+      tailCanvas.height = window.innerHeight;
     }
-    if (cur) cur.style.left = mx + 'px';
-    if (cur) cur.style.top = my + 'px';
-  }
-
-  // Mouse events
-  document.addEventListener('mousemove', e => {
-    updateCursorPos(e.clientX, e.clientY);
-    showCursor();
   });
-
-  document.addEventListener('mouseleave', () => {
-    hideCursor();
-  });
-
-  document.addEventListener('mouseenter', () => {
-    showCursor();
-  });
-
-  (function tick() {
-    rx += (mx - rx) * 0.11;
-    ry += (my - ry) * 0.11;
-    if (ring) ring.style.left = rx + 'px';
-    if (ring) ring.style.top = ry + 'px';
-    
-    if (tailCtx && !firstMove) {
-      tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
-      
-      // Smoothly follow the pointer with the head of the tail
-      tailPoints[0].x += (mx - tailPoints[0].x) * 0.6;
-      tailPoints[0].y += (my - tailPoints[0].y) * 0.6;
-      
-      // Each subsequent point follows the one before it
-      for (let i = 1; i < tailPoints.length; i++) {
-        tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * 0.5;
-        tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * 0.5;
-      }
-      
-      tailCtx.lineCap = 'round';
-      tailCtx.lineJoin = 'round';
-      
-      // Draw fading bezier curves
-      for (let i = 1; i < tailPoints.length - 1; i++) {
-        tailCtx.beginPath();
-        tailCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
-        const xc = (tailPoints[i].x + tailPoints[i+1].x) / 2;
-        const yc = (tailPoints[i].y + tailPoints[i+1].y) / 2;
-        tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
-        
-        const progress = 1 - (i / tailPoints.length);
-        tailCtx.lineWidth = progress * 7; // Tapers from 7px down to 0
-        tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`;
-        tailCtx.stroke();
-      }
-    }
-    
-    requestAnimationFrame(tick);
-  })();
 }
+
+let mx=-100, my=-100, rx=-100, ry=-100;
+let firstMove = true;
+const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
+let lastPointerType = 'mouse';
+
+function showCursor() {
+  if (cur) cur.style.opacity = '1';
+  if (ring) ring.style.opacity = '1';
+  if (tailCanvas) tailCanvas.style.opacity = '1';
+}
+
+function hideCursor() {
+  if (cur) cur.style.opacity = '0';
+  if (ring) ring.style.opacity = '0';
+  if (tailCanvas) tailCanvas.style.opacity = '0';
+}
+
+function updateCursorPos(clientX, clientY) {
+  mx = clientX;
+  my = clientY;
+  
+  if (firstMove) {
+    rx = mx; ry = my;
+    tailPoints.forEach(p => { p.x = mx; p.y = my; });
+    firstMove = false;
+  }
+  if (cur) cur.style.left = mx + 'px';
+  if (cur) cur.style.top = my + 'px';
+}
+
+// Mouse events
+document.addEventListener('mousemove', e => {
+  lastPointerType = 'mouse';
+  updateCursorPos(e.clientX, e.clientY);
+  showCursor();
+});
+
+document.addEventListener('mouseleave', () => {
+  hideCursor();
+});
+
+document.addEventListener('mouseenter', () => {
+  showCursor();
+});
+
+// Touch events for smooth mobile cursor tracking
+document.addEventListener('touchstart', e => {
+  lastPointerType = 'touch';
+  if (e.touches && e.touches[0]) {
+    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
+    showCursor();
+  }
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  lastPointerType = 'touch';
+  if (e.touches && e.touches[0]) {
+    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
+    showCursor();
+  }
+}, { passive: true });
+
+(function tick() {
+  // Snappy LERP factor on touch screens so it snaps directly to finger, floaty on desktop
+  const lerpFactor = lastPointerType === 'touch' ? 0.35 : 0.15;
+  rx += (mx - rx) * lerpFactor;
+  ry += (my - ry) * lerpFactor;
+  if (ring) ring.style.left = rx + 'px';
+  if (ring) ring.style.top = ry + 'px';
+  
+  if (tailCtx && !firstMove) {
+    tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
+    
+    // Smoothly follow the pointer with the head of the tail
+    const headLerp = lastPointerType === 'touch' ? 0.8 : 0.6;
+    tailPoints[0].x += (mx - tailPoints[0].x) * headLerp;
+    tailPoints[0].y += (my - tailPoints[0].y) * headLerp;
+    
+    // Each subsequent point follows the one before it
+    const pointLerp = lastPointerType === 'touch' ? 0.7 : 0.5;
+    for (let i = 1; i < tailPoints.length; i++) {
+      tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * pointLerp;
+      tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * pointLerp;
+    }
+    
+    tailCtx.lineCap = 'round';
+    tailCtx.lineJoin = 'round';
+    
+    // Draw fading bezier curves
+    for (let i = 1; i < tailPoints.length - 1; i++) {
+      tailCtx.beginPath();
+      tailCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
+      const xc = (tailPoints[i].x + tailPoints[i+1].x) / 2;
+      const yc = (tailPoints[i].y + tailPoints[i+1].y) / 2;
+      tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
+      
+      const progress = 1 - (i / tailPoints.length);
+      tailCtx.lineWidth = progress * 7; // Tapers from 7px down to 0
+      tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`;
+      tailCtx.stroke();
+    }
+  }
+  
+  requestAnimationFrame(tick);
+})();
 
 
 
@@ -133,35 +154,39 @@ window.closeMobileMenu = function() {
 };
 
 /* ═══════════════ MOBILE LANDING PAGE TAP BEHAVIOR ═══════════════ */
-// On mobile, left side tap highlights AI, right side tap highlights Design
+// Global landing split-screen tap interceptor
+window.handleSideClick = function(m, event) {
+  const landingEl2 = document.getElementById('landing');
+  const isMobile = window.innerWidth <= 767;
+  
+  if (isMobile && landingEl2) {
+    const targetClass = m === 'ai' ? 'mobile-ai' : 'mobile-ds';
+    if (!landingEl2.classList.contains(targetClass)) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      landingEl2.classList.remove('mobile-ai', 'mobile-ds');
+      landingEl2.classList.add(targetClass);
+      return;
+    }
+  }
+  window.enterMode(m);
+};
+
 function setupMobileLanding() {
   const landingEl2 = document.getElementById('landing');
-  const lLeft2 = document.getElementById('l-left');
-  const lRight2 = document.getElementById('l-right');
-  if (!landingEl2 || !lLeft2 || !lRight2) return;
+  if (!landingEl2) return;
 
-  function isMobile() { return window.innerWidth <= 767; }
+  const isMobile = () => window.innerWidth <= 767;
 
-  lLeft2.addEventListener('touchstart', e => {
+  // Tap background to collapse columns on mobile
+  landingEl2.addEventListener('click', e => {
     if (!isMobile()) return;
-    // Toggle expand
-    if (landingEl2.classList.contains('mobile-ai')) {
-      landingEl2.classList.remove('mobile-ai');
-    } else {
-      landingEl2.classList.remove('mobile-ds');
-      landingEl2.classList.add('mobile-ai');
+    if (!e.target.closest('.l-side') && !e.target.closest('.l-center')) {
+      landingEl2.classList.remove('mobile-ai', 'mobile-ds');
     }
-  }, { passive: true });
-
-  lRight2.addEventListener('touchstart', e => {
-    if (!isMobile()) return;
-    if (landingEl2.classList.contains('mobile-ds')) {
-      landingEl2.classList.remove('mobile-ds');
-    } else {
-      landingEl2.classList.remove('mobile-ai');
-      landingEl2.classList.add('mobile-ds');
-    }
-  }, { passive: true });
+  });
 
   // Reset on resize to desktop
   window.addEventListener('resize', () => {
@@ -1363,7 +1388,7 @@ window.enterMode = function(m, push = true){
       ov.classList.remove('on');
       initReveal();
     },60);
-  },650);
+  },350);
 }
 
 function setMode(m){

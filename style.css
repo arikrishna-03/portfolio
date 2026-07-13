@@ -101,11 +101,8 @@ body {
   }
 }
 
-/* Disable custom cursor & WebGL canvases on mobile devices without any fine pointer (like a mouse) for peak performance */
+/* Disable WebGL canvases on mobile devices without any fine pointer (like a mouse) for peak performance */
 @media not (any-pointer: fine) {
-  #cur, #cur-ring, #cursor-tail {
-    display: none !important;
-  }
   .profile-orb-canvas,
   .landing-space-canvas {
     display: none !important;
@@ -216,6 +213,7 @@ body.hover-state #cur-ring {
   .l-side {
     flex: 1 1 50%;
     min-width: 0;
+    transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   /* Tap-expand state on mobile touch */
@@ -244,6 +242,7 @@ body.hover-state #cur-ring {
   .s-label {
     margin-top: clamp(80px, 14vh, 160px);
     gap: 0.5rem;
+    transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   .s-title {
@@ -816,8 +815,10 @@ nav.sc {
   justify-content: center;
 }
 
-.n-logo:hover {
-  transform: scale(1.05);
+@media (hover: hover) {
+  .n-logo:hover {
+    transform: scale(1.05);
+  }
 }
 
 .n-logo img {
@@ -843,8 +844,10 @@ nav.sc {
   cursor: pointer
 }
 
-.n-links a:hover {
-  opacity: .5
+@media (hover: hover) {
+  .n-links a:hover {
+    opacity: .5
+  }
 }
 
 .n-right {
@@ -3622,15 +3625,50 @@ body.ds-mode .n-links.mobile-open {
 
 @media (max-width: 900px) {
   .n-hamburger {
-    display: flex;
+    display: none !important;
   }
 
   nav {
-    padding: 1rem 1.2rem;
+    padding: 0.8rem 1rem;
+    justify-content: space-between;
   }
 
   .n-links {
-    display: none;
+    display: flex !important;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-items: center;
+  }
+
+  .n-links a {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.4rem 0.2rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .n-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .n-links {
+    gap: 0.8rem;
+  }
+
+  .n-links a {
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.1rem;
   }
 }
 

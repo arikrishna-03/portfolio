@@ -28,7 +28,7 @@
   <!-- ═══════ LANDING ═══════ -->
   <div id="landing">
     <canvas id="landing-space-canvas" class="landing-space-canvas"></canvas>
-    <div class="l-side" id="l-left" onclick="enterMode('ai')">
+    <div class="l-side" id="l-left" onclick="handleSideClick('ai', event)">
       <div class="landing-fx landing-fx--ai" aria-hidden="true">
         <div class="fx-holo-grid fx-holo-grid--ai"></div>
         <div class="fx-circuit-mask"></div>
@@ -53,7 +53,7 @@
       <div class="l-tag">ABOUT ME</div>
     </div>
 
-    <div class="l-side" id="l-right" onclick="enterMode('design')">
+    <div class="l-side" id="l-right" onclick="handleSideClick('design', event)">
       <div class="landing-fx landing-fx--design" aria-hidden="true">
         <div class="fx-holo-grid fx-holo-grid--ds"></div>
         <canvas id="d-canvas"></canvas>
@@ -87,9 +87,6 @@
         <li id="n-skills"><a onclick="goTo('skills'); closeMobileMenu()">Skills</a></li>
         <li id="n-lab" style="display:none"><a onclick="goTo('lab'); closeMobileMenu()">Tech Lab</a></li>
       </ul>
-      <button class="n-hamburger" id="n-hamburger" onclick="toggleMobileMenu()" aria-label="Open navigation">
-        <span></span><span></span><span></span>
-      </button>
       <div class="n-right"></div>
     </nav>
 
