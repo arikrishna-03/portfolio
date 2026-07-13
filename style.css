@@ -43,6 +43,11 @@ body {
   }
 }
 
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 /* ── CURSOR (Enabled on fine pointer screens/devices) ── */
 #cur, #cur-ring, #cursor-tail {
   display: block;
@@ -1353,6 +1358,8 @@ body.ai-mode #app {
   line-height: 1.7;
   color: var(--ai-muted);
   margin-bottom: 1.5rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .ai-ab-text strong {
@@ -1713,6 +1720,8 @@ body.ai-mode #app {
   font-size: 0.95rem;
   color: var(--ai-muted);
   line-height: 1.5;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .apc-features {
@@ -1895,6 +1904,8 @@ body.ai-mode #app {
   font-size: 0.95rem;
   color: var(--ai-muted);
   line-height: 1.5;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 /* CERTS */
@@ -2466,6 +2477,8 @@ body.ds-mode .scroll-mouse::after {
   color: var(--ds-muted);
   line-height: 1.7;
   font-size: 1.05rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .cs-mockups-grid {
@@ -2563,6 +2576,8 @@ body.ds-mode .scroll-mouse::after {
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   color: var(--ds-muted);
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 /* Skills Cards */
@@ -2741,6 +2756,8 @@ body.ds-mode .scroll-mouse::after {
   font-size: 1.1rem;
   color: var(--ds-muted);
   line-height: 1.8;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 @media(max-width:900px) {
@@ -3283,6 +3300,8 @@ body.ds-mode .scroll-top-btn:hover {
   color: var(--ai-muted);
   font-size: 1.05rem;
   line-height: 1.6;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .apc-progress {
