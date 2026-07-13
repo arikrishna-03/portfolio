@@ -57,36 +57,55 @@
 
     #cur {
       position: fixed;
+      top: 0;
+      left: 0;
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: #fff;
       pointer-events: none;
       z-index: 10000;
-      transform: translate(-50%, -50%);
+      transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(1);
       mix-blend-mode: difference;
-      transition: transform 0.15s;
+      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
       zoom: 1.25;
     }
 
     #cur-ring {
       position: fixed;
+      top: 0;
+      left: 0;
       width: 40px;
       height: 40px;
       border-radius: 50%;
       border: 1.5px solid rgba(255, 255, 255, 0.55);
       pointer-events: none;
       z-index: 9999;
-      transform: translate(-50%, -50%);
+      transform: translate3d(var(--rx, -100px), var(--ry, -100px), 0) translate(-50%, -50%);
       mix-blend-mode: difference;
-      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, transform .12s cubic-bezier(0.25, 1, 0.5, 1);
       zoom: 1.25;
+    }
+
+    body.hover-state #cur {
+      transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(2.5);
     }
 
     body.hover-state #cur-ring {
       width: 70px;
       height: 70px;
       border-color: rgba(255, 255, 255, 0.85);
+    }
+
+    @media (max-width: 767px) {
+      #cur {
+        width: 4px;
+        height: 4px;
+      }
+      #cur-ring {
+        width: 20px;
+        height: 20px;
+      }
     }
 
 
@@ -677,7 +696,10 @@
   </button>
 
   <script>
-    const isTouch = !window.matchMedia('(any-pointer: fine)').matches;
+    const isTouch = !window.matchMedia('(any-pointer: fine)').matches || 
+                    ('ontouchstart' in window) || 
+                    navigator.maxTouchPoints > 0;
+    const isMobileViewport = window.innerWidth <= 767;
 
     // Cursor effect logic for profile page
     const cur = document.getElementById('cur');
@@ -699,7 +721,7 @@
 
     let mx = -100, my = -100, rx = -100, ry = -100;
     let firstMove = true;
-    const tailPoints = Array(8).fill().map(() => ({ x: -100, y: -100 }));
+    const tailPoints = Array(14).fill().map(() => ({ x: -100, y: -100 }));
     let lastPointerType = 'mouse';
 
     function updateCursor(clientX, clientY) {
@@ -712,8 +734,8 @@
         firstMove = false;
       }
       if (cur) {
-        cur.style.left = mx + 'px';
-        cur.style.top = my + 'px';
+        cur.style.setProperty('--mx', mx + 'px');
+        cur.style.setProperty('--my', my + 'px');
       }
     }
 
@@ -742,8 +764,8 @@
       rx += (mx - rx) * lerpFactor;
       ry += (my - ry) * lerpFactor;
       if (ring) {
-        ring.style.left = rx + 'px';
-        ring.style.top = ry + 'px';
+        ring.style.setProperty('--rx', rx + 'px');
+        ring.style.setProperty('--ry', ry + 'px');
       }
 
       if (tailCtx && !firstMove) {
@@ -762,6 +784,8 @@
         tailCtx.lineCap = 'round';
         tailCtx.lineJoin = 'round';
 
+        // Draw fading curves (thinner on mobile)
+        const baseTailWidth = window.innerWidth <= 767 ? 3.5 : 7;
         for (let i = 1; i < tailPoints.length - 1; i++) {
           tailCtx.beginPath();
           tailCtx.moveTo(tailPoints[i - 1].x, tailPoints[i - 1].y);
@@ -770,7 +794,7 @@
           tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
 
           const progress = 1 - (i / tailPoints.length);
-          tailCtx.lineWidth = progress * 7;
+          tailCtx.lineWidth = progress * baseTailWidth;
           tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`; // Golden
           tailCtx.stroke();
         }
@@ -780,8 +804,7 @@
     })();
 
     // Hover effect for interactive elements (only on non-touch fine pointers)
-    const isTouchDevice = !window.matchMedia('(any-pointer: fine)').matches;
-    if (!isTouchDevice) {
+    if (!isMobileViewport) {
       document.querySelectorAll('.interactive, a, .profile-square-wrap').forEach(el => {
         el.addEventListener('mouseenter', () => document.body.classList.add('hover-state'));
         el.addEventListener('mouseleave', () => document.body.classList.remove('hover-state'));

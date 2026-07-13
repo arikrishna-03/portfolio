@@ -1,4 +1,7 @@
-const isTouch = !window.matchMedia('(any-pointer: fine)').matches;
+const isTouch = !window.matchMedia('(any-pointer: fine)').matches || 
+                ('ontouchstart' in window) || 
+                navigator.maxTouchPoints > 0;
+const isMobileViewport = window.innerWidth <= 767;
 let landingActive = true;
 
 /* ═══════════════ CURSOR & TAIL (Mouse — Desktop) ═══════════════ */
@@ -21,7 +24,7 @@ if (tailCanvas) {
 
 let mx=-100, my=-100, rx=-100, ry=-100;
 let firstMove = true;
-const tailPoints = Array(8).fill().map(() => ({x: -100, y: -100}));
+const tailPoints = Array(14).fill().map(() => ({x: -100, y: -100}));
 let lastPointerType = 'mouse';
 
 function showCursor() {
@@ -45,8 +48,10 @@ function updateCursorPos(clientX, clientY) {
     tailPoints.forEach(p => { p.x = mx; p.y = my; });
     firstMove = false;
   }
-  if (cur) cur.style.left = mx + 'px';
-  if (cur) cur.style.top = my + 'px';
+  if (cur) {
+    cur.style.setProperty('--mx', mx + 'px');
+    cur.style.setProperty('--my', my + 'px');
+  }
 }
 
 // Mouse events
@@ -86,8 +91,10 @@ document.addEventListener('touchmove', e => {
   const lerpFactor = lastPointerType === 'touch' ? 0.35 : 0.15;
   rx += (mx - rx) * lerpFactor;
   ry += (my - ry) * lerpFactor;
-  if (ring) ring.style.left = rx + 'px';
-  if (ring) ring.style.top = ry + 'px';
+  if (ring) {
+    ring.style.setProperty('--rx', rx + 'px');
+    ring.style.setProperty('--ry', ry + 'px');
+  }
   
   if (tailCtx && !firstMove) {
     tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
@@ -107,7 +114,8 @@ document.addEventListener('touchmove', e => {
     tailCtx.lineCap = 'round';
     tailCtx.lineJoin = 'round';
     
-    // Draw fading bezier curves
+    // Draw fading bezier curves (thinner on mobile to match the small cursor size)
+    const baseTailWidth = window.innerWidth <= 767 ? 3.5 : 7;
     for (let i = 1; i < tailPoints.length - 1; i++) {
       tailCtx.beginPath();
       tailCtx.moveTo(tailPoints[i-1].x, tailPoints[i-1].y);
@@ -116,7 +124,7 @@ document.addEventListener('touchmove', e => {
       tailCtx.quadraticCurveTo(tailPoints[i].x, tailPoints[i].y, xc, yc);
       
       const progress = 1 - (i / tailPoints.length);
-      tailCtx.lineWidth = progress * 7; // Tapers from 7px down to 0
+      tailCtx.lineWidth = progress * baseTailWidth; // Tapers to 0
       tailCtx.strokeStyle = `rgba(247, 208, 89, ${progress * 0.8})`;
       tailCtx.stroke();
     }
@@ -199,7 +207,7 @@ function setupMobileLanding() {
 setupMobileLanding();
 
 function setupHoverEffects() {
-  if (isTouch) return;
+  if (isMobileViewport) return;
   document.querySelectorAll('a,button,.l-side,.l-center,.l-photo-wrap,.ai-pc,.ds-pc,.ai-stat,.sk-cat,.lab-c,.tool-chip,.ds-case-card,.t-card,.sw-icon,.hc-card,.pt-step').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('hover-state'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hover-state'));
@@ -533,7 +541,7 @@ function initSpaceWebGL() {
 }
 
 function resizeWebGL() {
-  if (isTouch) return;
+  if (isMobileViewport) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   if (poc && gl) {
     poc.width = 580 * dpr;
@@ -621,7 +629,7 @@ function startLiquidEffect(e) {
     land.classList.add('about-hover');
   }
   
-  if (isTouch) return;
+  if (isMobileViewport) return;
   
   if (!gl) {
     initWebGL();
@@ -754,7 +762,7 @@ function makeCircuits() {
 }
 
 function initNodes() {
-  if (isTouch || !nc) return;
+  if (isMobileViewport || !nc) return;
   resizeNC();
   nodes = [];
   for (let i = 0; i < N; i++) {
@@ -829,7 +837,7 @@ function drawBrainOutline(ctx, w, h, t) {
 }
 
 function drawNC() {
-  if (isTouch || !nctx || !nc || !landingActive) return;
+  if (isMobileViewport || !nctx || !nc || !landingActive) return;
   nctx.clearRect(0, 0, nc.width, nc.height);
   const t = performance.now();
 
@@ -981,7 +989,7 @@ function resizeDC() {
 }
 
 function initDesignParticles() {
-  if (isTouch || !dc) return;
+  if (isMobileViewport || !dc) return;
   resizeDC();
   dParts = [];
   dStreaks = [];
@@ -1024,7 +1032,7 @@ function initDesignParticles() {
 }
 
 function drawDC() {
-  if (isTouch || !dctx || !dc || !landingActive) return;
+  if (isMobileViewport || !dctx || !dc || !landingActive) return;
   const t = performance.now();
   dctx.clearRect(0, 0, dc.width, dc.height);
 
@@ -1473,7 +1481,7 @@ window.backToLanding = function(push = true){
     cancelAnimationFrame(aRaf);actx=null;
     cancelAnimationFrame(dsRaf);dsctx=null;
     landingActive = true;
-    if (!isTouch) {
+    if (!isMobileViewport) {
       drawNC();
       drawDC();
     }
@@ -1553,7 +1561,7 @@ document.addEventListener('DOMContentLoaded', () => {
   wrapLandingTitleChars(document.getElementById('title-ds'));
   initNodes();
   initDesignParticles();
-  if (!isTouch) {
+  if (!isMobileViewport) {
     drawNC();
     drawDC();
   }

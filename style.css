@@ -48,6 +48,8 @@ body {
   display: block;
   opacity: 0; /* starts hidden until first movement or touch */
   transition: opacity .25s ease;
+  top: 0;
+  left: 0;
 }
 
 #cursor-tail {
@@ -67,9 +69,9 @@ body {
   background: #F7D059;
   pointer-events: none;
   z-index: 999999;
-  transform: translate(-50%, -50%);
+  transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(1);
   box-shadow: 0 0 10px rgba(247, 208, 89, 0.8);
-  transition: transform .15s, opacity .25s ease;
+  transition: transform .15s cubic-bezier(0.25, 1, 0.5, 1), opacity .25s ease;
 }
 
 #cur-ring {
@@ -80,8 +82,8 @@ body {
   border: 1.5px solid rgba(247, 208, 89, 0.55);
   pointer-events: none;
   z-index: 999998;
-  transform: translate(-50%, -50%);
-  transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease;
+  transform: translate3d(var(--rx, -100px), var(--ry, -100px), 0) translate(-50%, -50%);
+  transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease, transform .12s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Compends zoom only on desktop viewport size to match body zoom 0.8 */
@@ -92,19 +94,17 @@ body {
 }
 
 
-/* Hide native cursor only on screens with a fine pointer (mouse) */
-@media (pointer: fine) {
-  body, 
-  body .cert-modal-overlay, 
-  body .cert-modal-container {
-    cursor: none !important;
-  }
+/* Hide native cursor globally on all elements to ensure only the custom cursor is visible */
+*, *::before, *::after {
+  cursor: none !important;
 }
 
-/* Disable WebGL canvases on mobile devices without any fine pointer (like a mouse) for peak performance */
-@media not (any-pointer: fine) {
+/* Disable canvases on mobile viewports for peak performance */
+@media not (any-pointer: fine), (max-width: 767px) {
   .profile-orb-canvas,
-  .landing-space-canvas {
+  .landing-space-canvas,
+  #n-canvas,
+  #d-canvas {
     display: none !important;
   }
 }
@@ -122,7 +122,7 @@ body {
 
 
 body.hover-state #cur {
-  transform: translate(-50%, -50%) scale(2.5)
+  transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(2.5)
 }
 
 body.hover-state #cur-ring {
@@ -193,14 +193,16 @@ body.hover-state #cur-ring {
   transition: flex 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-#landing:has(#l-left:hover) #l-left,
-#landing:has(#l-right:hover) #l-right {
-  flex: 1 1 85%;
-}
+@media (hover: hover) {
+  #landing:has(#l-left:hover) #l-left,
+  #landing:has(#l-right:hover) #l-right {
+    flex: 1 1 85%;
+  }
 
-#landing:has(#l-left:hover) #l-right,
-#landing:has(#l-right:hover) #l-left {
-  flex: 1 1 15%;
+  #landing:has(#l-left:hover) #l-right,
+  #landing:has(#l-right:hover) #l-left {
+    flex: 1 1 15%;
+  }
 }
 
 /* ── MOBILE LANDING: Keep horizontal (same as desktop), just scale elements down ── */
@@ -221,6 +223,16 @@ body.hover-state #cur-ring {
   #landing.mobile-ai #l-right  { flex: 1 1 25% !important; }
   #landing.mobile-ds #l-right  { flex: 1 1 75% !important; }
   #landing.mobile-ds #l-left   { flex: 1 1 25% !important; }
+
+  /* Scale cursor on mobile */
+  #cur {
+    width: 4px;
+    height: 4px;
+  }
+  #cur-ring {
+    width: 20px;
+    height: 20px;
+  }
 
   /* Scale the center photo down so it doesn't crowd the halves */
   .l-photo {
@@ -318,8 +330,10 @@ body.hover-state #cur-ring {
   transition: opacity 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)
 }
 
-.l-photo-wrap:hover .profile-orb-canvas {
-  opacity: 0.35
+@media (hover: hover) {
+  .l-photo-wrap:hover .profile-orb-canvas {
+    opacity: 0.35
+  }
 }
 
 .l-photo {
@@ -339,10 +353,12 @@ body.hover-state #cur-ring {
   transition: transform .4s cubic-bezier(.25, .46, .45, .94), box-shadow .4s ease, border-color .4s ease;
 }
 
-.l-photo-wrap:hover .l-photo {
-  transform: scale(1.06);
-  box-shadow: 0 0 40px rgba(68, 123, 190, .45), 0 12px 40px rgba(0, 0, 0, .5);
-  border-color: rgba(68, 123, 190, .75)
+@media (hover: hover) {
+  .l-photo-wrap:hover .l-photo {
+    transform: scale(1.06);
+    box-shadow: 0 0 40px rgba(68, 123, 190, .45), 0 12px 40px rgba(0, 0, 0, .5);
+    border-color: rgba(68, 123, 190, .75)
+  }
 }
 
 .l-photo img {
@@ -354,8 +370,10 @@ body.hover-state #cur-ring {
   transition: opacity 0.3s ease, transform 0.4s ease;
 }
 
-.l-photo-wrap:hover .l-photo img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .l-photo-wrap:hover .l-photo img {
+    transform: scale(1.04);
+  }
 }
 
 .l-photo.expand-full {
@@ -396,18 +414,20 @@ body.hover-state #cur-ring {
   transition: opacity 0.4s ease, transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-#landing:has(#l-left:hover) #l-left .s-label {
-  transform: translateX(7.5vw);
-}
+@media (hover: hover) {
+  #landing:has(#l-left:hover) #l-left .s-label {
+    transform: translateX(7.5vw);
+  }
 
-#landing:has(#l-right:hover) #l-right .s-label {
-  transform: translateX(-7.5vw);
-}
+  #landing:has(#l-right:hover) #l-right .s-label {
+    transform: translateX(-7.5vw);
+  }
 
-#landing:has(#l-left:hover) #l-right .s-label,
-#landing:has(#l-right:hover) #l-left .s-label {
-  opacity: 0;
-  pointer-events: none;
+  #landing:has(#l-left:hover) #l-right .s-label,
+  #landing:has(#l-right:hover) #l-left .s-label {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .s-title {
@@ -428,9 +448,11 @@ body.hover-state #cur-ring {
   margin-top: .5rem
 }
 
-.l-side:hover .s-enter {
-  opacity: .55;
-  transform: translateY(0)
+@media (hover: hover) {
+  .l-side:hover .s-enter {
+    opacity: .55;
+    transform: translateY(0)
+  }
 }
 
 #l-left .s-label {
@@ -467,9 +489,11 @@ body.hover-state #cur-ring {
   -webkit-mask-size: 100% 100%
 }
 
-#l-left:hover .landing-fx--ai,
-#l-right:hover .landing-fx--design {
-  opacity: 1
+@media (hover: hover) {
+  #l-left:hover .landing-fx--ai,
+  #l-right:hover .landing-fx--design {
+    opacity: 1
+  }
 }
 
 .fx-holo-grid {
@@ -667,11 +691,13 @@ body.hover-state #cur-ring {
   transition: font-family 0.45s ease, letter-spacing 0.45s ease, filter 0.5s ease
 }
 
-#l-left:hover .s-title--ai {
-  font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  filter: drop-shadow(0 0 12px rgba(68, 123, 190, 0.45)) drop-shadow(0 0 28px rgba(43, 55, 132, 0.35))
+@media (hover: hover) {
+  #l-left:hover .s-title--ai {
+    font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    filter: drop-shadow(0 0 12px rgba(68, 123, 190, 0.45)) drop-shadow(0 0 28px rgba(43, 55, 132, 0.35))
+  }
 }
 
 .s-title--ai .title-char {
@@ -679,14 +705,16 @@ body.hover-state #cur-ring {
   transition: color 0.4s ease, text-shadow 0.5s ease
 }
 
-#l-left:hover .s-title--ai .title-char {
-  color: #e8f0ff;
-  text-shadow:
-    0 0 20px rgba(68, 123, 190, 0.55),
-    0 0 40px rgba(100, 175, 240, 0.35),
-    -3px 0 24px rgba(43, 55, 132, 0.35);
-  animation: aiCharTrail 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--ti, 0) * 0.035s)
+@media (hover: hover) {
+  #l-left:hover .s-title--ai .title-char {
+    color: #e8f0ff;
+    text-shadow:
+      0 0 20px rgba(68, 123, 190, 0.55),
+      0 0 40px rgba(100, 175, 240, 0.35),
+      -3px 0 24px rgba(43, 55, 132, 0.35);
+    animation: aiCharTrail 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--ti, 0) * 0.035s)
+  }
 }
 
 @keyframes aiCharTrail {
@@ -720,24 +748,28 @@ body.hover-state #cur-ring {
   transition: font-family 0.4s ease, filter 0.45s ease
 }
 
-#l-right:hover .s-title--ds {
-  font-family: 'Poppins', 'Montserrat', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  filter: drop-shadow(0 0 14px rgba(223, 31, 45, 0.45)) drop-shadow(0 0 32px rgba(177, 19, 19, 0.35))
+@media (hover: hover) {
+  #l-right:hover .s-title--ds {
+    font-family: 'Poppins', 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    filter: drop-shadow(0 0 14px rgba(223, 31, 45, 0.45)) drop-shadow(0 0 32px rgba(177, 19, 19, 0.35))
+  }
 }
 
 .s-title--ds .title-char {
   display: inline-block
 }
 
-#l-right:hover .s-title--ds .title-char {
-  color: #fff0f0;
-  text-shadow:
-    0 0 18px rgba(223, 31, 45, 0.65),
-    4px 0 22px rgba(68, 123, 190, 0.35);
-  animation: dsCharKinetic 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  animation-delay: calc(var(--ti, 0) * 0.04s)
+@media (hover: hover) {
+  #l-right:hover .s-title--ds .title-char {
+    color: #fff0f0;
+    text-shadow:
+      0 0 18px rgba(223, 31, 45, 0.65),
+      4px 0 22px rgba(68, 123, 190, 0.35);
+    animation: dsCharKinetic 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(var(--ti, 0) * 0.04s)
+  }
 }
 
 @keyframes dsCharKinetic {
@@ -3074,8 +3106,13 @@ body.ds-mode .scroll-top-btn:hover {
 
 #landing.about-hover .l-side {
   opacity: 0.08 !important;
-  filter: blur(4px) !important;
   pointer-events: none !important;
+}
+
+@media (min-width: 768px) {
+  #landing.about-hover .l-side {
+    filter: blur(4px) !important;
+  }
 }
 
 #landing.about-hover .s-label {
@@ -3107,9 +3144,11 @@ body.ds-mode .scroll-top-btn:hover {
   opacity: 0.28 !important;
 }
 
-#landing:has(#l-left:hover) .landing-space-canvas,
-#landing:has(#l-right:hover) .landing-space-canvas {
-  opacity: 0.12 !important;
+@media (hover: hover) {
+  #landing:has(#l-left:hover) .landing-space-canvas,
+  #landing:has(#l-right:hover) .landing-space-canvas {
+    opacity: 0.12 !important;
+  }
 }
 
 /* ── PROJECTS PLACEHOLDERS ── */
