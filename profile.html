@@ -37,9 +37,10 @@
       zoom: 0.8;
     }
 
-    @media (pointer: fine) {
-      body {
-        cursor: none;
+    /* Hide native cursor only on hover-capable fine pointer devices to ensure the custom cursor is visible and doesn't break mobile taps */
+    @media (hover: hover) and (pointer: fine) {
+      *, *::before, *::after {
+        cursor: none !important;
       }
     }
 
@@ -53,6 +54,8 @@
       width: 100vw;
       height: 100vh;
       zoom: 1.25;
+      opacity: 0;
+      transition: opacity .25s ease;
     }
 
     #cur {
@@ -65,10 +68,13 @@
       background: #fff;
       pointer-events: none;
       z-index: 10000;
-      transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(1);
+      translate: var(--mx, -100px) var(--my, -100px);
+      transform: translate(-50%, -50%);
+      scale: 1;
       mix-blend-mode: difference;
-      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: scale 0.15s cubic-bezier(0.25, 1, 0.5, 1), opacity .25s ease;
       zoom: 1.25;
+      opacity: 0;
     }
 
     #cur-ring {
@@ -81,14 +87,16 @@
       border: 1.5px solid rgba(255, 255, 255, 0.55);
       pointer-events: none;
       z-index: 9999;
-      transform: translate3d(var(--rx, -100px), var(--ry, -100px), 0) translate(-50%, -50%);
+      translate: var(--rx, -100px) var(--ry, -100px);
+      transform: translate(-50%, -50%);
       mix-blend-mode: difference;
-      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, transform .12s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, opacity .25s ease;
       zoom: 1.25;
+      opacity: 0;
     }
 
     body.hover-state #cur {
-      transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(2.5);
+      scale: 2.5;
     }
 
     body.hover-state #cur-ring {
@@ -105,6 +113,15 @@
       #cur-ring {
         width: 20px;
         height: 20px;
+      }
+    }
+
+    /* Disable canvases and custom cursor on touch/mobile viewports for peak performance */
+    @media not (any-pointer: fine), (max-width: 767px) {
+      #cur,
+      #cur-ring,
+      #cursor-tail {
+        display: none !important;
       }
     }
 
@@ -724,6 +741,22 @@
     const tailPoints = Array(14).fill().map(() => ({ x: -100, y: -100 }));
     let lastPointerType = 'mouse';
 
+    function showCursor() {
+      if (lastPointerType === 'touch') {
+        hideCursor();
+        return;
+      }
+      if (cur) cur.style.opacity = '1';
+      if (ring) ring.style.opacity = '1';
+      if (tailCanvas) tailCanvas.style.opacity = '1';
+    }
+
+    function hideCursor() {
+      if (cur) cur.style.opacity = '0';
+      if (ring) ring.style.opacity = '0';
+      if (tailCanvas) tailCanvas.style.opacity = '0';
+    }
+
     function updateCursor(clientX, clientY) {
       mx = clientX;
       my = clientY;
@@ -742,25 +775,44 @@
     document.addEventListener('mousemove', e => {
       lastPointerType = 'mouse';
       updateCursor(e.clientX, e.clientY);
+      showCursor();
     });
 
-    document.addEventListener('touchstart', e => {
+    document.addEventListener('mouseleave', () => {
+      hideCursor();
+    });
+
+    document.addEventListener('mouseenter', () => {
+      showCursor();
+    });
+
+    // Touch events: hide the custom cursor completely on touch interaction to avoid sticking
+    document.addEventListener('touchstart', () => {
       lastPointerType = 'touch';
-      if (e.touches && e.touches[0]) {
-        updateCursor(e.touches[0].clientX, e.touches[0].clientY);
-      }
+      hideCursor();
     }, { passive: true });
 
-    document.addEventListener('touchmove', e => {
+    document.addEventListener('touchmove', () => {
       lastPointerType = 'touch';
-      if (e.touches && e.touches[0]) {
-        updateCursor(e.touches[0].clientX, e.touches[0].clientY);
-      }
+      hideCursor();
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      hideCursor();
+    }, { passive: true });
+
+    document.addEventListener('touchcancel', () => {
+      hideCursor();
     }, { passive: true });
 
     (function tick() {
-      // Snappy LERP factor on touch screens so it snaps directly to finger, floaty on desktop
-      const lerpFactor = lastPointerType === 'touch' ? 0.35 : 0.11;
+      // If touch is active, skip all rendering logic to save resources on mobile
+      if (lastPointerType === 'touch') {
+        requestAnimationFrame(tick);
+        return;
+      }
+
+      const lerpFactor = 0.11;
       rx += (mx - rx) * lerpFactor;
       ry += (my - ry) * lerpFactor;
       if (ring) {
@@ -771,11 +823,11 @@
       if (tailCtx && !firstMove) {
         tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
 
-        const headLerp = lastPointerType === 'touch' ? 0.8 : 0.6;
+        const headLerp = 0.6;
         tailPoints[0].x += (mx - tailPoints[0].x) * headLerp;
         tailPoints[0].y += (my - tailPoints[0].y) * headLerp;
 
-        const pointLerp = lastPointerType === 'touch' ? 0.7 : 0.5;
+        const pointLerp = 0.5;
         for (let i = 1; i < tailPoints.length; i++) {
           tailPoints[i].x += (tailPoints[i - 1].x - tailPoints[i].x) * pointLerp;
           tailPoints[i].y += (tailPoints[i - 1].y - tailPoints[i].y) * pointLerp;

@@ -28,6 +28,10 @@ const tailPoints = Array(14).fill().map(() => ({x: -100, y: -100}));
 let lastPointerType = 'mouse';
 
 function showCursor() {
+  if (lastPointerType === 'touch') {
+    hideCursor();
+    return;
+  }
   if (cur) cur.style.opacity = '1';
   if (ring) ring.style.opacity = '1';
   if (tailCanvas) tailCanvas.style.opacity = '1';
@@ -69,26 +73,33 @@ document.addEventListener('mouseenter', () => {
   showCursor();
 });
 
-// Touch events for smooth mobile cursor tracking
-document.addEventListener('touchstart', e => {
+// Touch events: hide the custom cursor completely on touch interaction to avoid sticking
+document.addEventListener('touchstart', () => {
   lastPointerType = 'touch';
-  if (e.touches && e.touches[0]) {
-    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
-    showCursor();
-  }
+  hideCursor();
 }, { passive: true });
 
-document.addEventListener('touchmove', e => {
+document.addEventListener('touchmove', () => {
   lastPointerType = 'touch';
-  if (e.touches && e.touches[0]) {
-    updateCursorPos(e.touches[0].clientX, e.touches[0].clientY);
-    showCursor();
-  }
+  hideCursor();
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  hideCursor();
+}, { passive: true });
+
+document.addEventListener('touchcancel', () => {
+  hideCursor();
 }, { passive: true });
 
 (function tick() {
-  // Snappy LERP factor on touch screens so it snaps directly to finger, floaty on desktop
-  const lerpFactor = lastPointerType === 'touch' ? 0.35 : 0.15;
+  // If touch is active, skip all rendering logic to save resources on mobile
+  if (lastPointerType === 'touch') {
+    requestAnimationFrame(tick);
+    return;
+  }
+
+  const lerpFactor = 0.15;
   rx += (mx - rx) * lerpFactor;
   ry += (my - ry) * lerpFactor;
   if (ring) {
@@ -100,12 +111,12 @@ document.addEventListener('touchmove', e => {
     tailCtx.clearRect(0, 0, tailCanvas.width, tailCanvas.height);
     
     // Smoothly follow the pointer with the head of the tail
-    const headLerp = lastPointerType === 'touch' ? 0.8 : 0.6;
+    const headLerp = 0.6;
     tailPoints[0].x += (mx - tailPoints[0].x) * headLerp;
     tailPoints[0].y += (my - tailPoints[0].y) * headLerp;
     
     // Each subsequent point follows the one before it
-    const pointLerp = lastPointerType === 'touch' ? 0.7 : 0.5;
+    const pointLerp = 0.5;
     for (let i = 1; i < tailPoints.length; i++) {
       tailPoints[i].x += (tailPoints[i-1].x - tailPoints[i].x) * pointLerp;
       tailPoints[i].y += (tailPoints[i-1].y - tailPoints[i].y) * pointLerp;

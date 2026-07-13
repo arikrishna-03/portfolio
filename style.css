@@ -43,10 +43,10 @@ body {
   }
 }
 
-/* ── CURSOR (Enabled on all screens/devices) ── */
+/* ── CURSOR (Enabled on fine pointer screens/devices) ── */
 #cur, #cur-ring, #cursor-tail {
   display: block;
-  opacity: 0; /* starts hidden until first movement or touch */
+  opacity: 0; /* starts hidden until first movement */
   transition: opacity .25s ease;
   top: 0;
   left: 0;
@@ -69,9 +69,11 @@ body {
   background: #F7D059;
   pointer-events: none;
   z-index: 999999;
-  transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(1);
+  translate: var(--mx, -100px) var(--my, -100px);
+  transform: translate(-50%, -50%);
+  scale: 1;
   box-shadow: 0 0 10px rgba(247, 208, 89, 0.8);
-  transition: transform .15s cubic-bezier(0.25, 1, 0.5, 1), opacity .25s ease;
+  transition: scale .15s cubic-bezier(0.25, 1, 0.5, 1), opacity .25s ease;
 }
 
 #cur-ring {
@@ -82,8 +84,9 @@ body {
   border: 1.5px solid rgba(247, 208, 89, 0.55);
   pointer-events: none;
   z-index: 999998;
-  transform: translate3d(var(--rx, -100px), var(--ry, -100px), 0) translate(-50%, -50%);
-  transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease, transform .12s cubic-bezier(0.25, 1, 0.5, 1);
+  translate: var(--rx, -100px) var(--ry, -100px);
+  transform: translate(-50%, -50%);
+  transition: width .2s ease, height .2s ease, border-color .2s ease, opacity .25s ease;
 }
 
 /* Compends zoom only on desktop viewport size to match body zoom 0.8 */
@@ -94,17 +97,22 @@ body {
 }
 
 
-/* Hide native cursor globally on all elements to ensure only the custom cursor is visible */
-*, *::before, *::after {
-  cursor: none !important;
+/* Hide native cursor only on hover-capable fine pointer devices to ensure the custom cursor is visible and doesn't break mobile taps */
+@media (hover: hover) and (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
 }
 
-/* Disable canvases on mobile viewports for peak performance */
+/* Disable canvases and custom cursor on touch/mobile viewports for peak performance */
 @media not (any-pointer: fine), (max-width: 767px) {
   .profile-orb-canvas,
   .landing-space-canvas,
   #n-canvas,
-  #d-canvas {
+  #d-canvas,
+  #cur,
+  #cur-ring,
+  #cursor-tail {
     display: none !important;
   }
 }
@@ -122,7 +130,7 @@ body {
 
 
 body.hover-state #cur {
-  transform: translate3d(var(--mx, -100px), var(--my, -100px), 0) translate(-50%, -50%) scale(2.5)
+  scale: 2.5;
 }
 
 body.hover-state #cur-ring {
@@ -187,10 +195,9 @@ body.hover-state #cur-ring {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  cursor: none;
   background: transparent;
   min-width: 0;
-  transition: flex 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: flex 0.38s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @media (hover: hover) {
@@ -215,7 +222,7 @@ body.hover-state #cur-ring {
   .l-side {
     flex: 1 1 50%;
     min-width: 0;
-    transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: flex 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
   }
 
   /* Tap-expand state on mobile touch */
@@ -254,7 +261,7 @@ body.hover-state #cur-ring {
   .s-label {
     margin-top: clamp(80px, 14vh, 160px);
     gap: 0.5rem;
-    transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
   }
 
   .s-title {
@@ -411,7 +418,7 @@ body.hover-state #cur-ring {
   gap: 1rem;
   margin-top: clamp(160px, 22vh, 260px);
   min-width: max-content;
-  transition: opacity 0.4s ease, transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @media (hover: hover) {
