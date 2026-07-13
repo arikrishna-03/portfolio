@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
+// Local Google Drive folder (Must be synced with the shared Drive folder)
+// Shared Folder: https://drive.google.com/drive/folders/1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
+// Folder ID: 1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
 const localDriveDir = 'A:\\my files\\Certificate';
 const srcDir = path.join(__dirname, '..', 'certification');
 const destDir = path.join(__dirname, '..', 'public', 'certification');

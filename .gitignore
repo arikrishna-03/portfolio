@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local sync helpers & scratchpad
+scripts/daily-sync.bat
+scratch/

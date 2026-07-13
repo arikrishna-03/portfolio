@@ -1,7 +1,9 @@
 // Google Drive Real-Time Sync Config
 // Paste your deployed Google Apps Script URL here to fetch certifications from Google Drive in real-time.
+// Shared Folder: https://drive.google.com/drive/folders/1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
+// Folder ID: 1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
 // If left empty, the portfolio falls back to the static ./certifications.json database.
-const GOOGLE_DRIVE_SCRIPT_URL = '';
+const GOOGLE_DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjAJR3PJkegzDZXJY8ZtyzGGMhVR3ekxjk_1PsqzS8bhnfpCdSqeimXqXAAb3Ck9Wm/exec';
 
 const isTouch = !window.matchMedia('(any-pointer: fine)').matches || 
                 ('ontouchstart' in window) || 
@@ -1425,12 +1427,10 @@ function setMode(m){
   if (mTxt) mTxt.textContent = m === 'ai' ? 'Design Mode' : 'AI Mode';
   const nSkills = document.getElementById('n-skills');
   const nLab = document.getElementById('n-lab');
-  const nProcess = document.getElementById('n-process');
   const nSoftware = document.getElementById('n-software');
   
   if (nSkills) nSkills.style.display = m === 'ai' ? '' : 'none';
   if (nLab) nLab.style.display = m === 'ai' ? '' : 'none';
-  if (nProcess) nProcess.style.display = m === 'design' ? '' : 'none';
   if (nSoftware) nSoftware.style.display = m === 'design' ? '' : 'none';
 
   const cLbl = document.getElementById('c-lbl');
@@ -1816,8 +1816,12 @@ async function updateCodingStats() {
 
 async function loadCertifications() {
   try {
-    const fetchUrl = GOOGLE_DRIVE_SCRIPT_URL || './certifications.json';
-    const res = await fetch(fetchUrl);
+    let fetchUrl = GOOGLE_DRIVE_SCRIPT_URL || './certifications.json';
+    if (GOOGLE_DRIVE_SCRIPT_URL) {
+      const sep = GOOGLE_DRIVE_SCRIPT_URL.includes('?') ? '&' : '?';
+      fetchUrl = `${GOOGLE_DRIVE_SCRIPT_URL}${sep}_=${Date.now()}`;
+    }
+    const res = await fetch(fetchUrl, { cache: 'no-store' });
     if (res.ok) {
       const certs = await res.json();
       const certsGrid = document.getElementById('certs-grid');
