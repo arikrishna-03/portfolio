@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/build-certs.cjs && vite",
-    "build": "node scripts/build-certs.cjs && vite build",
-    "preview": "node scripts/build-certs.cjs && vite preview",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "sync-certs": "node scripts/git-sync-certs.cjs"
   },
   "devDependencies": {

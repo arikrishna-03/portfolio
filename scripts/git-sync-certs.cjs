@@ -3,17 +3,17 @@ const path = require('path');
 const fs = require('fs');
 
 try {
-  console.log('1. Running build-certs.cjs to sync local files...');
-  execSync('node scripts/build-certs.cjs', { stdio: 'inherit' });
+  console.log('1. Running scrape-drive-folder.cjs to sync online files...');
+  execSync('node scripts/scrape-drive-folder.cjs', { stdio: 'inherit' });
 
-  // Add only certification directories and json
-  console.log('2. Staging certification files in Git...');
-  execSync('git add certification/ public/certification/ public/certifications.json', { stdio: 'inherit' });
+  // Add only certification json
+  console.log('2. Staging certifications JSON in Git...');
+  execSync('git add public/certifications.json', { stdio: 'inherit' });
 
   // Check if there are changes to commit
   const status = execSync('git status --porcelain').toString();
   const hasChanges = status.split('\n').some(line => {
-    return line.includes('certification/') || line.includes('certifications.json');
+    return line.includes('certifications.json');
   });
 
   if (!hasChanges) {
