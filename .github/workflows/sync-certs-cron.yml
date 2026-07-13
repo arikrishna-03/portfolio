@@ -1,0 +1,39 @@
+name: Daily Google Drive Certifications Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Enable manual run via the GitHub UI "Run workflow" button
+
+permissions:
+  contents: write # Allows pushing the updated JSON back to the repository
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci || npm install
+          npm install puppeteer # Force-install Puppeteer in CI
+
+      - name: Scrape Google Drive Folder
+        run: node scripts/scrape-drive-folder.cjs
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-sync certifications database from Google Drive [skip ci]"
+          file_pattern: "public/certifications.json"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
