@@ -1388,7 +1388,7 @@ window.enterMode = function(m, push = true){
       ov.classList.remove('on');
       initReveal();
     },60);
-  },350);
+  },250);
 }
 
 function setMode(m){
@@ -1431,8 +1431,8 @@ window.switchMode = function(){
   setTimeout(()=>{
     setMode(nm);
     window.scrollTo(0,0);
-    setTimeout(()=>{ov.classList.remove('on');initReveal()},300);
-  },380);
+    setTimeout(()=>{ov.classList.remove('on');initReveal()},200);
+  },250);
 }
 
 window.openAbout = function() {
@@ -1478,8 +1478,8 @@ window.backToLanding = function(push = true){
       drawDC();
     }
     window.scrollTo(0,0);
-    setTimeout(()=>ov.classList.remove('on'),300);
-  },380);
+    setTimeout(()=>ov.classList.remove('on'),200);
+  },250);
 }
 
 window.addEventListener('popstate', (event) => {
