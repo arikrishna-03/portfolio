@@ -3,7 +3,7 @@
 // Shared Folder: https://drive.google.com/drive/folders/1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
 // Folder ID: 1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
 // If left empty, the portfolio falls back to the static ./certifications.json database.
-const GOOGLE_DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjAJR3PJkegzDZXJY8ZtyzGGMhVR3ekxjk_1PsqzS8bhnfpCdSqeimXqXAAb3Ck9Wm/exec';
+const GOOGLE_DRIVE_SCRIPT_URL = '';
 
 const isTouch = !window.matchMedia('(any-pointer: fine)').matches || 
                 ('ontouchstart' in window) || 
