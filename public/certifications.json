@@ -60,9 +60,39 @@
     "path": "./certification/2026/kit28adc018-Practice Strings.pdf"
   },
   {
+    "title": "Mangodb 1",
+    "platform": "Certification",
+    "path": "./certification/2026/mangodb 1.pdf"
+  },
+  {
+    "title": "Mangodb 2",
+    "platform": "Certification",
+    "path": "./certification/2026/mangodb 2.pdf"
+  },
+  {
+    "title": "Mangodb 3",
+    "platform": "Certification",
+    "path": "./certification/2026/mangodb 3.pdf"
+  },
+  {
+    "title": "Mangodb 4",
+    "platform": "Certification",
+    "path": "./certification/2026/mangodb 4.pdf"
+  },
+  {
+    "title": "Mangodb 5",
+    "platform": "Certification",
+    "path": "./certification/2026/mangodb 5.pdf"
+  },
+  {
     "title": "Mineral Forecasting AI",
     "platform": "Certification",
     "path": "./certification/2026/Mineral Forecasting.pdf"
+  },
+  {
+    "title": "Python Essentials 1 Certificate",
+    "platform": "Certification",
+    "path": "./certification/2026/Python_Essentials_1_certificate.pdf"
   },
   {
     "title": "Screening",
