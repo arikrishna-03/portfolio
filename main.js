@@ -1634,116 +1634,196 @@ window.toggleCaseStudy = function(id) {
 }
 
 async function updateCodingStats() {
-  // 1. Fetch Codolio stats (LeetCode, CodeChef, Codolio Total)
-  try {
-    const res = await fetch(`https://api.codolio.com/profile?userKey=im_ari.ak03&_=${Date.now()}`, { cache: 'no-store' });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.status && json.data) {
-        const platformProfiles = json.data.platformProfiles?.platformProfiles || [];
+  // Helper to render stats in the UI
+  function renderStats(profiles) {
+    // 1.1 LeetCode Stats
+    const leetcode = profiles.find(p => p.platform === 'leetcode');
+    if (leetcode) {
+      const rating = leetcode.userStats?.currentRating;
+      const solved = leetcode.totalQuestionStats?.totalQuestionCounts;
+      const ratingEl = document.getElementById('leetcode-rating');
+      const solvedEl = document.getElementById('leetcode-solved');
+      if (rating && ratingEl) ratingEl.textContent = `Contest Rating: ${rating}`;
+      if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
 
-        // 1.1 LeetCode Stats
-        const leetcode = platformProfiles.find(p => p.platform === 'leetcode');
-        if (leetcode) {
-          const rating = leetcode.userStats?.currentRating;
-          const solved = leetcode.totalQuestionStats?.totalQuestionCounts;
-          const ratingEl = document.getElementById('leetcode-rating');
-          const solvedEl = document.getElementById('leetcode-solved');
-          if (rating && ratingEl) ratingEl.textContent = `Contest Rating: ${rating}`;
-          if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
+      const calendar = leetcode.dailyActivityStatsResponse?.submissionCalendar || {};
+      const parsedCalendar = typeof calendar === 'string' ? JSON.parse(calendar) : calendar;
+      const activeDays = Object.keys(parsedCalendar).length;
+      const activeEl = document.getElementById('leetcode-active');
+      if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
+    }
 
-          const calendar = leetcode.dailyActivityStatsResponse?.submissionCalendar || {};
-          const activeDays = Object.keys(calendar).length;
-          const activeEl = document.getElementById('leetcode-active');
-          if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
-        }
+    // 1.2 CodeChef Stats
+    const codechef = profiles.find(p => p.platform === 'codechef');
+    if (codechef) {
+      const rating = codechef.userStats?.currentRating;
+      const solved = codechef.totalQuestionStats?.totalQuestionCounts;
+      const ratingEl = document.getElementById('codechef-rating');
+      const solvedEl = document.getElementById('codechef-solved');
+      if (rating && ratingEl) ratingEl.textContent = `Rating: ${rating}`;
+      if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
 
-        // 1.2 CodeChef Stats
-        const codechef = platformProfiles.find(p => p.platform === 'codechef');
-        if (codechef) {
-          const rating = codechef.userStats?.currentRating;
-          const solved = codechef.totalQuestionStats?.totalQuestionCounts;
-          const ratingEl = document.getElementById('codechef-rating');
-          const solvedEl = document.getElementById('codechef-solved');
-          if (rating && ratingEl) ratingEl.textContent = `Rating: ${rating}`;
-          if (solved && solvedEl) solvedEl.textContent = `Solved: ${solved}`;
+      const calendar = codechef.dailyActivityStatsResponse?.submissionCalendar || {};
+      const activeDays = Object.keys(calendar).length;
+      const activeEl = document.getElementById('codechef-active');
+      if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
+    }
 
-          const calendar = codechef.dailyActivityStatsResponse?.submissionCalendar || {};
-          const activeDays = Object.keys(calendar).length;
-          const activeEl = document.getElementById('codechef-active');
-          if (activeEl) activeEl.textContent = `Active Days: ${activeDays}`;
-        }
+    // 1.3 Codolio Stats (Sum of all platforms)
+    const totalSolved = profiles.reduce((sum, p) => {
+      return sum + (p.totalQuestionStats?.totalQuestionCounts || 0);
+    }, 0);
+    if (totalSolved > 0) {
+      const codolioProblemsEl = document.getElementById('codolio-problems');
+      if (codolioProblemsEl) codolioProblemsEl.textContent = `Problems: ${totalSolved}`;
+    }
 
-        // 1.3 Codolio Stats (Sum of all platforms)
-        const totalSolved = platformProfiles.reduce((sum, p) => {
-          return sum + (p.totalQuestionStats?.totalQuestionCounts || 0);
-        }, 0);
-        if (totalSolved > 0) {
-          const codolioProblemsEl = document.getElementById('codolio-problems');
-          if (codolioProblemsEl) codolioProblemsEl.textContent = `Problems: ${totalSolved}`;
-        }
-
-        // Calculate total unique active days across all profiles
-        const allActiveTimestamps = new Set();
-        platformProfiles.forEach(p => {
-          const calendar = p.dailyActivityStatsResponse?.submissionCalendar;
-          if (calendar) {
-            Object.keys(calendar).forEach(timestampStr => {
-              const dayIndex = Math.floor(parseInt(timestampStr) / 86400);
-              allActiveTimestamps.add(dayIndex);
-            });
-          }
+    // Calculate total unique active days across all profiles
+    const allActiveTimestamps = new Set();
+    profiles.forEach(p => {
+      const calendar = p.dailyActivityStatsResponse?.submissionCalendar;
+      if (calendar) {
+        const parsedCalendar = typeof calendar === 'string' ? JSON.parse(calendar) : calendar;
+        Object.keys(parsedCalendar).forEach(timestampStr => {
+          const dayIndex = Math.floor(parseInt(timestampStr) / 86400);
+          allActiveTimestamps.add(dayIndex);
         });
-        if (allActiveTimestamps.size > 0) {
-          const codolioActiveEl = document.getElementById('codolio-active');
-          if (codolioActiveEl) codolioActiveEl.textContent = `Active Days: ${allActiveTimestamps.size}`;
-          
-          // Calculate Codolio streaks from active days calendar
-          const sortedDays = Array.from(allActiveTimestamps).sort((a, b) => a - b);
-          let longestCodolioStreak = 0;
-          let currentCodolioStreak = 0;
-          if (sortedDays.length > 0) {
-            let tempStreak = 1;
-            for (let i = 1; i < sortedDays.length; i++) {
-              if (sortedDays[i] === sortedDays[i - 1] + 1) {
-                tempStreak++;
-              } else if (sortedDays[i] > sortedDays[i - 1] + 1) {
-                longestCodolioStreak = Math.max(longestCodolioStreak, tempStreak);
-                tempStreak = 1;
-              }
-            }
+      }
+    });
+    if (allActiveTimestamps.size > 0) {
+      const codolioActiveEl = document.getElementById('codolio-active');
+      if (codolioActiveEl) codolioActiveEl.textContent = `Active Days: ${allActiveTimestamps.size}`;
+      
+      // Calculate Codolio streaks from active days calendar
+      const sortedDays = Array.from(allActiveTimestamps).sort((a, b) => a - b);
+      let longestCodolioStreak = 0;
+      let currentCodolioStreak = 0;
+      if (sortedDays.length > 0) {
+        let tempStreak = 1;
+        for (let i = 1; i < sortedDays.length; i++) {
+          if (sortedDays[i] === sortedDays[i - 1] + 1) {
+            tempStreak++;
+          } else if (sortedDays[i] > sortedDays[i - 1] + 1) {
             longestCodolioStreak = Math.max(longestCodolioStreak, tempStreak);
-
-            const todayIndex = Math.floor(Date.now() / 1000 / 86400);
-            const lastActiveDay = sortedDays[sortedDays.length - 1];
-
-            if (lastActiveDay === todayIndex || lastActiveDay === todayIndex - 1) {
-              currentCodolioStreak = 1;
-              for (let i = sortedDays.length - 2; i >= 0; i--) {
-                if (sortedDays[i] === sortedDays[i + 1] - 1) {
-                  currentCodolioStreak++;
-                } else {
-                  break;
-                }
-              }
-            }
-          }
-          
-          const currentStreakEl = document.getElementById('ai-streak-current');
-          
-          if (currentStreakEl) {
-            currentStreakEl.textContent = `${currentCodolioStreak || 15} Days`;
+            tempStreak = 1;
           }
         }
+        longestCodolioStreak = Math.max(longestCodolioStreak, tempStreak);
 
-        const aiSolvedEl = document.getElementById('ai-solved');
-        if (aiSolvedEl && totalSolved > 0) {
-          aiSolvedEl.textContent = `${totalSolved}+`;
+        const todayIndex = Math.floor(Date.now() / 1000 / 86400);
+        const lastActiveDay = sortedDays[sortedDays.length - 1];
+
+        if (lastActiveDay === todayIndex || lastActiveDay === todayIndex - 1) {
+          currentCodolioStreak = 1;
+          for (let i = sortedDays.length - 2; i >= 0; i--) {
+            if (sortedDays[i] === sortedDays[i + 1] - 1) {
+              currentCodolioStreak++;
+            } else {
+              break;
+            }
+          }
         }
       }
+      
+      const currentStreakEl = document.getElementById('ai-streak-current');
+      if (currentStreakEl) {
+        currentStreakEl.textContent = `${currentCodolioStreak || 15} Days`;
+      }
+    }
+
+    const aiSolvedEl = document.getElementById('ai-solved');
+    if (aiSolvedEl && totalSolved > 0) {
+      aiSolvedEl.textContent = `${totalSolved}+`;
+    }
+  }
+
+  // 1. Fetch baseline Codolio stats (from live API first, fallback to local JSON to avoid empty values)
+  let currentProfiles = [];
+  try {
+    const res = await fetch(`https://api.codolio.com/profile?userKey=im_ari.ak03&_=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) {
+      throw new Error(`HTTP error ${res.status}`);
+    }
+    const json = await res.json();
+    if (json.data && json.data.platformProfiles?.platformProfiles) {
+      currentProfiles = json.data.platformProfiles.platformProfiles;
     }
   } catch (error) {
-    console.error('Error fetching Codolio stats:', error);
+    console.warn('Codolio live API failed/blocked, falling back to local codolio.json:', error);
+    try {
+      const res = await fetch('./codolio.json');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && json.data.platformProfiles?.platformProfiles) {
+          currentProfiles = json.data.platformProfiles.platformProfiles;
+        }
+      }
+    } catch (localError) {
+      console.error('Failed to load fallback codolio.json:', localError);
+    }
+  }
+
+  if (currentProfiles.length > 0) {
+    renderStats(currentProfiles);
+  }
+
+  // 2. Fetch live LeetCode stats in real-time from public API
+  try {
+    fetch('https://leetcode-api-faisal.vercel.app/kit28adc018')
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(leetJson => {
+        const leetProfile = currentProfiles.find(p => p.platform === 'leetcode');
+        if (leetProfile && leetJson) {
+          if (!leetProfile.totalQuestionStats) leetProfile.totalQuestionStats = {};
+          leetProfile.totalQuestionStats.totalQuestionCounts = leetJson.totalSolved || leetProfile.totalQuestionStats.totalQuestionCounts;
+          
+          if (!leetProfile.dailyActivityStatsResponse) leetProfile.dailyActivityStatsResponse = {};
+          leetProfile.dailyActivityStatsResponse.submissionCalendar = leetJson.submissionCalendar || leetProfile.dailyActivityStatsResponse.submissionCalendar;
+          
+          renderStats(currentProfiles);
+        }
+      })
+      .catch(err => console.error('Error fetching live LeetCode stats:', err));
+  } catch (error) {
+    console.error('Error initiating LeetCode fetch:', error);
+  }
+
+  // 3. Fetch live LeetCode contest rating in real-time from public API
+  try {
+    fetch('https://alfa-leetcode-api.onrender.com/kit28adc018/contest')
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(contestJson => {
+        const leetProfile = currentProfiles.find(p => p.platform === 'leetcode');
+        if (leetProfile && contestJson && contestJson.contestRating) {
+          if (!leetProfile.userStats) leetProfile.userStats = {};
+          leetProfile.userStats.currentRating = Math.round(contestJson.contestRating);
+          renderStats(currentProfiles);
+        }
+      })
+      .catch(err => console.error('Error fetching live LeetCode contest rating:', err));
+  } catch (error) {
+    console.error('Error initiating LeetCode contest rating fetch:', error);
+  }
+
+  // 4. Fetch live CodeChef stats in real-time from public API
+  try {
+    fetch('https://codechefapi.vercel.app/kit28adc018')
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(ccJson => {
+        const ccProfile = currentProfiles.find(p => p.platform === 'codechef');
+        if (ccProfile && ccJson) {
+          if (!ccProfile.userStats) ccProfile.userStats = {};
+          ccProfile.userStats.currentRating = ccJson.currentRating || ccProfile.userStats.currentRating;
+          
+          if (!ccProfile.totalQuestionStats) ccProfile.totalQuestionStats = {};
+          ccProfile.totalQuestionStats.totalQuestionCounts = ccJson.numberOfProblemsSolved || ccProfile.totalQuestionStats.totalQuestionCounts;
+          
+          renderStats(currentProfiles);
+        }
+      })
+      .catch(err => console.error('Error fetching live CodeChef stats:', err));
+  } catch (error) {
+    console.error('Error initiating CodeChef fetch:', error);
   }
 
   // 2. Fetch GitHub stats (Contributions & Streak) in real-time directly from GitHub
