@@ -1845,11 +1845,10 @@ async function loadCertifications() {
             modalTitle.textContent = title;
             modalSubtitle.textContent = platform;
             
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
             const driveIdMatch = path.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
             const driveId = driveIdMatch ? driveIdMatch[1] : null;
 
-            if (isMobile && driveId) {
+            if (driveId) {
               modalIframe.style.display = 'none';
               modalIframe.src = 'about:blank';
               if (modalImg) {
