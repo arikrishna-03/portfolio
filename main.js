@@ -1835,6 +1835,7 @@ async function loadCertifications() {
         // Wire up modal events
         const modal = document.getElementById('cert-viewer-modal');
         const modalIframe = document.getElementById('cert-modal-iframe');
+        const modalImg = document.getElementById('cert-modal-img');
         const modalTitle = document.getElementById('cert-modal-title');
         const modalSubtitle = document.getElementById('cert-modal-subtitle');
         const modalDownloadLink = document.getElementById('cert-modal-download-link');
@@ -1844,11 +1845,30 @@ async function loadCertifications() {
             modalTitle.textContent = title;
             modalSubtitle.textContent = platform;
             
-            // Append PDF options only for local files, keep Google Drive URLs clean
-            if (path.startsWith('http') || path.startsWith('//')) {
-              modalIframe.src = path;
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const driveIdMatch = path.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            const driveId = driveIdMatch ? driveIdMatch[1] : null;
+
+            if (isMobile && driveId) {
+              modalIframe.style.display = 'none';
+              modalIframe.src = 'about:blank';
+              if (modalImg) {
+                modalImg.src = `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+                modalImg.style.display = 'block';
+              }
             } else {
-              modalIframe.src = path + '#toolbar=0&navpanes=0&view=Fit';
+              if (modalImg) {
+                modalImg.style.display = 'none';
+                modalImg.src = '';
+              }
+              modalIframe.style.display = 'block';
+              
+              // Append PDF options only for local files, keep Google Drive URLs clean
+              if (path.startsWith('http') || path.startsWith('//')) {
+                modalIframe.src = path;
+              } else {
+                modalIframe.src = path + '#toolbar=0&navpanes=0&view=Fit';
+              }
             }
             modalDownloadLink.href = path.replace('/preview', '/view');
             
@@ -1862,6 +1882,9 @@ async function loadCertifications() {
             modal.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('cert-modal-open');
             modalIframe.src = 'about:blank';
+            if (modalImg) {
+              modalImg.src = '';
+            }
             
             // Ensure cursor is visible again upon modal close
             if (cur) cur.style.opacity = '1';
