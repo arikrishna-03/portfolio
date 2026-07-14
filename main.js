@@ -1737,34 +1737,19 @@ async function updateCodingStats() {
     }
   }
 
-  // 1. Fetch baseline Codolio stats (from live API first, fallback to local JSON to avoid empty values)
+  // 1. Fetch baseline Codolio stats from local JSON to ensure immediate display without CORS/network delays
   let currentProfiles = [];
   try {
-    const res = await fetch(`https://api.codolio.com/profile?userKey=im_ari.ak03&_=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) {
-      throw new Error(`HTTP error ${res.status}`);
-    }
-    const json = await res.json();
-    if (json.data && json.data.platformProfiles?.platformProfiles) {
-      currentProfiles = json.data.platformProfiles.platformProfiles;
+    const res = await fetch('./codolio.json');
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data && json.data.platformProfiles?.platformProfiles) {
+        currentProfiles = json.data.platformProfiles.platformProfiles;
+        renderStats(currentProfiles);
+      }
     }
   } catch (error) {
-    console.warn('Codolio live API failed/blocked, falling back to local codolio.json:', error);
-    try {
-      const res = await fetch('./codolio.json');
-      if (res.ok) {
-        const json = await res.json();
-        if (json.data && json.data.platformProfiles?.platformProfiles) {
-          currentProfiles = json.data.platformProfiles.platformProfiles;
-        }
-      }
-    } catch (localError) {
-      console.error('Failed to load fallback codolio.json:', localError);
-    }
-  }
-
-  if (currentProfiles.length > 0) {
-    renderStats(currentProfiles);
+    console.error('Error fetching baseline Codolio stats:', error);
   }
 
   // 2. Fetch live LeetCode stats in real-time from public API
