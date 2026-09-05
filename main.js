@@ -2027,4 +2027,357 @@ async function loadCertifications() {
   });
 })();
 
+/* ═══════════════ HORIZONTAL SCROLL PROJECTS ═══════════════ */
+(function initHorizontalProjectsScroll() {
+  const container = document.getElementById('projects-ai');
+  const track = document.getElementById('ai-projects-track');
+  const progressBar = document.getElementById('h-scroll-progress');
+  if (!container || !track) return;
 
+  let ticking = false;
+
+  function updateScroll() {
+    if (window.innerWidth <= 900) {
+      track.style.transform = 'none';
+      ticking = false;
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const containerHeight = container.offsetHeight;
+    const windowHeight = window.innerHeight;
+    const maxScroll = containerHeight - windowHeight;
+
+    if (maxScroll <= 0) {
+      ticking = false;
+      return;
+    }
+
+    if (rect.top <= 0 && rect.bottom >= windowHeight) {
+      const scrolled = -rect.top;
+      const progress = Math.min(Math.max(scrolled / maxScroll, 0), 1);
+      const maxTranslate = track.scrollWidth - window.innerWidth + (window.innerWidth * 0.08);
+      track.style.transform = `translateX(-${progress * maxTranslate}px)`;
+      if (progressBar) progressBar.style.width = `${progress * 100}%`;
+    } else if (rect.top > 0) {
+      track.style.transform = 'translateX(0px)';
+      if (progressBar) progressBar.style.width = '0%';
+    } else if (rect.bottom < windowHeight) {
+      const maxTranslate = track.scrollWidth - window.innerWidth + (window.innerWidth * 0.08);
+      track.style.transform = `translateX(-${maxTranslate}px)`;
+      if (progressBar) progressBar.style.width = '100%';
+    }
+
+    ticking = false;
+  }
+
+  function requestTick() {
+    if (!ticking) {
+      requestAnimationFrame(updateScroll);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', requestTick, { passive: true });
+  window.addEventListener('resize', requestTick, { passive: true });
+
+  // Hook into mode changes & navigation
+  window.addEventListener('hashchange', () => setTimeout(requestTick, 300));
+  
+  const origGoTo = window.goTo;
+  window.goTo = function(id) {
+    if (origGoTo) origGoTo(id);
+    setTimeout(requestTick, 400);
+  };
+
+  requestTick();
+})();
+
+/* ═══════════════ INTERACTIVE PROJECT SHOWCASE CARDS ═══════════════ */
+(function initInteractiveProjectShowcase() {
+  // 1. Universal 3D Tilt & Dynamic Mouse Spotlight
+  const visualCards = document.querySelectorAll('.h-project-visual[data-tilt-card]');
+
+  visualCards.forEach((card) => {
+    const mockup = card.querySelector('.hpv-mockup');
+    const spotlight = card.querySelector('.hpv-spotlight');
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Update spotlight position
+      if (spotlight) {
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      }
+
+      // Subtle 3D tilt calculation
+      const xPct = (x / rect.width) - 0.5;
+      const yPct = (y / rect.height) - 0.5;
+      const tiltX = -yPct * 10;
+      const tiltY = xPct * 12;
+
+      if (mockup) {
+        mockup.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
+      }
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (mockup) {
+        mockup.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      }
+    });
+  });
+
+  // 2. EDUTR // v2.4 (ML Adaptive Core) Controls & Frequency Reactor
+  const edutrWaveform = document.getElementById('edutr-waveform');
+  const edutrHz = document.getElementById('edutr-freq-hz');
+  const edutrRunBtn = document.getElementById('edutr-run-btn');
+  const edutrLivePill = document.getElementById('edutr-live-pill');
+  const edutrValLat = document.getElementById('edutr-val-lat');
+  const edutrValRet = document.getElementById('edutr-val-ret');
+  const edutrValEng = document.getElementById('edutr-val-eng');
+  const edutrTeleText = document.getElementById('edutr-tele-text');
+  const simBtns = document.querySelectorAll('.hpv-sim-btn');
+  const edutrMetricBoxes = document.querySelectorAll('.hpv-mockup--edutr .hpv-interactive-box');
+
+  let activeMode = 'adaptive';
+  const modeConfigs = {
+    adaptive: { lat: '24ms', ret: '+42%', eng: 'Heuristic', tele: 'SYSTEM: ADAPTIVE CURRICULUM // LOSS: 0.0142 // VECTOR SYNCED' },
+    stress: { lat: '16ms', ret: '+58%', eng: 'Dense-MLP', tele: 'SYSTEM: HIGH-THROUGHPUT STRESS TEST // BATCH: 256 // ZERO-DROP' },
+    diagnostic: { lat: '32ms', ret: '+39%', eng: 'Bayesian', tele: 'SYSTEM: COGNITIVE DIAGNOSTIC PASS // HEURISTIC WEIGHTS VALIDATED' }
+  };
+
+  // Mode switching
+  simBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      simBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeMode = btn.dataset.mode || 'adaptive';
+      triggerInference(false);
+    });
+  });
+
+  // Waveform interactive reaction
+  if (edutrWaveform) {
+    const bars = edutrWaveform.querySelectorAll('span');
+    const baseHeights = [30, 55, 78, 92, 65, 88, 50, 95, 70, 40, 60, 85, 90, 45, 72, 35, 68, 82, 52, 28];
+
+    edutrWaveform.addEventListener('mousemove', (e) => {
+      const rect = edutrWaveform.getBoundingClientRect();
+      const mouseX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+      const targetIdx = Math.floor((mouseX / rect.width) * bars.length);
+
+      bars.forEach((bar, idx) => {
+        const dist = Math.abs(idx - targetIdx);
+        const factor = Math.max(0, 1 - (dist / 4.5));
+        const newHeight = Math.min(100, Math.max(15, (baseHeights[idx] * 0.3) + (factor * 75) + (Math.random() * 8)));
+        bar.style.height = `${newHeight}%`;
+      });
+
+      if (edutrHz) {
+        const hz = (41.2 + (mouseX / rect.width) * 6.8).toFixed(1);
+        edutrHz.textContent = `${hz} kHz // RES: 0.${90 + Math.floor(Math.random() * 9)}`;
+      }
+    });
+
+    edutrWaveform.addEventListener('mouseleave', () => {
+      bars.forEach((bar, idx) => {
+        bar.style.height = `${baseHeights[idx]}%`;
+      });
+      if (edutrHz) edutrHz.textContent = '44.1 kHz // RES: 0.94';
+    });
+  }
+
+  // Live Inference Trigger function
+  function triggerInference(showFlash = true) {
+    if (!edutrLivePill || !edutrValLat || !edutrValRet) return;
+
+    if (showFlash) {
+      edutrLivePill.classList.add('inferring');
+      edutrLivePill.textContent = '● INFERRING...';
+    }
+
+    // Number ticker jitter
+    let count = 0;
+    const tickerInterval = setInterval(() => {
+      count++;
+      const jitterLat = Math.floor(18 + Math.random() * 26);
+      edutrValLat.textContent = `${jitterLat}ms`;
+      edutrValLat.style.color = '#67c7eb';
+
+      if (count >= 5) {
+        clearInterval(tickerInterval);
+        const cfg = modeConfigs[activeMode] || modeConfigs.adaptive;
+        edutrValLat.textContent = cfg.lat;
+        edutrValLat.style.color = '#00ffaa';
+        edutrValRet.textContent = cfg.ret;
+        if (edutrValEng) edutrValEng.textContent = cfg.eng;
+        if (edutrTeleText) edutrTeleText.textContent = cfg.tele;
+
+        if (showFlash) {
+          setTimeout(() => {
+            edutrLivePill.classList.remove('inferring');
+            edutrLivePill.textContent = '● INFERENCE ONLINE';
+          }, 350);
+        }
+      }
+    }, 45);
+  }
+
+  if (edutrRunBtn) {
+    edutrRunBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerInference(true);
+    });
+  }
+
+  edutrMetricBoxes.forEach(box => {
+    box.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerInference(true);
+    });
+  });
+
+  // 3. BUILDATHON 2026 (Interactive Role Switcher & Live HUD)
+  const roleTabs = document.querySelectorAll('#hackathon-role-tabs .hpv-role-btn');
+  const roleViews = document.querySelectorAll('#hackathon-role-hud .hpv-hud-view');
+  const btnAudit = document.getElementById('btn-simulate-audit');
+  const btnSyncFaculty = document.getElementById('btn-sync-faculty');
+  const btnCalcGpa = document.getElementById('btn-calc-gpa');
+  const adminLogStream = document.getElementById('admin-log-stream');
+  const auditStatusMsg = document.getElementById('audit-status-msg');
+  const facultyStatusMsg = document.getElementById('faculty-status-msg');
+  const facultyAttVal = document.getElementById('faculty-att-val');
+  const facultyGrdVal = document.getElementById('faculty-grd-val');
+  const studentStatusMsg = document.getElementById('student-status-msg');
+
+  roleTabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetRole = tab.dataset.role;
+
+      roleTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      roleViews.forEach(v => {
+        if (v.dataset.view === targetRole) {
+          v.classList.add('active');
+        } else {
+          v.classList.remove('active');
+        }
+      });
+    });
+  });
+
+  // Admin audit button
+  if (btnAudit && adminLogStream) {
+    btnAudit.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btnAudit.innerHTML = '<span>SCANNING...</span><span class="gold-arrow">⚡</span>';
+      btnAudit.style.opacity = '0.7';
+
+      setTimeout(() => {
+        const timeStr = new Date().toTimeString().split(' ')[0];
+        const newLog = document.createElement('div');
+        newLog.className = 'hpv-log-row';
+        newLog.innerHTML = `<span class="log-t">[${timeStr}]</span> <span class="log-ok">VERIFIED</span> 12 Campus microservices latency normal (&lt;4ms)`;
+        
+        adminLogStream.appendChild(newLog);
+        if (adminLogStream.children.length > 4) {
+          adminLogStream.removeChild(adminLogStream.children[0]);
+        }
+
+        if (auditStatusMsg) auditStatusMsg.textContent = '● Complete: 0 Anomalies Flagged';
+        btnAudit.innerHTML = '<span>RUN SECURITY AUDIT</span><span class="gold-arrow">⚡</span>';
+        btnAudit.style.opacity = '1';
+      }, 500);
+    });
+  }
+
+  // Faculty sync button
+  if (btnSyncFaculty) {
+    btnSyncFaculty.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btnSyncFaculty.innerHTML = '<span>SYNCING...</span><span class="gold-arrow">↻</span>';
+      
+      setTimeout(() => {
+        if (facultyAttVal) facultyAttVal.textContent = '96.8%';
+        if (facultyGrdVal) facultyGrdVal.textContent = '124 / 124';
+        if (facultyStatusMsg) facultyStatusMsg.textContent = '✓ 124/124 student biometric feeds verified';
+        btnSyncFaculty.innerHTML = '<span>SYNC ATTENDANCE PIPELINE</span><span class="gold-arrow">↻</span>';
+      }, 450);
+    });
+  }
+
+  // Student GPA forecast
+  if (btnCalcGpa) {
+    btnCalcGpa.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const sp1 = document.getElementById('sp-val-1');
+      const sp2 = document.getElementById('sp-val-2');
+      if (sp1) sp1.textContent = '95%';
+      if (sp2) sp2.textContent = '92%';
+      if (studentStatusMsg) studentStatusMsg.textContent = '★ Recalculated CGPA: 3.97 / 4.00 (Summa Cum Laude)';
+    });
+  }
+
+  // 4. PORTFOLIO V2 (Dual-Perspective Lens Switcher & Theme Lab)
+  const lensBtns = document.querySelectorAll('#portfolio-lens-switch .hpv-lens-btn');
+  const lensViews = document.querySelectorAll('.hpv-mockup--portfolio .hpv-lens-view');
+  const btnSwapLens = document.getElementById('btn-swap-lens');
+  const swatches = document.querySelectorAll('.hpv-swatch');
+  const swatchName = document.getElementById('brand-swatch-name');
+  const portfolioGlow = document.getElementById('portfolio-glow');
+
+  function setLens(lens) {
+    lensBtns.forEach(b => {
+      b.classList.toggle('active', b.dataset.lens === lens);
+    });
+    lensViews.forEach(v => {
+      v.classList.toggle('active', v.dataset.view === lens);
+    });
+  }
+
+  lensBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setLens(btn.dataset.lens);
+    });
+  });
+
+  if (btnSwapLens) {
+    const lensSequence = ['dual', 'ai', 'brand'];
+    let currentIdx = 0;
+    btnSwapLens.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentIdx = (currentIdx + 1) % lensSequence.length;
+      setLens(lensSequence[currentIdx]);
+    });
+  }
+
+  // Brand color swatches
+  swatches.forEach(swatch => {
+    swatch.addEventListener('click', (e) => {
+      e.stopPropagation();
+      swatches.forEach(s => s.classList.remove('active'));
+      swatch.classList.add('active');
+
+      const color = swatch.dataset.color || '#67c7eb';
+      const name = swatch.dataset.name || 'Cyber Cyan';
+
+      if (swatchName) {
+        swatchName.textContent = `${name} (${color.toUpperCase()})`;
+        swatchName.style.color = color;
+      }
+
+      if (portfolioGlow) {
+        portfolioGlow.style.background = `radial-gradient(circle, ${color}33 0%, transparent 60%)`;
+      }
+    });
+  });
+
+})();
