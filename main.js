@@ -1,3 +1,5 @@
+import { initProjects3DWorld } from './projects-3d-world.js';
+
 // Google Drive Real-Time Sync Config
 // Paste your deployed Google Apps Script URL here to fetch certifications from Google Drive in real-time.
 // Shared Folder: https://drive.google.com/drive/folders/1i75o8xVlfhhNMtZ89yGxoq4OXhfBqVrP
@@ -1437,6 +1439,7 @@ function setMode(m){
   if (cLbl) cLbl.textContent = m === 'ai' ? '// Get in Touch' : 'Get in Touch';
   if(m==='ai'){
     setTimeout(initAI, 80);
+    setTimeout(initProjects3DWorld, 100);
     cancelAnimationFrame(dsRaf);
     dsctx = null;
   } else {
@@ -2381,3 +2384,6 @@ async function loadCertifications() {
   });
 
 })();
+
+/* Initialize Three.js 3D Arcade Gallery for AI Projects */
+initArcadeGallery();

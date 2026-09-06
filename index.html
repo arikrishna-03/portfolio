@@ -9,7 +9,7 @@
     content="Portfolio of Arikrishna A, an AI & Data Science student and freelance designer building intelligent, purpose-driven digital experiences.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
-    href="https://fonts.googleapis.com/css2?family=Anton&family=Orbitron:wght@400;500;600;700&family=Sora:wght@500;600;700&family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Sora:wght@500;600;700&family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -337,425 +337,44 @@
         </div>
       </div>
 
-      <!-- Projects Section — Horizontal Scroll Showcase -->
-      <div id="projects-ai" class="h-scroll-section">
-        <div class="h-scroll-sticky">
-          
-          <div class="h-scroll-header-bar">
-            <div class="sec-h rev rev-d1" style="margin-bottom:0">Real-World AI &amp; Engineering Systems</div>
-            <div class="h-scroll-nav-hint">
-              <span class="h-scroll-dot"></span>
-              <span class="h-scroll-text">SCROLL TO EXPLORE</span>
-              <span class="h-scroll-arrow">→</span>
-            </div>
+      <!-- ═══════ 3D IMMERSIVE PROJECTS SHOWCASE (THREE.JS SCROLL-DRIVEN WORLD) ═══════ -->
+      <div id="projects-ai" class="arcade-3d-section">
+        <div class="arcade-3d-sticky">
+
+          <!-- Fullscreen WebGL 3D Canvas -->
+          <canvas id="arcade-3d-canvas" class="arcade-3d-canvas"></canvas>
+
+          <!-- Ambient Vignette & Smooth Depth Gradients -->
+          <div class="arcade-vignette"></div>
+          <div class="arcade-top-fade"></div>
+          <div class="arcade-bottom-transition"></div>
+
+          <!-- Top Progress Bar -->
+          <div class="arcade-progress-container">
+            <div class="arcade-progress-bar" id="arcade-progress-bar"></div>
           </div>
 
-          <div class="h-scroll-track" id="ai-projects-track">
+          <!-- Top Interactive HUD Bar -->
 
-            <!-- Slide 1: EDUTR -->
-            <div class="h-project-slide">
-              <div class="h-project-visual" data-tilt-card="edutr">
-                <div class="hpv-mockup hpv-mockup--edutr">
-                  <div class="hpv-glow"></div>
-                  <div class="hpv-spotlight"></div>
-                  
-                  <div class="hpv-top">
-                    <div class="hpv-badges">
-                      <span class="hpv-pill">EDUTR // v2.4</span>
-                      <span class="hpv-pill hpv-pill--live" id="edutr-live-pill">● INFERENCE ONLINE</span>
-                    </div>
-                    <div class="hpv-top-actions">
-                      <span class="hpv-subtext">ML ADAPTIVE CORE</span>
-                    </div>
-                  </div>
 
-                  <div class="hpv-center">
-                    <!-- Metrics Row with Live Interactive Feedback -->
-                    <div class="hpv-diagram">
-                      <div class="hpv-metric-box hpv-interactive-box" id="edutr-metric-lat" title="Click to test latency ping">
-                        <span class="hpv-metric-label">Latency</span>
-                        <span class="hpv-metric-val" id="edutr-val-lat">28ms</span>
-                        <span class="hpv-metric-sub">RTT Peak</span>
-                      </div>
-                      <div class="hpv-metric-box hpv-interactive-box" id="edutr-metric-ret" title="Comprehension Retention Gain">
-                        <span class="hpv-metric-label">Retention</span>
-                        <span class="hpv-metric-val" id="edutr-val-ret">+42%</span>
-                        <span class="hpv-metric-sub">Paced Gain</span>
-                      </div>
-                      <div class="hpv-metric-box hpv-interactive-box" id="edutr-metric-eng" title="Active Model">
-                        <span class="hpv-metric-label">Engine</span>
-                        <span class="hpv-metric-val" id="edutr-val-eng">Heuristic</span>
-                        <span class="hpv-metric-sub">Transformer</span>
-                      </div>
-                    </div>
-
-                    <!-- Interactive Mode Bar & Trigger -->
-                    <div class="hpv-sim-controls">
-                      <span class="hpv-sim-label">SIMULATE:</span>
-                      <div class="hpv-sim-modes">
-                        <button type="button" class="hpv-sim-btn active" data-mode="adaptive">ADAPTIVE</button>
-                        <button type="button" class="hpv-sim-btn" data-mode="stress">STRESS</button>
-                        <button type="button" class="hpv-sim-btn" data-mode="diagnostic">DIAGNOSTIC</button>
-                      </div>
-                      <button type="button" class="hpv-infer-trigger" id="edutr-run-btn" title="Execute simulated inference pass">
-                        <span>RUN INFERENCE</span>
-                        <span class="hpv-infer-icon">⚡</span>
-                      </button>
-                    </div>
-
-                    <!-- Interactive Frequency / Waveform Reactor -->
-                    <div class="hpv-waveform-wrap" title="Hover / scrub to manipulate neural audio frequencies">
-                      <div class="hpv-waveform-header">
-                        <span class="hpv-wf-tag">NEURAL AUDIO SPECTRUM</span>
-                        <span class="hpv-wf-hz" id="edutr-freq-hz">44.1 kHz // RES: 0.94</span>
-                      </div>
-                      <div class="hpv-waveform hpv-waveform--interactive" id="edutr-waveform">
-                        <span style="--h: 30%"></span><span style="--h: 55%"></span><span style="--h: 78%"></span><span style="--h: 92%"></span>
-                        <span style="--h: 65%"></span><span style="--h: 88%"></span><span style="--h: 50%"></span><span style="--h: 95%"></span>
-                        <span style="--h: 70%"></span><span style="--h: 40%"></span><span style="--h: 60%"></span><span style="--h: 85%"></span>
-                        <span style="--h: 90%"></span><span style="--h: 45%"></span><span style="--h: 72%"></span><span style="--h: 35%"></span>
-                        <span style="--h: 68%"></span><span style="--h: 82%"></span><span style="--h: 52%"></span><span style="--h: 28%"></span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Real-time Diagnostic Telemetry Stream -->
-                  <div class="hpv-bottom hpv-bottom--telemetry">
-                    <div class="hpv-tele-stream">
-                      <span class="hpv-tele-dot"></span>
-                      <span class="hpv-tele-text" id="edutr-tele-text">SYSTEM: ADAPTIVE CURRICULUM // LOSS: 0.0142 // VECTOR SYNCED</span>
-                    </div>
-                    <span class="hpv-tele-tag">AI / EDTECH</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="h-project-content">
-                <div class="h-project-kicker">NOTABLE AI SYSTEM — 2026</div>
-                <h3 class="h-project-title">EDUTR /<br>INTELLIGENT LEARNING</h3>
-                <p class="h-project-desc">
-                  An AI-driven educational platform engineered to transform student learning outcomes. Combines machine learning heuristics with modular learning pathways to personalize pacing, automate real-time comprehension tracking, and provide granular diagnostic insights for educators.
-                </p>
-                <div class="h-project-tags">
-                  <span class="tag">Python</span>
-                  <span class="tag">Machine Learning</span>
-                  <span class="tag">REST API</span>
-                  <span class="tag">JavaScript (ES6+)</span>
-                  <span class="tag">Analytics</span>
-                </div>
-                <div class="h-project-actions">
-                  <a href="https://github.com/arikrishna-03/EDUTR" target="_blank" rel="noopener noreferrer" class="h-project-link">
-                    <span>VIEW GITHUB REPO</span>
-                    <span class="hp-arrow">↗</span>
-                  </a>
+          <!-- Floating Glassmorphic Spec Overlay Cards (Alternating Left/Right) -->
+          <div class="arcade-cards-overlay">
+            <!-- Initial accessible fallback intro title in two lines -->
+            <div class="arcade-intro-title" id="arcade-intro-title">
+              <span class="ait-line">Project</span>
+              <span class="ait-line">Showcase</span>
+              <div class="arcade-hud-bar">
+                <div class="arcade-hud-left"></div>
+                <div class="arcade-hud-right">
+                  <span class="arcade-scroll-hint" id="arcade-scroll-hint">SCROLL TO EXPLORE ↓</span>
                 </div>
               </div>
             </div>
+          </div><!-- end arcade-cards-overlay -->
 
-            <!-- Slide 2: Education Management Portal (BUILDATHON 2026) -->
-            <div class="h-project-slide">
-              <div class="h-project-visual" data-tilt-card="hackathon">
-                <div class="hpv-mockup hpv-mockup--hackathon">
-                  <div class="hpv-glow hpv-glow--gold"></div>
-                  <div class="hpv-spotlight"></div>
+        </div><!-- end arcade-3d-sticky -->
+      </div><!-- end arcade-3d-section -->
 
-                  <div class="hpv-top">
-                    <div class="hpv-badges">
-                      <span class="hpv-pill hpv-pill--gold">BUILDATHON 2026</span>
-                      <span class="hpv-pill hpv-pill--gold-light">INTER-COLLEGE HACKATHON</span>
-                    </div>
-                    <div class="hpv-rbac-status">
-                      <span class="hpv-subtext hpv-subtext--gold">FULL-STACK PORTAL</span>
-                    </div>
-                  </div>
-
-                  <div class="hpv-center">
-                    <!-- Interactive Role Switcher Tabs -->
-                    <div class="hpv-role-tabs" id="hackathon-role-tabs">
-                      <button type="button" class="hpv-role-btn active" data-role="admin">
-                        <span class="hpv-role-icon">🛡️</span>
-                        <div class="hpv-role-info">
-                          <span class="hpv-role-title">SUPER ADMIN</span>
-                          <span class="hpv-role-sub">Campus Policy &amp; Auditing</span>
-                        </div>
-                        <span class="hpv-role-badge">ROOT</span>
-                      </button>
-
-                      <button type="button" class="hpv-role-btn" data-role="faculty">
-                        <span class="hpv-role-icon">📑</span>
-                        <div class="hpv-role-info">
-                          <span class="hpv-role-title">FACULTY HUB</span>
-                          <span class="hpv-role-sub">Grade &amp; Attendance Pipelines</span>
-                        </div>
-                        <span class="hpv-role-badge">STAFF</span>
-                      </button>
-
-                      <button type="button" class="hpv-role-btn" data-role="student">
-                        <span class="hpv-role-icon">🎓</span>
-                        <div class="hpv-role-info">
-                          <span class="hpv-role-title">STUDENT PORTAL</span>
-                          <span class="hpv-role-sub">Course Progress &amp; Submissions</span>
-                        </div>
-                        <span class="hpv-role-badge">CLIENT</span>
-                      </button>
-                    </div>
-
-                    <!-- Dynamic Role HUD / Sandbox Screen -->
-                    <div class="hpv-role-hud" id="hackathon-role-hud">
-                      
-                      <!-- View: Super Admin -->
-                      <div class="hpv-hud-view active" data-view="admin">
-                        <div class="hpv-hud-header">
-                          <span class="hpv-hud-pill">POLICY ENFORCEMENT: ZERO-TRUST</span>
-                          <span class="hpv-hud-meta">12 CAMPUS NODES ONLINE</span>
-                        </div>
-                        <div class="hpv-hud-stream" id="admin-log-stream">
-                          <div class="hpv-log-row"><span class="log-t">[18:42:01]</span> <span class="log-ok">AUTH_OK</span> Session 0x8F granted for Super-Admin</div>
-                          <div class="hpv-log-row"><span class="log-t">[18:42:09]</span> <span class="log-inf">AUDIT</span> Campus DB replication in sync (3.4ms)</div>
-                          <div class="hpv-log-row"><span class="log-t">[18:42:15]</span> <span class="log-ok">FIREWALL</span> 0 anomalous connection attempts flagged</div>
-                        </div>
-                        <div class="hpv-hud-controls">
-                          <button type="button" class="hpv-gold-action" id="btn-simulate-audit">
-                            <span>RUN SECURITY AUDIT</span>
-                            <span class="gold-arrow">⚡</span>
-                          </button>
-                          <span class="hpv-audit-status" id="audit-status-msg">● Security Policy Integrity: 100%</span>
-                        </div>
-                      </div>
-
-                      <!-- View: Faculty Hub -->
-                      <div class="hpv-hud-view" data-view="faculty">
-                        <div class="hpv-hud-header">
-                          <span class="hpv-hud-pill">COURSE: CS-301 ADVANCED ALGORITHMS</span>
-                          <span class="hpv-hud-meta">SECTION A &amp; B</span>
-                        </div>
-                        <div class="hpv-faculty-metrics">
-                          <div class="hpv-fmetric">
-                            <span class="hpv-fmetric-label">Attendance Sync</span>
-                            <span class="hpv-fmetric-val" id="faculty-att-val">94.2%</span>
-                          </div>
-                          <div class="hpv-fmetric">
-                            <span class="hpv-fmetric-label">Grade Pipelines</span>
-                            <span class="hpv-fmetric-val" id="faculty-grd-val">120 / 120</span>
-                          </div>
-                          <div class="hpv-fmetric">
-                            <span class="hpv-fmetric-label">Batch Commit</span>
-                            <span class="hpv-fmetric-val log-ok">VERIFIED</span>
-                          </div>
-                        </div>
-                        <div class="hpv-hud-controls">
-                          <button type="button" class="hpv-gold-action" id="btn-sync-faculty">
-                            <span>SYNC ATTENDANCE PIPELINE</span>
-                            <span class="gold-arrow">↻</span>
-                          </button>
-                          <span class="hpv-audit-status" id="faculty-status-msg">All biometric records synced</span>
-                        </div>
-                      </div>
-
-                      <!-- View: Student Portal -->
-                      <div class="hpv-hud-view" data-view="student">
-                        <div class="hpv-hud-header">
-                          <span class="hpv-hud-pill">STUDENT LIFECYCLE PROGRESS</span>
-                          <span class="hpv-hud-meta">SEMESTER 6 // ACTIVE</span>
-                        </div>
-                        <div class="hpv-student-progress">
-                          <div class="hpv-sp-item">
-                            <div class="hpv-sp-head">
-                              <span>Data Structures &amp; AI</span>
-                              <span class="sp-val" id="sp-val-1">92%</span>
-                            </div>
-                            <div class="hpv-sp-bar"><div class="hpv-sp-fill" style="width: 92%"></div></div>
-                          </div>
-                          <div class="hpv-sp-item">
-                            <div class="hpv-sp-head">
-                              <span>Full-Stack Engineering</span>
-                              <span class="sp-val" id="sp-val-2">88%</span>
-                            </div>
-                            <div class="hpv-sp-bar"><div class="hpv-sp-fill" style="width: 88%"></div></div>
-                          </div>
-                        </div>
-                        <div class="hpv-hud-controls">
-                          <button type="button" class="hpv-gold-action" id="btn-calc-gpa">
-                            <span>FORECAST PERFORMANCE</span>
-                            <span class="gold-arrow">↗</span>
-                          </button>
-                          <span class="hpv-audit-status" id="student-status-msg">Projected CGPA: 3.94 / 4.00</span>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-
-                  <div class="hpv-bottom hpv-bottom--gold">
-                    <span>ARCHITECTURE: SECURE RBAC</span>
-                    <span>HACKATHON BUILD</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="h-project-content">
-                <div class="h-project-kicker h-project-kicker--gold">BUILDATHON 2026 — INTER-COLLEGE HACKATHON</div>
-                <h3 class="h-project-title">EDUCATION PORTAL /<br>ADMINISTRATION</h3>
-                <p class="h-project-desc">
-                  Built specifically during the high-intensity "BUILDATHON 2026 — Inter-College Hackathon". Resolves fragmented campus operations by consolidating multi-tier role permissions (Super-Admin, Faculty, Student), academic course distribution, real-time attendance auditing, and grade pipelines into a unified, high-speed ecosystem.
-                </p>
-                <div class="h-project-tags">
-                  <span class="tag">Full-Stack Web</span>
-                  <span class="tag">JavaScript (ES6+)</span>
-                  <span class="tag">Node.js</span>
-                  <span class="tag">Database Architecture</span>
-                  <span class="tag">RBAC Security</span>
-                </div>
-                <div class="h-project-actions">
-                  <a href="https://github.com/arikrishna-03/Education-Management-Portal" target="_blank" rel="noopener noreferrer" class="h-project-link h-project-link--gold">
-                    <span>VIEW GITHUB REPO</span>
-                    <span class="hp-arrow">↗</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Slide 3: Interactive Dual-Perspective Portfolio -->
-            <div class="h-project-slide">
-              <div class="h-project-visual" data-tilt-card="portfolio">
-                <div class="hpv-mockup hpv-mockup--portfolio">
-                  <div class="hpv-glow" id="portfolio-glow"></div>
-                  <div class="hpv-spotlight"></div>
-
-                  <div class="hpv-top">
-                    <div class="hpv-badges">
-                      <span class="hpv-pill">PORTFOLIO V2</span>
-                      <span class="hpv-pill hpv-pill--live">● LIVE PRODUCTION</span>
-                    </div>
-                    <!-- Lens Switcher Pills -->
-                    <div class="hpv-lens-switch" id="portfolio-lens-switch">
-                      <button type="button" class="hpv-lens-btn" data-lens="ai">⚡ SYSTEMS</button>
-                      <button type="button" class="hpv-lens-btn active" data-lens="dual">⇄ DUAL</button>
-                      <button type="button" class="hpv-lens-btn" data-lens="brand">🎨 VISUALS</button>
-                    </div>
-                  </div>
-
-                  <div class="hpv-center">
-                    
-                    <!-- View: DUAL SPLIT -->
-                    <div class="hpv-lens-view active" data-view="dual">
-                      <div class="hpv-dual-show">
-                        <div class="hpv-dual-col hpv-dual-ai">
-                          <span class="hpv-dual-label">AI / SYSTEMS</span>
-                          <div class="hpv-dual-chips">
-                            <span class="hpv-chip-hover" data-tooltip="Verified 933+ Problem Submissions">Codolio: 933+ Solved</span>
-                            <span class="hpv-chip-hover" data-tooltip="Active LeetCode Contest Rating 1440">LeetCode: Contest Active</span>
-                            <span class="hpv-chip-hover" data-tooltip="CodeChef 810+ Problems Solved">CodeChef: 810 Solved</span>
-                          </div>
-                        </div>
-                        
-                        <button type="button" class="hpv-dual-divider" id="btn-swap-lens" title="Click to swap perspective lens">⇄</button>
-                        
-                        <div class="hpv-dual-col hpv-dual-ds">
-                          <span class="hpv-dual-label">BRAND / VISUALS</span>
-                          <div class="hpv-dual-chips">
-                            <span class="hpv-chip-hover" data-tooltip="Dynamic real-time backdrop glass filters">Glassmorphism Lab</span>
-                            <span class="hpv-chip-hover" data-tooltip="Hardware-accelerated CSS spring animations">Motion Tokens</span>
-                            <span class="hpv-chip-hover" data-tooltip="Zero-dependency runtime mode switching">Fluid Theme Engine</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- View: AI SYSTEMS ONLY (Terminal / Competitive Telemetry) -->
-                    <div class="hpv-lens-view" data-view="ai">
-                      <div class="hpv-sys-hud">
-                        <div class="hpv-sys-header">
-                          <span class="hpv-sys-title">SYSTEMS &amp; ALGORITHMIC TELEMETRY</span>
-                          <span class="hpv-sys-latency">PING: 14ms (OPTIMAL)</span>
-                        </div>
-                        <div class="hpv-sys-grid">
-                          <div class="hpv-sys-stat">
-                            <span class="sys-lbl">CODOLIO GLOBAL</span>
-                            <span class="sys-val">#15,751</span>
-                          </div>
-                          <div class="hpv-sys-stat">
-                            <span class="sys-lbl">CONTEST RATING</span>
-                            <span class="sys-val">1440</span>
-                          </div>
-                          <div class="hpv-sys-stat">
-                            <span class="sys-lbl">COMPLEXITY</span>
-                            <span class="sys-val log-ok">O(N log N)</span>
-                          </div>
-                        </div>
-                        <div class="hpv-sys-bench">
-                          <span class="bench-tag">ACTIVE RUNTIME ENGINE:</span>
-                          <span class="bench-code">GPU WebGL Shader + 0-Dependency Reactive State</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- View: BRAND VISUALS ONLY (Interactive Design Lab) -->
-                    <div class="hpv-lens-view" data-view="brand">
-                      <div class="hpv-brand-hud">
-                        <div class="hpv-brand-header">
-                          <span class="hpv-brand-title">GLASSMORPHISM THEME LAB</span>
-                          <span class="hpv-brand-note">CLICK TO PREVIEW ACCENT TONES</span>
-                        </div>
-                        <!-- Interactive Swatches -->
-                        <div class="hpv-swatch-row">
-                          <button type="button" class="hpv-swatch active" data-color="#67c7eb" data-name="Cyber Cyan" style="--sw-color: #67c7eb" title="Cyber Cyan"></button>
-                          <button type="button" class="hpv-swatch" data-color="#00ffaa" data-name="Neon Mint" style="--sw-color: #00ffaa" title="Neon Mint"></button>
-                          <button type="button" class="hpv-swatch" data-color="#ffca28" data-name="Solar Amber" style="--sw-color: #ffca28" title="Solar Amber"></button>
-                          <button type="button" class="hpv-swatch" data-color="#d946ef" data-name="Hyper Orchid" style="--sw-color: #d946ef" title="Hyper Orchid"></button>
-                          <button type="button" class="hpv-swatch" data-color="#38bdf8" data-name="Electric Azure" style="--sw-color: #38bdf8" title="Electric Azure"></button>
-                        </div>
-                        <div class="hpv-brand-preview" id="brand-active-preview">
-                          <span>ACTIVE AMBIENT TONE:</span>
-                          <strong id="brand-swatch-name">Cyber Cyan (#67C7EB)</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  <div class="hpv-bottom">
-                    <span>ENGINE: VITE + VANILLA CSS</span>
-                    <span>AUTOMATED CI/CD</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="h-project-content">
-                <div class="h-project-kicker">FULL-STACK SYSTEM — 2026</div>
-                <h3 class="h-project-title">DUAL PORTFOLIO /<br>ENGINEERING &amp; DESIGN</h3>
-                <p class="h-project-desc">
-                  A full-stack, dual-perspective digital experience engineered to present deep AI/Data Science technical capabilities alongside high-impact brand visual design artistry. Features zero-dependency runtime mode-switching, live competitive programming API syncing, and GPU-accelerated micro-animations.
-                </p>
-                <div class="h-project-tags">
-                  <span class="tag">JavaScript (ES6+)</span>
-                  <span class="tag">HTML5/CSS3</span>
-                  <span class="tag">Vite</span>
-                  <span class="tag">API Sync</span>
-                  <span class="tag">GitHub Actions</span>
-                </div>
-                <div class="h-project-actions">
-                  <a href="https://github.com/arikrishna-03/portfolio" target="_blank" rel="noopener noreferrer" class="h-project-link">
-                    <span>VIEW GITHUB REPO</span>
-                    <span class="hp-arrow">↗</span>
-                  </a>
-                  <a href="#landing" onclick="window.backToLanding(true)" class="h-project-link h-project-link--secondary">
-                    <span>INTERACTIVE DEMO</span>
-                    <span class="hp-arrow">↗</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-          </div><!-- end h-scroll-track -->
-
-          <!-- Scroll Progress Bar at the bottom of the section -->
-          <div class="h-scroll-progress-container">
-            <div class="h-scroll-progress-bar" id="h-scroll-progress"></div>
-          </div>
-
-        </div><!-- end h-scroll-sticky -->
-      </div><!-- end h-scroll-section -->
 
 
 

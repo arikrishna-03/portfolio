@@ -1432,9 +1432,7 @@ body.ai-mode #app {
   gap: 1.2rem;
 }
 
-.sk-cat {
-  /* base — visual chrome is owned by .sk-cat--bars modifier */
-}
+/* .sk-cat base — visual chrome is owned by .sk-cat--bars modifier */
 
 /* .sk-cat-t base styles moved into the Skill Confidence Bars section below */
 
@@ -1775,35 +1773,107 @@ body.ai-mode #app {
    (Right-to-Left Scroll Experience)
 ══════════════════════════════════════════════════ */
 
-.h-scroll-section {
+/* ══════════════════════════════════════════════════
+   3D ARCADE CABINETS GALLERY (THREE.JS / AMIX-STYLE)
+   Scroll-Driven 3D WebGL Camera & Spec Cards
+══════════════════════════════════════════════════ */
+
+.arcade-3d-section {
   position: relative;
-  height: 300vh;
+  height: 380vh; /* Scroll runway for 3D camera travel */
   margin: 0;
   padding: 0;
+  background: #060a14;
 }
 
-.h-scroll-sticky {
+.arcade-3d-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
   width: 100%;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 4.5rem 0 2rem;
-  box-sizing: border-box;
+  background: #060a14;
 }
 
-.h-scroll-header-bar {
-  padding: 0 4.5rem;
+.arcade-3d-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+/* Ambient lighting overlays */
+.arcade-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(circle at center, transparent 45%, rgba(4, 7, 16, 0.72) 100%);
+}
+
+.arcade-top-fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom, #080d1a 0%, transparent 100%);
+}
+
+/* Seamless exit gradient into #coding-profiles ("Coding Consistency") */
+.arcade-bottom-transition {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to top, #080d1a 0%, rgba(8, 13, 26, 0.8) 50%, transparent 100%);
+}
+
+/* Top HUD Bar */
+.arcade-hud-bar {
+  position: absolute;
+  top: 2.2rem;
+  left: 3.5rem;
+  right: 3.5rem;
   display: flex;
-  align-items: flex-end;
   justify-content: space-between;
+  align-items: center;
   z-index: 10;
+  pointer-events: none;
 }
 
-.h-scroll-nav-hint {
+.arcade-hud-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.arcade-hud-tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #060a14;
+  background: var(--ai-accent);
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+}
+
+.arcade-hud-sub {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--ai-muted);
+}
+
+.arcade-hud-right {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -1814,42 +1884,299 @@ body.ai-mode #app {
   opacity: 0.85;
 }
 
-.h-scroll-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ai-accent);
-  box-shadow: 0 0 8px var(--ai-accent);
-  animation: apc-pulse 2s infinite;
-}
-
-.h-scroll-arrow {
+.arcade-scroll-arrow {
   font-size: 1rem;
-  animation: hArrowBounce 1.8s ease-in-out infinite;
+  animation: vArrowBounce 1.8s ease-in-out infinite;
 }
 
-@keyframes hArrowBounce {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(6px); }
+@keyframes vArrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
 }
 
-.h-scroll-track {
+/* Floating Glassmorphic Spec Overlay Cards */
+.arcade-cards-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.arcade-card {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scale(0.94);
+  width: min(480px, 88vw);
+  padding: 2.4rem 2.2rem;
+  background: rgba(6, 11, 24, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(103, 199, 235, 0.32);
+  border-radius: 22px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(103, 199, 235, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              visibility 0.45s ease;
+}
+
+.arcade-card--left {
+  left: 6.5vw;
+}
+
+.arcade-card--right {
+  right: 6.5vw;
+}
+
+.arcade-card.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+
+.ac-glow {
+  position: absolute;
+  top: -25%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(103, 199, 235, 0.08) 0%, transparent 65%);
+  pointer-events: none;
+  border-radius: 22px;
+}
+
+.ac-glow--mint {
+  background: radial-gradient(circle, rgba(0, 255, 170, 0.09) 0%, transparent 65%);
+}
+
+.ac-glow--gold {
+  background: radial-gradient(circle, rgba(255, 202, 40, 0.09) 0%, transparent 65%);
+}
+
+.ac-header {
   display: flex;
-  gap: 8vw;
-  width: max-content;
-  padding: 0 6vw;
   align-items: center;
-  will-change: transform;
+  gap: 0.85rem;
+  margin-bottom: 1.2rem;
 }
 
-.h-project-slide {
+.ac-pill {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ai-accent);
+  background: rgba(103, 199, 235, 0.1);
+  border: 1px solid rgba(103, 199, 235, 0.3);
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+}
+
+.ac-pill--mint {
+  color: #00ffaa;
+  background: rgba(0, 255, 170, 0.1);
+  border-color: rgba(0, 255, 170, 0.3);
+}
+
+.ac-pill--gold {
+  color: #ffca28;
+  background: rgba(255, 202, 40, 0.1);
+  border-color: rgba(255, 202, 40, 0.3);
+}
+
+.ac-category {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--ai-muted);
+}
+
+.ac-title {
+  font-family: 'Space Grotesk', 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 2.5vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.12;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.ac-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.94rem;
+  color: var(--ai-muted);
+  line-height: 1.6;
+  margin-bottom: 1.6rem;
+}
+
+.ac-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.8rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.ac-spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.76rem;
+}
+
+.ac-spec-label {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--ai-muted);
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.ac-spec-val {
+  font-family: 'Roboto Mono', monospace;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.highlight-cyan {
+  color: #67c7eb !important;
+}
+
+.highlight-mint {
+  color: #00ffaa !important;
+}
+
+.highlight-gold {
+  color: #ffca28 !important;
+}
+
+.ac-actions {
   display: flex;
   align-items: center;
-  gap: 4.5rem;
-  width: 78vw;
-  max-width: 1250px;
-  flex-shrink: 0;
 }
+
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1.6rem;
+  background: linear-gradient(135deg, rgba(103, 199, 235, 0.2), rgba(43, 55, 132, 0.4));
+  border: 1px solid rgba(103, 199, 235, 0.6);
+  border-radius: 50px;
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(103, 199, 235, 0.25);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+}
+
+.ac-btn:hover {
+  background: var(--ai-accent);
+  color: #060a14;
+  box-shadow: 0 6px 30px rgba(103, 199, 235, 0.5);
+  transform: translateY(-2px);
+}
+
+.ac-btn--mint {
+  background: linear-gradient(135deg, rgba(0, 255, 170, 0.2), rgba(5, 150, 105, 0.4));
+  border-color: rgba(0, 255, 170, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 255, 170, 0.25);
+}
+
+.ac-btn--mint:hover {
+  background: #00ffaa;
+  color: #060a14;
+  box-shadow: 0 6px 30px rgba(0, 255, 170, 0.5);
+}
+
+.ac-btn--gold {
+  background: linear-gradient(135deg, rgba(255, 202, 40, 0.2), rgba(217, 119, 6, 0.4));
+  border-color: rgba(255, 202, 40, 0.6);
+  box-shadow: 0 4px 20px rgba(255, 202, 40, 0.25);
+}
+
+.ac-btn--gold:hover {
+  background: #ffca28;
+  color: #060a14;
+  box-shadow: 0 6px 30px rgba(255, 202, 40, 0.5);
+}
+
+.ac-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.ac-btn:hover .ac-arrow {
+  transform: translateX(4px);
+}
+
+/* Bottom Progress Bar */
+.arcade-progress-container {
+  position: absolute;
+  bottom: 2rem;
+  left: 3.5rem;
+  right: 3.5rem;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.arcade-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #67c7eb, #00ffaa, #ffca28);
+  border-radius: 2px;
+  transition: width 0.08s linear;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 900px) {
+  .arcade-3d-section {
+    height: 300vh;
+  }
+  .arcade-hud-bar {
+    top: 1.2rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+  .arcade-card {
+    width: calc(100% - 2.5rem);
+    left: 1.25rem !important;
+    right: 1.25rem !important;
+    bottom: 4rem;
+    top: auto;
+    transform: translateY(20px) scale(0.96);
+    padding: 1.6rem 1.4rem;
+  }
+  .arcade-card.active {
+    transform: translateY(0) scale(1);
+  }
+  .ac-title {
+    font-size: 1.5rem;
+  }
+  .ac-desc {
+    font-size: 0.85rem;
+    margin-bottom: 1.2rem;
+  }
+  .arcade-progress-container {
+    bottom: 1.2rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
 
 /* ── Project Visual Mockup ── */
 .h-project-visual {
@@ -1888,6 +2215,119 @@ body.ai-mode #app {
   background-size: 24px 24px, 24px 24px, 100% 100%;
   transform-style: preserve-3d;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Image-Based Project Showcases */
+.hpv-mockup--img {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  background: #040711;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hpv-showcase-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.6s ease;
+}
+
+.h-project-slide:hover .hpv-showcase-img {
+  transform: scale(1.05);
+}
+
+.hpv-img-badge-wrap {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  right: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hpv-img-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(5, 10, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(103, 199, 235, 0.35);
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hpv-img-pill--live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ffaa;
+  box-shadow: 0 0 8px #00ffaa;
+  animation: apc-pulse 1.8s infinite;
+}
+
+.hpv-img-tag-sub {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--ai-accent);
+  background: rgba(5, 10, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(103, 199, 235, 0.25);
+  border-radius: 6px;
+  padding: 0.3rem 0.65rem;
+  font-weight: 600;
+}
+
+.hpv-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(4, 7, 16, 0.35) 0%, transparent 45%, rgba(4, 7, 16, 0.85) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hpv-img-footer {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  right: 1.2rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.68rem;
+  color: #e2e8f0;
+  background: rgba(5, 10, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.55rem 0.95rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.hpv-img-footer strong {
+  color: var(--ai-accent);
+  font-weight: 700;
 }
 
 .hpv-glow {
@@ -2763,14 +3203,14 @@ body.ai-mode #app {
 }
 
 .h-project-title {
-  font-family: 'Anton', 'Space Grotesk', 'Syne', sans-serif;
-  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
+  font-family: 'Space Grotesk', 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: #ffffff;
   text-transform: uppercase;
   margin-bottom: 1.25rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .h-project-desc {
@@ -5218,5 +5658,603 @@ body.ds-mode .n-links.mobile-open {
     font-size: 1rem;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   IMMERSIVE 3D SCROLL-DRIVEN PROJECTS WORLD (THREE.JS SHOWCASE)
+   ═══════════════════════════════════════════════════════════════════════ */
+.arcade-3d-section {
+  position: relative;
+  width: 100%;
+  height: 580vh; /* 3 projects + generous runway for reading and exit */
+  background: #080d1a;
+  overflow: clip;
+}
+
+.arcade-3d-sticky {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 125vh; /* Compensates for body zoom 0.8 to fill 100% fullscreen */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 1023px) {
+  .arcade-3d-sticky {
+    height: 100vh;
+  }
+}
+
+.arcade-3d-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease-out;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 120px, black 300px, black calc(100% - 300px), rgba(0,0,0,0.5) calc(100% - 120px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 120px, black 300px, black calc(100% - 300px), rgba(0,0,0,0.5) calc(100% - 120px), transparent 100%);
+}
+
+/* Vignette and smooth section depth blending */
+.arcade-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(8, 13, 26, 0.7) 80%, #080d1a 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.arcade-top-fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(to bottom, #080d1a 0%, rgba(8, 13, 26, 0.9) 25%, rgba(8, 13, 26, 0.45) 65%, transparent 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.arcade-bottom-transition {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(to top, #080d1a 0%, rgba(8, 13, 26, 0.9) 25%, rgba(8, 13, 26, 0.45) 65%, transparent 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Top Interactive HUD Bar */
+.arcade-hud-bar {
+  position: absolute;
+  top: 2rem;
+  left: 3rem;
+  right: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20;
+  pointer-events: auto;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.arcade-hud-left {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.arcade-hud-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #67c7eb;
+  background: rgba(103, 199, 235, 0.08);
+  border: 1px solid rgba(103, 199, 235, 0.28);
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  text-shadow: 0 0 12px rgba(103, 199, 235, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.arcade-hud-sub {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  transition: color 0.4s ease;
+}
+
+.arcade-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.arcade-counter-badge {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #f7d059;
+  background: rgba(247, 208, 89, 0.08);
+  border: 1px solid rgba(247, 208, 89, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.arcade-scroll-hint {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #67c7eb;
+  animation: arcadePulseHint 2s infinite ease-in-out;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes arcadePulseHint {
+  0%, 100% { opacity: 0.9; transform: translateY(0); }
+  50% { opacity: 0.4; transform: translateY(3px); }
+}
+
+/* Floating Glassmorphic Spec Overlay Cards */
+.arcade-cards-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.arcade-card {
+  position: absolute;
+  top: 50%;
+  width: min(540px, 92vw);
+  background: rgba(6, 11, 24, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(103, 199, 235, 0.06);
+  border-radius: 18px;
+  padding: 2.2rem;
+  color: #e2e8f0;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(12px);
+  visibility: hidden;
+  transition: opacity 0.25s ease-out,
+              transform 0.28s ease-out,
+              filter 0.25s ease-out,
+              visibility 0.25s ease;
+  overflow: hidden;
+}
+
+/* Alternating Left and Right Placement */
+.arcade-card--left {
+  left: min(6vw, 5.5rem);
+  right: auto;
+  transform: translateY(calc(-50% + 35px)) scale(0.96);
+}
+
+.arcade-card--right {
+  right: min(6vw, 5.5rem);
+  left: auto;
+  transform: translateY(calc(-50% + 35px)) scale(0.96);
+}
+
+/* "Project Showcase" two-line title at entrance */
+.arcade-intro-title {
+  position: absolute;
+  top: 50%;
+  left: min(8vw, 7rem);
+  transform: translateY(calc(-50% + 25px));
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(12px);
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.55s ease;
+}
+
+.arcade-intro-title.active {
+  opacity: 1;
+  visibility: visible;
+  filter: blur(0px);
+  transform: translateY(-50%);
+}
+
+.arcade-intro-title .ait-line {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  background: none;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 255, 255, 0.2);
+}
+
+.arcade-intro-title .ait-line:first-child,
+.arcade-intro-title .ait-line:last-child,
+body.ai-mode .arcade-intro-title .ait-line {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  background: none;
+}
+
+/* Active Project Reading Zone */
+.arcade-card.active {
+  opacity: 1;
+  filter: blur(0px);
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arcade-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 45px rgba(103, 199, 235, 0.12);
+}
+
+/* Ambient Radial Glow inside Card */
+.ac-glow {
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  height: 180px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Card Header */
+.ac-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.ac-pill {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid currentColor;
+}
+
+.ac-category {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* Card Typography */
+.ac-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.45rem, 2.3vw, 2.05rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.22;
+  color: #ffffff;
+  margin-bottom: 0.45rem;
+}
+
+.ac-tagline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.ac-desc {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.62;
+  color: #94a3b8;
+  margin-bottom: 1.4rem;
+}
+
+/* Technical Specs Table */
+.ac-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.3rem;
+}
+
+.ac-spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.ac-spec-row:last-child {
+  border-bottom: none;
+}
+
+.ac-spec-label {
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-spec-val {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Tech Tags */
+.ac-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.6rem;
+}
+
+.ac-tag {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.74rem;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ac-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Interactive CTA Buttons */
+.ac-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 8px;
+  background: var(--btn-accent, #67c7eb);
+  color: #030713;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  box-shadow: 0 0 20px rgba(103, 199, 235, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.ac-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(103, 199, 235, 0.6);
+}
+
+.ac-btn .ac-arrow {
+  transition: transform 0.25s ease;
+}
+
+.ac-btn:hover .ac-arrow {
+  transform: translateX(4px);
+}
+
+.ac-btn-sec {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.ac-btn-sec:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Top Progress Track - seamless, no divider line */
+.arcade-progress-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  z-index: 50;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.arcade-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #67c7eb 0%, #00ffaa 50%, #f7d059 100%);
+  box-shadow: 0 0 8px rgba(103, 199, 235, 0.6);
+  transition: width 0.08s linear;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN (TABLETS & MOBILE)
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .arcade-hud-bar {
+    top: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .arcade-hud-sub {
+    display: none;
+  }
+
+  .arcade-card {
+    width: calc(100vw - 3rem);
+    max-width: 480px;
+    padding: 1.6rem;
+    background: rgba(6, 11, 24, 0.84);
+  }
+
+  .arcade-card--left,
+  .arcade-card--right {
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, calc(-50% + 30px)) scale(0.96);
+  }
+
+  .arcade-intro-title {
+    left: 50% !important;
+    transform: translate(-50%, calc(-50% + 20px));
+    text-align: center;
+    width: 90vw;
+    align-items: center;
+  }
+
+  .arcade-intro-title.active {
+    transform: translate(-50%, -50%);
+  }
+
+  .arcade-intro-title .ait-line {
+    font-size: clamp(2.6rem, 11vw, 4.2rem);
+  }
+
+  .arcade-card.active {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .ac-title {
+    font-size: 1.4rem;
+  }
+
+  .ac-tagline {
+    font-size: 0.88rem;
+  }
+
+  .ac-desc {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .ac-specs {
+    padding: 0.7rem 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .ac-spec-row {
+    font-size: 0.74rem;
+  }
+
+  .ac-actions {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .ac-btn,
+  .ac-btn-sec {
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .arcade-hud-tag {
+    font-size: 0.68rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .arcade-counter-badge {
+    font-size: 0.74rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .arcade-scroll-hint {
+    display: none;
+  }
+
+  .arcade-card {
+    width: calc(100vw - 2rem);
+    padding: 1.3rem;
+  }
+
+  .ac-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ac-btn,
+  .ac-btn-sec {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arcade-card {
+    filter: none !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  }
+  .arcade-scroll-hint {
+    animation: none;
+  }
+}
+
 
 
