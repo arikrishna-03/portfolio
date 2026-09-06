@@ -154,13 +154,13 @@ export function initProjects3DWorld() {
   fillLight.position.set(-15, 18, -20);
   scene.add(fillLight);
 
-  // High-Depth Ground Floor Grid
-  const gridHelper = new THREE.GridHelper(260, 160, 0x67c7eb, 0x111f3d);
-  gridHelper.position.y = -0.01;
+  // High-Depth Extended Ground Floor Grid
+  const gridHelper = new THREE.GridHelper(380, 200, 0x67c7eb, 0x111f3d);
+  gridHelper.position.set(0, -0.01, -60);
   scene.add(gridHelper);
 
-  // Dark Reflective Floor Plane
-  const floorGeo = new THREE.PlaneGeometry(280, 280);
+  // Dark Reflective Floor Plane spanning entire runway
+  const floorGeo = new THREE.PlaneGeometry(380, 380);
   const floorMat = new THREE.MeshStandardMaterial({
     color: 0x03060f,
     roughness: 0.28,
@@ -168,10 +168,10 @@ export function initProjects3DWorld() {
   });
   const floorMesh = new THREE.Mesh(floorGeo, floorMat);
   floorMesh.rotation.x = -Math.PI / 2;
-  floorMesh.position.y = -0.02;
+  floorMesh.position.set(0, -0.02, -60);
   scene.add(floorMesh);
 
-  // Futuristic Background Architecture (Skyscrapers & Towers)
+  // Futuristic Background Architecture (Skyscrapers & Towers along extended runway)
   const cityGroup = new THREE.Group();
   const boxGeo = new THREE.BoxGeometry(1, 1, 1);
   const bldgMat = new THREE.MeshStandardMaterial({
@@ -181,16 +181,16 @@ export function initProjects3DWorld() {
   });
 
   const cityPalette = [0x67c7eb, 0x00ffaa, 0xc084fc, 0xf7d059];
-  for (let i = 0; i < 75; i++) {
+  for (let i = 0; i < 95; i++) {
     const bldg = new THREE.Mesh(boxGeo, bldgMat);
-    const height = 15 + Math.random() * 45;
+    const height = 15 + Math.random() * 48;
     const width = 3 + Math.random() * 6;
     const depth = 3 + Math.random() * 6;
     bldg.scale.set(width, height, depth);
 
     const side = Math.random() > 0.5 ? 1 : -1;
     const x = side * (12 + Math.random() * 45);
-    const z = -100 + Math.random() * 125;
+    const z = -175 + Math.random() * 195;
     bldg.position.set(x, height / 2, z);
     cityGroup.add(bldg);
 
@@ -211,8 +211,8 @@ export function initProjects3DWorld() {
   }
   scene.add(cityGroup);
 
-  // Vertical Laser Pillars / Data Columns
-  for (let i = 0; i < 24; i++) {
+  // Vertical Laser Pillars / Data Columns extending down the deep corridor
+  for (let i = 0; i < 38; i++) {
     const beamGeo = new THREE.CylinderGeometry(0.045, 0.045, 60, 8);
     const beamColor = i % 2 === 0 ? 0x67c7eb : 0x00ffaa;
     const beamMat = new THREE.MeshBasicMaterial({
@@ -222,18 +222,18 @@ export function initProjects3DWorld() {
     });
     const beam = new THREE.Mesh(beamGeo, beamMat);
     const side = i % 2 === 0 ? 1 : -1;
-    beam.position.set(side * (8.5 + (i % 4) * 2.5), 30, -i * 3.5);
+    beam.position.set(side * (8.5 + (i % 4) * 2.5), 30, -i * 4.2);
     scene.add(beam);
   }
 
-  // Floating Cyber Dust / Particles
-  const particleCount = 280;
+  // Floating Cyber Dust / Particles throughout full extended corridor
+  const particleCount = 380;
   const particleGeo = new THREE.BufferGeometry();
   const particlePositions = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount * 3; i += 3) {
-    particlePositions[i] = (Math.random() - 0.5) * 45;
-    particlePositions[i + 1] = Math.random() * 18;
-    particlePositions[i + 2] = -Math.random() * 85;
+    particlePositions[i] = (Math.random() - 0.5) * 55;
+    particlePositions[i + 1] = Math.random() * 20;
+    particlePositions[i + 2] = 12 - Math.random() * 180;
   }
   particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
   const particleMat = new THREE.PointsMaterial({
@@ -458,10 +458,18 @@ export function initProjects3DWorld() {
     lookAtPoints.push(new THREE.Vector3(lookX, 2.1, proj.worldPos.z));
   });
 
-  // Exit overview waypoint: pulls back and up into the digital sky
-  const lastZ = projectsData[projectsData.length - 1].worldPos.z;
-  pathPoints.push(new THREE.Vector3(0, 4.5, lastZ - 14.0));
-  lookAtPoints.push(new THREE.Vector3(0, 1.5, lastZ - 28.0));
+  // Extended Post-Station-3 Runway Waypoints ("go some more distance, little more"):
+  // Waypoint 4: Center corridor cruise past station 3
+  pathPoints.push(new THREE.Vector3(0, 2.35, -76.0));
+  lookAtPoints.push(new THREE.Vector3(0, 2.1, -112.0));
+
+  // Waypoint 5: Deep forward travel through glowing runway & monoliths
+  pathPoints.push(new THREE.Vector3(0, 2.5, -106.0));
+  lookAtPoints.push(new THREE.Vector3(0, 2.1, -148.0));
+
+  // Waypoint 6: Ascend softly into horizon for smooth regular transition into Coding Consistency
+  pathPoints.push(new THREE.Vector3(0, 3.6, -136.0));
+  lookAtPoints.push(new THREE.Vector3(0, 2.0, -180.0));
 
   const cameraPath = new THREE.CatmullRomCurve3(pathPoints);
   const lookAtPath = new THREE.CatmullRomCurve3(lookAtPoints);
@@ -502,9 +510,9 @@ export function initProjects3DWorld() {
     const raw = -rect.top / totalDist;
     targetProgress = Math.max(0, Math.min(raw, 1));
 
-    // When scrolling past or entering the exit boundary, immediately hide cards
-    // so no card bleeds into the adjacent "Coding Consistency" section
-    if (raw >= 0.88 || rect.bottom <= window.innerHeight + 180) {
+    // When scrolling past station 3 into extended flight, hide cards cleanly
+    // so no card bleeds into the flight or adjacent "Coding Consistency" section
+    if (raw >= 0.81 || rect.bottom <= window.innerHeight + 80) {
       systemCards.forEach((c) => {
         c.classList.remove('active');
         c.setAttribute('aria-hidden', 'true');
@@ -517,86 +525,100 @@ export function initProjects3DWorld() {
   calculateScrollProgress();
 
   // Configured reading zones for each project:
-  // Outside these zones (transit corridors / while crossing), cards are strictly hidden.
+  // Outside these zones (transit corridors / extended flight), cards are strictly hidden.
   const projectZones = [
-    { id: 0, start: 0.16, end: 0.34 }, // System 01 (Gramin Sahay / Voice AI)
-    { id: 1, start: 0.45, end: 0.65 }, // System 02 (Dual Portfolio & Telemetry Core - visible more!)
-    { id: 2, start: 0.74, end: 0.86 }, // System 03 (Neural Defect & Vision Analyzer - ample time to read!)
+    { id: 0, start: 0.14, end: 0.30 }, // System 01 (Gramin Sahay / Voice AI)
+    { id: 1, start: 0.40, end: 0.58 }, // System 02 (Dual Portfolio & Telemetry Core)
+    { id: 2, start: 0.68, end: 0.80 }, // System 03 (Neural Defect & Vision Analyzer - ample time to read!)
   ];
 
   // Piecewise camera spline mapping: smoothly glides to each stand, holds comfortably
-  // during the reading zone, and accelerates during transit corridors
+  // during the reading zone, accelerates through transit corridors, flies extended distance past station 3,
+  // and finishes with a regular smooth transition.
   function mapSplineProgress(p) {
-    if (p <= 0.05) return 0.0;
-    if (p < 0.16) {
+    if (p <= 0.04) return 0.0;
+    if (p < 0.14) {
       // Approach Station 1
-      const factor = (p - 0.05) / 0.11;
-      return factor * 0.146;
+      const factor = (p - 0.04) / 0.10;
+      return factor * 0.082;
     }
-    if (p <= 0.34) {
+    if (p <= 0.30) {
       // Station 1 Reading Zone: hold right at Station 1 with gentle drift
-      const factor = (p - 0.16) / 0.18;
-      return 0.146 + factor * 0.008;
+      const factor = (p - 0.14) / 0.16;
+      return 0.082 + factor * 0.006;
     }
-    if (p < 0.45) {
+    if (p < 0.40) {
       // Corridor travel from Station 1 to Station 2
-      const factor = (p - 0.34) / 0.11;
-      return 0.154 + factor * (0.432 - 0.154);
+      const factor = (p - 0.30) / 0.10;
+      return 0.088 + factor * (0.239 - 0.088);
     }
-    if (p <= 0.65) {
+    if (p <= 0.58) {
       // Station 2 Reading Zone: hold right at Station 2 with gentle drift
-      const factor = (p - 0.45) / 0.20;
-      return 0.432 + factor * 0.008;
+      const factor = (p - 0.40) / 0.18;
+      return 0.239 + factor * 0.006;
     }
-    if (p < 0.74) {
+    if (p < 0.68) {
       // Corridor travel from Station 2 to Station 3
-      const factor = (p - 0.65) / 0.09;
-      return 0.440 + factor * (0.716 - 0.440);
+      const factor = (p - 0.58) / 0.10;
+      return 0.245 + factor * (0.396 - 0.245);
     }
-    if (p <= 0.86) {
+    if (p <= 0.80) {
       // Station 3 Reading Zone: hold right at Station 3 with gentle drift
-      const factor = (p - 0.74) / 0.12;
-      return 0.716 + factor * 0.008;
+      const factor = (p - 0.68) / 0.12;
+      return 0.396 + factor * 0.006;
     }
-    // Exit into sky
-    const factor = Math.min(1.0, (p - 0.86) / 0.14);
-    return 0.724 + factor * (1.0 - 0.724);
+    if (p <= 0.93) {
+      // Post-Station-3 Extended Travel ("go some more distance, little more"):
+      // Camera accelerates forward down the cyber runway past Station 3
+      const factor = (p - 0.80) / 0.13;
+      return 0.402 + factor * (0.82 - 0.402);
+    }
+    // Regular transition: soft glide into horizon exit
+    const factor = Math.min(1.0, (p - 0.93) / 0.07);
+    return 0.82 + factor * (1.0 - 0.82);
   }
 
   // Dynamic camera lookAt target: precisely aims at each active project stand
-  // so the stand is comfortably framed on its designated side (opposite of card)
+  // so the stand is comfortably framed on its designated side, then looks straight down the runway
   function getDynamicLookAt(p) {
-    if (p < 0.12) {
-      const factor = Math.max(0, p / 0.12);
+    if (p < 0.10) {
+      const factor = Math.max(0, p / 0.10);
       const startLook = new THREE.Vector3(0, 2.2, -10.0);
       const s1Look = new THREE.Vector3(0.4, 2.1, -14.0);
       return new THREE.Vector3().lerpVectors(startLook, s1Look, factor);
     }
-    if (p <= 0.35) {
+    if (p <= 0.30) {
       return new THREE.Vector3(0.4, 2.1, -14.0);
     }
-    if (p < 0.45) {
-      const factor = (p - 0.35) / 0.10;
+    if (p < 0.40) {
+      const factor = (p - 0.30) / 0.10;
       const look1 = new THREE.Vector3(0.4, 2.1, -14.0);
       const look2 = new THREE.Vector3(-0.4, 2.1, -36.0);
       return new THREE.Vector3().lerpVectors(look1, look2, factor);
     }
-    if (p <= 0.65) {
+    if (p <= 0.58) {
       return new THREE.Vector3(-0.4, 2.1, -36.0);
     }
-    if (p < 0.74) {
-      const factor = (p - 0.65) / 0.09;
+    if (p < 0.68) {
+      const factor = (p - 0.58) / 0.10;
       const look2 = new THREE.Vector3(-0.4, 2.1, -36.0);
       const look3 = new THREE.Vector3(0.4, 2.1, -58.0);
       return new THREE.Vector3().lerpVectors(look2, look3, factor);
     }
-    if (p <= 0.86) {
+    if (p <= 0.80) {
       return new THREE.Vector3(0.4, 2.1, -58.0);
     }
-    const factor = Math.min(1.0, (p - 0.86) / 0.14);
-    const look3 = new THREE.Vector3(0.4, 2.1, -58.0);
-    const exitLook = new THREE.Vector3(0, 1.5, -85.0);
-    return new THREE.Vector3().lerpVectors(look3, exitLook, factor);
+    if (p <= 0.88) {
+      // Lerp from Station 3 stand to straight down the cyber corridor runway
+      const factor = (p - 0.80) / 0.08;
+      const look3 = new THREE.Vector3(0.4, 2.1, -58.0);
+      const runwayLook = new THREE.Vector3(0, 2.1, -120.0);
+      return new THREE.Vector3().lerpVectors(look3, runwayLook, factor);
+    }
+    const factor = Math.min(1.0, (p - 0.88) / 0.12);
+    const runwayLook = new THREE.Vector3(0, 2.1, -120.0);
+    const exitLook = new THREE.Vector3(0, 2.0, -180.0);
+    return new THREE.Vector3().lerpVectors(runwayLook, exitLook, factor);
   }
 
   // Update UI Card States based on scroll progress
@@ -608,27 +630,27 @@ export function initProjects3DWorld() {
     // 1. DYNAMIC 3D ARCADE REVEAL & HUD OPACITY CONTROL
     // ─────────────────────────────────────────────────────────────────
     // - On Tech Stack (rect.top > 0): Arcade is 0% visible (completely hidden).
-    // - On Project Showcase entrance (progress < 0.05): ONLY title is seen, NO back view (opacity = 0).
-    // - Scrolling from 0.05 to 0.16: Slowly and smoothly reveals the 3D world as camera arrives at System 01.
-    // - Between 0.16 and 0.86: 100% full 3D radiance and interaction.
-    // - Past 0.86 to 0.94: Smooth fade out to darkness into Coding Consistency.
+    // - On Project Showcase entrance (progress < 0.04): ONLY title is seen, NO back view (opacity = 0).
+    // - Scrolling from 0.04 to 0.14: Slowly and smoothly reveals the 3D world as camera arrives at System 01.
+    // - Between 0.14 and 0.93: 100% full 3D radiance, active cards, and extended flight corridor.
+    // - Past 0.93 to 0.995: Regular smooth fade out to darkness into Coding Consistency.
     let arcadeReveal = 0;
     let hudOpacity = 0;
 
     if (rect.top > 0) {
       arcadeReveal = 0;
       hudOpacity = 0;
-    } else if (progress < 0.05) {
+    } else if (progress < 0.04) {
       arcadeReveal = 0;
       hudOpacity = 0;
-    } else if (progress >= 0.05 && progress < 0.16) {
-      arcadeReveal = (progress - 0.05) / 0.11;
-      hudOpacity = Math.max(0, (progress - 0.08) / 0.08);
-    } else if (progress >= 0.16 && progress <= 0.86) {
+    } else if (progress >= 0.04 && progress < 0.14) {
+      arcadeReveal = (progress - 0.04) / 0.10;
+      hudOpacity = Math.max(0, (progress - 0.06) / 0.07);
+    } else if (progress >= 0.14 && progress <= 0.93) {
       arcadeReveal = 1;
       hudOpacity = 1;
-    } else if (progress > 0.86 && progress < 0.94) {
-      arcadeReveal = 1 - (progress - 0.86) / 0.08;
+    } else if (progress > 0.93 && progress < 0.995) {
+      arcadeReveal = 1 - (progress - 0.93) / 0.065;
       hudOpacity = arcadeReveal;
     } else {
       arcadeReveal = 0;
@@ -650,7 +672,7 @@ export function initProjects3DWorld() {
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // 2. ACTIVE STAGE SELECTION (INTRO, READING ZONES, CROSSING, EXIT)
+    // 2. ACTIVE STAGE SELECTION (INTRO, READING ZONES, CROSSING, FLIGHT, EXIT)
     // ─────────────────────────────────────────────────────────────────
     let newActive = 'crossing';
     let targetMeshIdx = -1;
@@ -658,10 +680,13 @@ export function initProjects3DWorld() {
     if (rect.top > window.innerHeight * 0.25) {
       newActive = 'hidden';
       targetMeshIdx = -1;
-    } else if (progress < 0.09) {
+    } else if (progress < 0.08) {
       newActive = 'intro';
       targetMeshIdx = -1;
-    } else if (progress >= 0.86) {
+    } else if (progress > 0.80 && progress <= 0.93) {
+      newActive = 'flight'; // Prolonged post-station-3 corridor flight
+      targetMeshIdx = -1;
+    } else if (progress > 0.93) {
       newActive = 'exit';
       targetMeshIdx = -1;
     } else {
@@ -734,8 +759,9 @@ export function initProjects3DWorld() {
         if (scrollPrompt) {
           scrollPrompt.style.opacity = '0';
         }
-      } else if (activeIndex === 'crossing') {
-        // While crossing / traveling through 3D world: NO project name or card is showing!
+      } else if (activeIndex === 'flight') {
+        // Extended Corridor Flight after the last station:
+        // No cards, full clean cinematic forward flight through the cyber runway
         if (introTitle) {
           introTitle.classList.remove('active');
         }
@@ -745,9 +771,29 @@ export function initProjects3DWorld() {
         });
 
         if (hudCurrentBadge) {
-          if (progress < 0.16) {
+          hudCurrentBadge.textContent = '3D CYBER CORRIDOR // EXTENDED RUNWAY';
+          hudCurrentBadge.style.color = '#67c7eb';
+        }
+        if (hudCounter) {
+          hudCounter.textContent = '03 / 03';
+        }
+        if (scrollPrompt) {
+          scrollPrompt.style.opacity = '0';
+        }
+      } else if (activeIndex === 'crossing') {
+        // While crossing between stations: NO card showing
+        if (introTitle) {
+          introTitle.classList.remove('active');
+        }
+        systemCards.forEach((card) => {
+          card.classList.remove('active');
+          card.setAttribute('aria-hidden', 'true');
+        });
+
+        if (hudCurrentBadge) {
+          if (progress < 0.14) {
             hudCurrentBadge.textContent = '3D CORRIDOR // ENTERING SYSTEM 01';
-          } else if (progress < 0.46) {
+          } else if (progress < 0.40) {
             hudCurrentBadge.textContent = '3D CORRIDOR // TRAVELING TO SYSTEM 02';
           } else {
             hudCurrentBadge.textContent = '3D CORRIDOR // TRAVELING TO SYSTEM 03';
@@ -771,11 +817,11 @@ export function initProjects3DWorld() {
         });
 
         if (hudCurrentBadge) {
-          hudCurrentBadge.textContent = 'EXHIBITION COMPLETE // NORMAL SITE RESUMES';
+          hudCurrentBadge.textContent = 'SYSTEM ARCHIVE COMPLETE // CODING CONSISTENCY';
           hudCurrentBadge.style.color = '#cbd5e1';
         }
         if (hudCounter) {
-          hudCounter.textContent = 'EXIT';
+          hudCounter.textContent = 'RESUME';
         }
         if (scrollPrompt) {
           scrollPrompt.style.opacity = '0';

@@ -1780,7 +1780,7 @@ body.ai-mode #app {
 
 .arcade-3d-section {
   position: relative;
-  height: 380vh; /* Scroll runway for 3D camera travel */
+  height: 460vh; /* Generous runway: ample reading time plus extended post-station corridor flight */
   margin: 0;
   padding: 0;
   background: #060a14;
@@ -1830,10 +1830,10 @@ body.ai-mode #app {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 180px;
+  height: 220px;
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(to top, #080d1a 0%, rgba(8, 13, 26, 0.8) 50%, transparent 100%);
+  background: linear-gradient(to top, #080d1a 0%, rgba(8, 13, 26, 0.9) 60%, transparent 100%);
 }
 
 /* Top HUD Bar */
