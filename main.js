@@ -1533,7 +1533,7 @@ window.goTo = function(id){
     if(id === 'about') id = 'about-ds';
     if(id === 'software') id = 'software-ds';
   } else if (mode === 'ai') {
-    if(id === 'projects') id = 'projects-ai';
+    if(id === 'projects') id = window.innerWidth <= 820 ? 'work' : 'projects-ai';
     if(id === 'skills') id = 'skills-ai';
     if(id === 'about') id = 'about-ai';
   }
@@ -1555,6 +1555,18 @@ function initReveal(){
   document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 }
 
+/* ═══════════════ 2D MOBILE PROJECT ROWS INTERACTION ═══════════════ */
+function setupMobileProjectRows() {
+  document.querySelectorAll('.project-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const link = row.dataset.link;
+      if (link && link !== '#') {
+        window.open(link, '_blank');
+      }
+    });
+  });
+}
+
 /* ═══════════════ INIT ═══════════════ */
 let prevWidth = window.innerWidth;
 window.addEventListener('resize', () => {
@@ -1571,11 +1583,18 @@ window.addEventListener('resize', () => {
     dsc.width = innerWidth;
     dsc.height = innerHeight;
   }
+  if (mode === 'ai' && window.innerWidth > 820) {
+    const arcadeCanvas = document.getElementById('arcade-3d-canvas');
+    if (arcadeCanvas && !arcadeCanvas.__destroyProjects3D) {
+      initProjects3DWorld();
+    }
+  }
 });
 
 // Initialize on DOMContentLoaded to ensure elements are present
 document.addEventListener('DOMContentLoaded', () => {
   setupHoverEffects();
+  setupMobileProjectRows();
   wrapLandingTitleChars(document.getElementById('title-ai'));
   wrapLandingTitleChars(document.getElementById('title-ds'));
   initNodes();

@@ -2142,39 +2142,166 @@ body.ai-mode #app {
 }
 
 /* Mobile & Tablet Responsiveness */
-@media (max-width: 900px) {
-  .arcade-3d-section {
-    height: 300vh;
-  }
-  .arcade-hud-bar {
-    top: 1.2rem;
-    left: 1.5rem;
-    right: 1.5rem;
-  }
-  .arcade-card {
-    width: calc(100% - 2.5rem);
-    left: 1.25rem !important;
-    right: 1.25rem !important;
-    bottom: 4rem;
-    top: auto;
-    transform: translateY(20px) scale(0.96);
-    padding: 1.6rem 1.4rem;
-  }
-  .arcade-card.active {
-    transform: translateY(0) scale(1);
-  }
-  .ac-title {
-    font-size: 1.5rem;
-  }
-  .ac-desc {
-    font-size: 0.85rem;
-    margin-bottom: 1.2rem;
-  }
-  .arcade-progress-container {
-    bottom: 1.2rem;
-    left: 1.5rem;
-    right: 1.5rem;
-  }
+/* (Responsive styles for 3D Arcade Section are unified at the bottom of stylesheet) */
+
+/* ══════════════════════════════════════════════════
+   2D SELECTED WORK / THINGS I'VE BUILT
+   Clean, editorial 2D project list (Active on Mobile)
+══════════════════════════════════════════════════ */
+
+:root {
+  --work-bg: #080d1a;
+  --work-text: #f2f0eb;
+  --work-muted: #8a9abc;
+  --work-dim: #415374;
+  --work-border: rgba(103, 199, 235, 0.15);
+  --work-meta: #738bb5;
+  --work-font: "Host Grotesk", 'Space Grotesk', -apple-system, sans-serif;
+}
+
+/* By default on desktop, mobile-work-section is hidden */
+.mobile-work-section {
+  display: none;
+}
+
+.work-section {
+  position: relative;
+  z-index: 5;
+  min-height: auto;
+  padding: 6rem 2.5rem 5rem;
+  background: var(--work-bg);
+  color: var(--work-text);
+  overflow: visible;
+}
+
+.work-label {
+  margin-bottom: 2rem;
+  font-family: var(--work-font);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.section-heading {
+  margin: 0 0 1rem;
+  font-family: var(--work-font);
+  font-size: clamp(3.2rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+  color: var(--work-text);
+}
+
+.work-description {
+  max-width: 52ch;
+  margin: 0 0 4rem;
+  font-family: var(--work-font);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: #888;
+}
+
+/* ─────────────────────────────
+   PROJECT LIST
+───────────────────────────── */
+
+.project-list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--work-border);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 0.35s ease,
+    padding-left 0.4s cubic-bezier(.16,1,.3,1),
+    background-color 0.25s ease;
+}
+
+.project-row:first-child {
+  border-top: 1px solid var(--work-border);
+}
+
+.project-row:hover {
+  border-bottom-color: rgba(103, 199, 235, 0.4);
+}
+
+.project-index {
+  align-self: start;
+  padding-top: 0.35rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--work-dim);
+  transition:
+    color 0.3s ease,
+    transform 0.4s cubic-bezier(.16,1,.3,1);
+}
+
+.project-row:hover .project-index {
+  color: var(--work-text);
+  transform: translateX(0.2rem);
+}
+
+.project-content {
+  position: relative;
+  z-index: 2;
+}
+
+.project-name {
+  margin: 0;
+  font-family: var(--work-font);
+  font-size: clamp(1.8rem, 3.5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #8899b8;
+  transition:
+    color 0.3s ease,
+    transform 0.55s cubic-bezier(.16,1,.3,1);
+}
+
+.project-row:hover .project-name {
+  color: var(--work-text);
+  transform: translateX(0.5rem);
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--work-meta);
+  transition:
+    color 0.3s ease,
+    transform 0.55s cubic-bezier(.16,1,.3,1);
+}
+
+.project-row:hover .project-meta {
+  color: #8a9abc;
+  transform: translateX(0.5rem);
 }
 
 
@@ -6133,116 +6260,94 @@ body.ai-mode .arcade-intro-title .ait-line {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   RESPONSIVE DESIGN (TABLETS & MOBILE)
+   RESPONSIVE DESIGN FOR ALL DEVICES (DESKTOP, TABLET, MOBILE)
    ═══════════════════════════════════════════════════════════════════════ */
-@media (max-width: 900px) {
+
+/* Tablets (landscape and large tablets up to 1120px) */
+@media (min-width: 821px) and (max-width: 1120px) {
   .arcade-hud-bar {
     top: 1.5rem;
-    left: 1.5rem;
-    right: 1.5rem;
+    left: 2rem;
+    right: 2rem;
   }
-
-  .arcade-hud-sub {
-    display: none;
-  }
-
   .arcade-card {
-    width: calc(100vw - 3rem);
-    max-width: 480px;
-    padding: 1.6rem;
-    background: rgba(6, 11, 24, 0.84);
+    width: min(420px, 42vw);
+    padding: 1.8rem 1.6rem;
   }
-
-  .arcade-card--left,
+  .arcade-card--left {
+    left: 4vw;
+  }
   .arcade-card--right {
-    left: 50% !important;
-    right: auto !important;
-    transform: translate(-50%, calc(-50% + 30px)) scale(0.96);
+    right: 4vw;
   }
-
-  .arcade-intro-title {
-    left: 50% !important;
-    transform: translate(-50%, calc(-50% + 20px));
-    text-align: center;
-    width: 90vw;
-    align-items: center;
-  }
-
-  .arcade-intro-title.active {
-    transform: translate(-50%, -50%);
-  }
-
-  .arcade-intro-title .ait-line {
-    font-size: clamp(2.6rem, 11vw, 4.2rem);
-  }
-
-  .arcade-card.active {
-    transform: translate(-50%, -50%) scale(1);
-  }
-
   .ac-title {
-    font-size: 1.4rem;
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
   }
-
-  .ac-tagline {
-    font-size: 0.88rem;
-  }
-
   .ac-desc {
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-  }
-
-  .ac-specs {
-    padding: 0.7rem 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .ac-spec-row {
-    font-size: 0.74rem;
-  }
-
-  .ac-actions {
-    flex-direction: row;
-    gap: 0.75rem;
-  }
-
-  .ac-btn,
-  .ac-btn-sec {
-    padding: 0.65rem 1rem;
-    font-size: 0.82rem;
+    font-size: 0.88rem;
+    margin-bottom: 1.2rem;
   }
 }
 
-@media (max-width: 480px) {
-  .arcade-hud-tag {
-    font-size: 0.68rem;
-    padding: 0.25rem 0.6rem;
+/* Tablets Portrait & Mobile Devices (<= 820px)
+   Bottom-Sheet HUD Architecture:
+/* ══════════════════════════════════════════════════
+   MOBILE VIEWPORT (<= 820px)
+   Disable 3D arcade machine completely and display
+   the clean 2D 'Selected Work / Things I've Built' section
+══════════════════════════════════════════════════ */
+@media (max-width: 820px) {
+  /* Completely deactivate 3D arcade section on mobile */
+  .arcade-3d-section {
+    display: none !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
 
-  .arcade-counter-badge {
-    font-size: 0.74rem;
-    padding: 0.25rem 0.6rem;
+  /* Display 2D mobile work section */
+  .mobile-work-section {
+    display: block !important;
   }
 
-  .arcade-scroll-hint {
-    display: none;
+  .work-section {
+    padding: 5rem 1.25rem 4rem;
   }
 
-  .arcade-card {
-    width: calc(100vw - 2rem);
-    padding: 1.3rem;
+  .work-label {
+    margin-bottom: 1.5rem;
   }
 
-  .ac-actions {
-    flex-direction: column;
-    align-items: stretch;
+  .section-heading {
+    font-size: clamp(3rem, 15vw, 6rem);
   }
 
-  .ac-btn,
-  .ac-btn-sec {
-    justify-content: center;
+  .work-description {
+    margin-bottom: 3rem;
+    font-size: 0.88rem;
+  }
+
+  .project-row {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding: 1.25rem 0;
+    cursor: pointer;
+  }
+
+  .project-name {
+    font-size: clamp(1.45rem, 7vw, 2.4rem);
+  }
+
+  .project-meta {
+    font-size: 0.52rem;
+    gap: 0.3rem;
+  }
+
+  .project-row:hover .project-name,
+  .project-row:hover .project-meta {
+    transform: none;
   }
 }
 

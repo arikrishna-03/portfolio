@@ -89,6 +89,11 @@ export function initProjects3DWorld() {
     canvas.__destroyProjects3D();
   }
 
+  // Mobile mode: No arcade machine, no 3D world (2D Selected Work is active instead)
+  if (window.innerWidth <= 820) {
+    return null;
+  }
+
   const cardsOverlay = container.querySelector('.arcade-cards-overlay');
   const hudBar = container.querySelector('.arcade-hud-bar');
   const hudCurrentBadge = document.getElementById('arcade-active-badge');
@@ -130,9 +135,11 @@ export function initProjects3DWorld() {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.2;
 
+  const initAspect = initW / initH;
+  const initialFov = initAspect < 0.65 ? 58 : (initAspect < 0.85 ? 52 : (initAspect < 1.15 ? 48 : 44));
   const camera = new THREE.PerspectiveCamera(
-    44,
-    initW / initH,
+    initialFov,
+    initAspect,
     0.1,
     220
   );
@@ -247,168 +254,205 @@ export function initProjects3DWorld() {
   scene.add(particleSystem);
 
   // ═══════════════════════════════════════════════════════════════════════
-  // 3. 3D PROJECT MONOLITHS / DISPLAY PEDESTALS
+  // ═══════════════════════════════════════════════════════════════════════
+  // 3. 3D HOLOGRAPHIC PROJECTION STATIONS & FLOATING CORES
   // ═══════════════════════════════════════════════════════════════════════
   const projectMeshes = [];
 
-  // Helper to create glowing marquee canvas texture
-  function createMarqueeTexture(title, sub, colorHex) {
+  // Helper to create holographic HUD header badge texture
+  function createHoloBadgeTexture(number, category, colorHex) {
     const cvs = document.createElement('canvas');
     cvs.width = 512;
-    cvs.height = 128;
+    cvs.height = 120;
     const ctx = cvs.getContext('2d');
 
-    const grad = ctx.createLinearGradient(0, 0, 512, 128);
-    grad.addColorStop(0, '#030713');
-    grad.addColorStop(0.5, '#0a1633');
-    grad.addColorStop(1, '#030713');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 512, 128);
+    // Translucent dark glass backdrop
+    ctx.fillStyle = 'rgba(5, 11, 26, 0.88)';
+    ctx.fillRect(6, 6, 500, 108);
 
+    // Glowing cyber neon border
     ctx.strokeStyle = colorHex;
-    ctx.lineWidth = 5;
-    ctx.strokeRect(6, 6, 500, 116);
+    ctx.lineWidth = 3;
+    ctx.strokeRect(6, 6, 500, 108);
+
+    // Tech corner ticks
+    ctx.fillStyle = colorHex;
+    ctx.fillRect(0, 0, 16, 4);
+    ctx.fillRect(0, 0, 4, 16);
+    ctx.fillRect(496, 0, 16, 4);
+    ctx.fillRect(508, 0, 4, 16);
+    ctx.fillRect(0, 116, 16, 4);
+    ctx.fillRect(0, 100, 4, 16);
+    ctx.fillRect(496, 116, 16, 4);
+    ctx.fillRect(508, 100, 4, 16);
 
     ctx.shadowColor = colorHex;
-    ctx.shadowBlur = 16;
-    ctx.font = 'bold 36px "Space Grotesk", sans-serif';
+    ctx.shadowBlur = 18;
+    ctx.font = 'bold 34px "Space Grotesk", sans-serif';
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(title, 256, 52);
+    ctx.fillText(`SYSTEM ${number}`, 256, 44);
 
     ctx.shadowBlur = 6;
-    ctx.font = '600 14px "Roboto Mono", monospace';
+    ctx.font = '600 13px "Roboto Mono", monospace';
     ctx.fillStyle = colorHex;
-    ctx.fillText(sub, 256, 92);
+    ctx.fillText(`[ ${category} ]`, 256, 86);
 
     const tex = new THREE.CanvasTexture(cvs);
     tex.needsUpdate = true;
     return tex;
   }
 
-  // Build each physical project in 3D
+  // Helper to create holographic HUD scanline and target crosshair overlay
+  function createHoloScanlineTexture(colorHex) {
+    const cvs = document.createElement('canvas');
+    cvs.width = 512;
+    cvs.height = 384;
+    const ctx = cvs.getContext('2d');
+
+    // Subtle horizontal scanlines
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+    for (let y = 0; y < 384; y += 4) {
+      ctx.fillRect(0, y, 512, 1.5);
+    }
+
+    // Corner HUD Brackets
+    ctx.strokeStyle = colorHex;
+    ctx.lineWidth = 3.5;
+    const len = 34;
+
+    // Top-left
+    ctx.beginPath();
+    ctx.moveTo(12, 12 + len); ctx.lineTo(12, 12); ctx.lineTo(12 + len, 12);
+    ctx.stroke();
+
+    // Top-right
+    ctx.beginPath();
+    ctx.moveTo(500 - len, 12); ctx.lineTo(500, 12); ctx.lineTo(500, 12 + len);
+    ctx.stroke();
+
+    // Bottom-left
+    ctx.beginPath();
+    ctx.moveTo(12, 372 - len); ctx.lineTo(12, 372); ctx.lineTo(12 + len, 372);
+    ctx.stroke();
+
+    // Bottom-right
+    ctx.beginPath();
+    ctx.moveTo(500 - len, 372); ctx.lineTo(500, 372); ctx.lineTo(500, 372 - len);
+    ctx.stroke();
+
+    // Central crosshair & telemetry badge
+    ctx.fillStyle = colorHex;
+    ctx.font = '600 11px "Roboto Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡ 3D HOLOGRAPHIC EMISSION // 60 FPS', 256, 26);
+
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  // Helper to create volumetric beam vertical gradient texture
+  function createHoloBeamTexture(colorHex) {
+    const cvs = document.createElement('canvas');
+    cvs.width = 128;
+    cvs.height = 512;
+    const ctx = cvs.getContext('2d');
+
+    const grad = ctx.createLinearGradient(0, 512, 0, 0);
+    grad.addColorStop(0, colorHex);
+    grad.addColorStop(0.3, colorHex);
+    grad.addColorStop(0.7, 'rgba(103, 199, 235, 0.25)');
+    grad.addColorStop(1.0, 'rgba(103, 199, 235, 0.0)');
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 128, 512);
+
+    // Vertical beam ray stripes
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+    ctx.fillRect(18, 0, 6, 512);
+    ctx.fillRect(56, 0, 14, 512);
+    ctx.fillRect(98, 0, 8, 512);
+
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.repeat.set(4, 1);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  // Build each physical 3D Holographic Station
   projectsData.forEach((proj, idx) => {
     const group = new THREE.Group();
     const colorHex = proj.accentHex;
     const colorStr = proj.accentColor;
 
-    // Body Material
-    const bodyMat = new THREE.MeshStandardMaterial({
-      color: 0x080d1e,
-      roughness: 0.35,
-      metalness: 0.85,
+    // Cyber metal materials for low-profile ground projector
+    const padMetalMat = new THREE.MeshStandardMaterial({
+      color: 0x070e20,
+      roughness: 0.25,
+      metalness: 0.92,
     });
-
-    // 1. Base Pedestal
-    const baseGeo = new THREE.BoxGeometry(2.4, 1.1, 2.2);
-    const baseMesh = new THREE.Mesh(baseGeo, bodyMat);
-    baseMesh.position.y = 0.55;
-    group.add(baseMesh);
-
-    // 2. Kiosk Upper Frame Housing
-    const frameGeo = new THREE.BoxGeometry(2.3, 2.4, 1.8);
-    const frameMesh = new THREE.Mesh(frameGeo, bodyMat);
-    frameMesh.position.set(0, 2.25, -0.15);
-    group.add(frameMesh);
-
-    // 3. Slanted Cyber Deck
-    const deckGeo = new THREE.BoxGeometry(2.4, 0.22, 1.2);
-    const deckMesh = new THREE.Mesh(deckGeo, bodyMat);
-    deckMesh.position.set(0, 1.35, 0.7);
-    deckMesh.rotation.x = 0.22;
-    group.add(deckMesh);
-
-    // Glowing Interactive Buttons on Deck
-    const btnMat = new THREE.MeshStandardMaterial({
+    const neonMat = new THREE.MeshBasicMaterial({
       color: colorHex,
+    });
+
+    // ─────────────────────────────────────────────────────────────
+    // 1. SLEEK LOW-PROFILE GROUND EMITTER PLATFORM (BASE)
+    // ─────────────────────────────────────────────────────────────
+    // Beveled ground base disk
+    const baseDiskGeo = new THREE.CylinderGeometry(1.6, 1.85, 0.14, 36);
+    const baseDisk = new THREE.Mesh(baseDiskGeo, padMetalMat);
+    baseDisk.position.y = 0.07;
+    group.add(baseDisk);
+
+    // Step-up inner disk
+    const stepDiskGeo = new THREE.CylinderGeometry(1.15, 1.25, 0.06, 32);
+    const stepDisk = new THREE.Mesh(stepDiskGeo, padMetalMat);
+    stepDisk.position.y = 0.15;
+    group.add(stepDisk);
+
+    // Glowing Neon Ring 1 (Outer perimeter)
+    const ring1Geo = new THREE.TorusGeometry(1.5, 0.022, 16, 48);
+    const ring1Mesh = new THREE.Mesh(ring1Geo, neonMat);
+    ring1Mesh.rotation.x = Math.PI / 2;
+    ring1Mesh.position.y = 0.145;
+    group.add(ring1Mesh);
+
+    // Glowing Neon Ring 2 (Inner aperture)
+    const ring2Geo = new THREE.TorusGeometry(0.85, 0.018, 16, 36);
+    const ring2Mesh = new THREE.Mesh(ring2Geo, neonMat);
+    ring2Mesh.rotation.x = Math.PI / 2;
+    ring2Mesh.position.y = 0.185;
+    group.add(ring2Mesh);
+
+    // Optical Hologram Projector Lens / Aperture
+    const lensGeo = new THREE.CylinderGeometry(0.44, 0.44, 0.08, 32);
+    const lensMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
       emissive: colorHex,
-      emissiveIntensity: 0.9,
-      roughness: 0.2,
-    });
-    const btnGeo = new THREE.CylinderGeometry(0.065, 0.065, 0.06, 12);
-    const btnOffsets = [-0.5, -0.25, 0, 0.25, 0.5];
-    btnOffsets.forEach((bx) => {
-      const b1 = new THREE.Mesh(btnGeo, btnMat);
-      b1.position.set(bx, 1.48, 0.64);
-      b1.rotation.x = 0.22;
-      group.add(b1);
-    });
-
-    // 4. Main Holographic Display Screen
-    const screenTex = textureLoader.load(proj.image, (tex) => {
-      tex.generateMipmaps = true;
-      tex.minFilter = THREE.LinearMipmapLinearFilter;
-    });
-
-    const screenFrameGeo = new THREE.BoxGeometry(2.1, 1.6, 0.12);
-    const screenFrameMat = new THREE.MeshStandardMaterial({ color: 0x030611, roughness: 0.8 });
-    const screenFrame = new THREE.Mesh(screenFrameGeo, screenFrameMat);
-    screenFrame.position.set(0, 2.55, 0.65);
-    screenFrame.rotation.x = -0.16;
-    group.add(screenFrame);
-
-    const screenPlaneGeo = new THREE.PlaneGeometry(1.95, 1.45);
-    const screenPlaneMat = new THREE.MeshStandardMaterial({
-      map: screenTex,
-      emissive: 0xffffff,
-      emissiveMap: screenTex,
-      emissiveIntensity: 0.95,
-      roughness: 0.15,
+      emissiveIntensity: 2.4,
+      roughness: 0.1,
       metalness: 0.1,
     });
-    const screenPlane = new THREE.Mesh(screenPlaneGeo, screenPlaneMat);
-    screenPlane.position.set(0, 2.55, 0.72);
-    screenPlane.rotation.x = -0.16;
-    group.add(screenPlane);
+    const lensMesh = new THREE.Mesh(lensGeo, lensMat);
+    lensMesh.position.y = 0.20;
+    group.add(lensMesh);
 
-    // Subtle Screen Bezel Glare
-    const glareGeo = new THREE.PlaneGeometry(1.95, 1.45);
-    const glareMat = new THREE.MeshBasicMaterial({
-      color: colorHex,
-      transparent: true,
-      opacity: 0.09,
-      blending: THREE.AdditiveBlending,
-    });
-    const glarePlane = new THREE.Mesh(glareGeo, glareMat);
-    glarePlane.position.set(0, 2.55, 0.725);
-    glarePlane.rotation.x = -0.16;
-    group.add(glarePlane);
+    // 4 Angled Projector Focus Nodes around aperture
+    for (let f = 0; f < 4; f++) {
+      const angle = (f * Math.PI) / 2;
+      const finGeo = new THREE.BoxGeometry(0.08, 0.14, 0.24);
+      const fin = new THREE.Mesh(finGeo, padMetalMat);
+      fin.position.set(Math.cos(angle) * 0.96, 0.20, Math.sin(angle) * 0.96);
+      fin.rotation.y = -angle;
+      group.add(fin);
+    }
 
-    // 5. Glowing Marquee Header Sign
-    const marqueeTex = createMarqueeTexture(proj.number, proj.category, colorStr);
-    const marqueeGeo = new THREE.BoxGeometry(2.2, 0.6, 0.7);
-    const marqueeMesh = new THREE.Mesh(marqueeGeo, bodyMat);
-    marqueeMesh.position.set(0, 3.7, 0.45);
-    marqueeMesh.rotation.x = 0.1;
-    group.add(marqueeMesh);
-
-    const marqueeFaceGeo = new THREE.PlaneGeometry(2.05, 0.5);
-    const marqueeFaceMat = new THREE.MeshBasicMaterial({ map: marqueeTex });
-    const marqueeFace = new THREE.Mesh(marqueeFaceGeo, marqueeFaceMat);
-    marqueeFace.position.set(0, 3.7, 0.81);
-    marqueeFace.rotation.x = 0.1;
-    group.add(marqueeFace);
-
-    // 6. Glowing Neon Trim Strips (Pillars & Borders)
-    const trimMat = new THREE.MeshBasicMaterial({ color: colorHex });
-    const tubeGeo = new THREE.CylinderGeometry(0.03, 0.03, 3.7, 8);
-    const leftTube = new THREE.Mesh(tubeGeo, trimMat);
-    leftTube.position.set(-1.18, 2.15, 0.76);
-    group.add(leftTube);
-
-    const rightTube = new THREE.Mesh(tubeGeo, trimMat);
-    rightTube.position.set(1.18, 2.15, 0.76);
-    group.add(rightTube);
-
-    const topBarGeo = new THREE.CylinderGeometry(0.03, 0.03, 2.36, 8);
-    const topBar = new THREE.Mesh(topBarGeo, trimMat);
-    topBar.rotation.z = Math.PI / 2;
-    topBar.position.set(0, 4.02, 0.82);
-    group.add(topBar);
-
-    // 7. Under-Glow Floor Ring
-    const underGlowGeo = new THREE.RingGeometry(1.0, 2.4, 32);
+    // Ground Floor Under-Glow Halo
+    const underGlowGeo = new THREE.RingGeometry(0.5, 2.9, 36);
     const underGlowMat = new THREE.MeshBasicMaterial({
       color: colorHex,
       transparent: true,
@@ -420,9 +464,171 @@ export function initProjects3DWorld() {
     underGlow.position.y = 0.02;
     group.add(underGlow);
 
-    // 8. Dedicated Colored Point Light
-    const pointLight = new THREE.PointLight(colorHex, 2.2, 10);
-    pointLight.position.set(0, 2.6, 1.8);
+    // ─────────────────────────────────────────────────────────────
+    // 2. VOLUMETRIC HOLOGRAPHIC PROJECTION LIGHT CONE
+    // ─────────────────────────────────────────────────────────────
+    const beamTex = createHoloBeamTexture(colorStr);
+    const beamGeo = new THREE.CylinderGeometry(1.5, 0.45, 2.25, 32, 1, true);
+    const beamMat = new THREE.MeshBasicMaterial({
+      map: beamTex,
+      transparent: true,
+      opacity: 0.22,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+    beamMesh.position.y = 1.32;
+    group.add(beamMesh);
+
+    // Vertical Hologram Laser Filaments
+    for (let b = 0; b < 4; b++) {
+      const bAngle = (b * Math.PI) / 2 + Math.PI / 4;
+      const rayGeo = new THREE.CylinderGeometry(0.009, 0.009, 2.25, 8);
+      const rayMat = new THREE.MeshBasicMaterial({
+        color: colorHex,
+        transparent: true,
+        opacity: 0.55,
+        blending: THREE.AdditiveBlending,
+      });
+      const ray = new THREE.Mesh(rayGeo, rayMat);
+      ray.position.set(Math.cos(bAngle) * 0.36, 1.32, Math.sin(bAngle) * 0.36);
+      group.add(ray);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 3. FLOATING HOLOGRAPHIC ASSEMBLY (EYE LEVEL)
+    // ─────────────────────────────────────────────────────────────
+    const holoFloatGroup = new THREE.Group();
+    holoFloatGroup.position.set(0, 2.45, 0.15);
+
+    // A. Translucent Holographic Glass HUD Backing Panel
+    const glassBackGeo = new THREE.BoxGeometry(2.35, 1.65, 0.03);
+    const glassBackMat = new THREE.MeshStandardMaterial({
+      color: 0x040816,
+      roughness: 0.15,
+      metalness: 0.9,
+      transparent: true,
+      opacity: 0.65,
+    });
+    const glassBack = new THREE.Mesh(glassBackGeo, glassBackMat);
+    glassBack.rotation.x = -0.10;
+    holoFloatGroup.add(glassBack);
+
+    // B. Holographic Project Image Plane
+    const screenTex = textureLoader.load(proj.image, (tex) => {
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+    });
+    const screenPlaneGeo = new THREE.PlaneGeometry(2.22, 1.52);
+    const screenPlaneMat = new THREE.MeshStandardMaterial({
+      map: screenTex,
+      emissive: 0xffffff,
+      emissiveMap: screenTex,
+      emissiveIntensity: 1.05,
+      roughness: 0.1,
+      metalness: 0.1,
+      transparent: true,
+      opacity: 0.94,
+    });
+    const screenPlane = new THREE.Mesh(screenPlaneGeo, screenPlaneMat);
+    screenPlane.position.set(0, 0, 0.025);
+    screenPlane.rotation.x = -0.10;
+    holoFloatGroup.add(screenPlane);
+
+    // C. Holographic Scanline & HUD Crosshair Overlay
+    const scanlineTex = createHoloScanlineTexture(colorStr);
+    const scanlineGeo = new THREE.PlaneGeometry(2.22, 1.52);
+    const scanlineMat = new THREE.MeshBasicMaterial({
+      map: scanlineTex,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
+    });
+    const scanlinePlane = new THREE.Mesh(scanlineGeo, scanlineMat);
+    scanlinePlane.position.set(0, 0, 0.035);
+    scanlinePlane.rotation.x = -0.10;
+    holoFloatGroup.add(scanlinePlane);
+
+    // D. Glowing Holographic Laser Perimeter Frame
+    const frameGroup = new THREE.Group();
+    frameGroup.rotation.x = -0.10;
+
+    const tubeMat = new THREE.MeshBasicMaterial({ color: colorHex });
+    const horizTubeGeo = new THREE.CylinderGeometry(0.016, 0.016, 2.26, 8);
+    const vertTubeGeo = new THREE.CylinderGeometry(0.016, 0.016, 1.56, 8);
+
+    const topTube = new THREE.Mesh(horizTubeGeo, tubeMat);
+    topTube.rotation.z = Math.PI / 2;
+    topTube.position.set(0, 0.78, 0.03);
+    frameGroup.add(topTube);
+
+    const btmTube = new THREE.Mesh(horizTubeGeo, tubeMat);
+    btmTube.rotation.z = Math.PI / 2;
+    btmTube.position.set(0, -0.78, 0.03);
+    frameGroup.add(btmTube);
+
+    const leftTube = new THREE.Mesh(vertTubeGeo, tubeMat);
+    leftTube.position.set(-1.13, 0, 0.03);
+    frameGroup.add(leftTube);
+
+    const rightTube = new THREE.Mesh(vertTubeGeo, tubeMat);
+    rightTube.position.set(1.13, 0, 0.03);
+    frameGroup.add(rightTube);
+
+    // Glowing Corner Nodes
+    const cornerGeo = new THREE.SphereGeometry(0.038, 12, 12);
+    [[-1.13, 0.78], [1.13, 0.78], [-1.13, -0.78], [1.13, -0.78]].forEach(([cx, cy]) => {
+      const cNode = new THREE.Mesh(cornerGeo, tubeMat);
+      cNode.position.set(cx, cy, 0.03);
+      frameGroup.add(cNode);
+    });
+    holoFloatGroup.add(frameGroup);
+
+    // E. Floating Holographic Marquee Header Badge
+    const marqueeTex = createHoloBadgeTexture(proj.number, proj.category, colorStr);
+    const marqueeGeo = new THREE.PlaneGeometry(2.1, 0.48);
+    const marqueeMat = new THREE.MeshBasicMaterial({
+      map: marqueeTex,
+      transparent: true,
+      opacity: 0.95,
+      side: THREE.DoubleSide,
+    });
+    const marqueeFace = new THREE.Mesh(marqueeGeo, marqueeMat);
+    marqueeFace.position.set(0, 1.15, 0.06);
+    marqueeFace.rotation.x = -0.05;
+    holoFloatGroup.add(marqueeFace);
+
+    // F. Nested Orbiting Holographic Gimbal Rings
+    const orbitRing1Geo = new THREE.TorusGeometry(1.82, 0.012, 16, 54);
+    const orbitRing1Mat = new THREE.MeshBasicMaterial({
+      color: colorHex,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
+    });
+    const orbitRing1 = new THREE.Mesh(orbitRing1Geo, orbitRing1Mat);
+    orbitRing1.rotation.x = 0.28;
+    orbitRing1.rotation.y = 0.20;
+    holoFloatGroup.add(orbitRing1);
+
+    const orbitRing2Geo = new THREE.TorusGeometry(1.68, 0.010, 16, 48);
+    const orbitRing2Mat = new THREE.MeshBasicMaterial({
+      color: 0x67c7eb,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending,
+    });
+    const orbitRing2 = new THREE.Mesh(orbitRing2Geo, orbitRing2Mat);
+    orbitRing2.rotation.x = -0.32;
+    orbitRing2.rotation.z = 0.25;
+    holoFloatGroup.add(orbitRing2);
+
+    group.add(holoFloatGroup);
+
+    // Dedicated Colored Point Light
+    const pointLight = new THREE.PointLight(colorHex, 2.4, 12);
+    pointLight.position.set(0, 2.5, 1.8);
     group.add(pointLight);
 
     // Position and orient in 3D scene
@@ -430,7 +636,18 @@ export function initProjects3DWorld() {
     group.rotation.y = proj.rotationY;
 
     scene.add(group);
-    projectMeshes.push({ group, pointLight, underGlow, screenPlaneMat, originalY: proj.worldPos.y });
+    projectMeshes.push({
+      group,
+      holoFloatGroup,
+      pointLight,
+      underGlow,
+      screenPlaneMat,
+      beamMesh,
+      orbitRing1,
+      orbitRing2,
+      originalY: proj.worldPos.y,
+      originalHoloY: 2.45,
+    });
   });
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -579,39 +796,53 @@ export function initProjects3DWorld() {
   }
 
   // Dynamic camera lookAt target: precisely aims at each active project stand
-  // so the stand is comfortably framed on its designated side, then looks straight down the runway
+  // so the stand is comfortably framed for all device viewports (mobile, tablet, desktop)
   function getDynamicLookAt(p) {
+    const isMobile = (camera.aspect < 0.85) || window.innerWidth <= 820;
+    const isTablet = !isMobile && ((camera.aspect < 1.18) || window.innerWidth <= 1024);
+
+    // On mobile: aim directly at the centered hologram stand (x = -2.6 for left, 2.6 for right)
+    // and lower (y = 1.55) so the floating hologram (y = 2.45) appears in the top 45% of the screen!
+    const s1LookX = isMobile ? -2.4 : (isTablet ? -0.8 : 0.4);
+    const s1LookY = isMobile ? 1.55 : 2.1;
+
+    const s2LookX = isMobile ? 2.4 : (isTablet ? 0.8 : -0.4);
+    const s2LookY = isMobile ? 1.55 : 2.1;
+
+    const s3LookX = isMobile ? -2.4 : (isTablet ? -0.8 : 0.4);
+    const s3LookY = isMobile ? 1.55 : 2.1;
+
     if (p < 0.10) {
       const factor = Math.max(0, p / 0.10);
       const startLook = new THREE.Vector3(0, 2.2, -10.0);
-      const s1Look = new THREE.Vector3(0.4, 2.1, -14.0);
+      const s1Look = new THREE.Vector3(s1LookX, s1LookY, -14.0);
       return new THREE.Vector3().lerpVectors(startLook, s1Look, factor);
     }
     if (p <= 0.30) {
-      return new THREE.Vector3(0.4, 2.1, -14.0);
+      return new THREE.Vector3(s1LookX, s1LookY, -14.0);
     }
     if (p < 0.40) {
       const factor = (p - 0.30) / 0.10;
-      const look1 = new THREE.Vector3(0.4, 2.1, -14.0);
-      const look2 = new THREE.Vector3(-0.4, 2.1, -36.0);
+      const look1 = new THREE.Vector3(s1LookX, s1LookY, -14.0);
+      const look2 = new THREE.Vector3(s2LookX, s2LookY, -36.0);
       return new THREE.Vector3().lerpVectors(look1, look2, factor);
     }
     if (p <= 0.58) {
-      return new THREE.Vector3(-0.4, 2.1, -36.0);
+      return new THREE.Vector3(s2LookX, s2LookY, -36.0);
     }
     if (p < 0.68) {
       const factor = (p - 0.58) / 0.10;
-      const look2 = new THREE.Vector3(-0.4, 2.1, -36.0);
-      const look3 = new THREE.Vector3(0.4, 2.1, -58.0);
+      const look2 = new THREE.Vector3(s2LookX, s2LookY, -36.0);
+      const look3 = new THREE.Vector3(s3LookX, s3LookY, -58.0);
       return new THREE.Vector3().lerpVectors(look2, look3, factor);
     }
     if (p <= 0.80) {
-      return new THREE.Vector3(0.4, 2.1, -58.0);
+      return new THREE.Vector3(s3LookX, s3LookY, -58.0);
     }
     if (p <= 0.88) {
       // Lerp from Station 3 stand to straight down the cyber corridor runway
       const factor = (p - 0.80) / 0.08;
-      const look3 = new THREE.Vector3(0.4, 2.1, -58.0);
+      const look3 = new THREE.Vector3(s3LookX, s3LookY, -58.0);
       const runwayLook = new THREE.Vector3(0, 2.1, -120.0);
       return new THREE.Vector3().lerpVectors(look3, runwayLook, factor);
     }
@@ -771,7 +1002,7 @@ export function initProjects3DWorld() {
         });
 
         if (hudCurrentBadge) {
-          hudCurrentBadge.textContent = '3D CYBER CORRIDOR // EXTENDED RUNWAY';
+          hudCurrentBadge.textContent = '3D HOLOGRAM MATRIX // EXTENDED RUNWAY';
           hudCurrentBadge.style.color = '#67c7eb';
         }
         if (hudCounter) {
@@ -792,11 +1023,11 @@ export function initProjects3DWorld() {
 
         if (hudCurrentBadge) {
           if (progress < 0.14) {
-            hudCurrentBadge.textContent = '3D CORRIDOR // ENTERING SYSTEM 01';
+            hudCurrentBadge.textContent = '3D HOLOGRAM // ENTERING SYSTEM 01';
           } else if (progress < 0.40) {
-            hudCurrentBadge.textContent = '3D CORRIDOR // TRAVELING TO SYSTEM 02';
+            hudCurrentBadge.textContent = '3D HOLOGRAM // TRAVELING TO SYSTEM 02';
           } else {
-            hudCurrentBadge.textContent = '3D CORRIDOR // TRAVELING TO SYSTEM 03';
+            hudCurrentBadge.textContent = '3D HOLOGRAM // TRAVELING TO SYSTEM 03';
           }
           hudCurrentBadge.style.color = '#94a3b8';
         }
@@ -817,7 +1048,7 @@ export function initProjects3DWorld() {
         });
 
         if (hudCurrentBadge) {
-          hudCurrentBadge.textContent = 'SYSTEM ARCHIVE COMPLETE // CODING CONSISTENCY';
+          hudCurrentBadge.textContent = 'HOLOGRAM ARCHIVE COMPLETE // CODING CONSISTENCY';
           hudCurrentBadge.style.color = '#cbd5e1';
         }
         if (hudCounter) {
@@ -834,13 +1065,17 @@ export function initProjects3DWorld() {
       progressFill.style.width = `${(progress * 100).toFixed(1)}%`;
     }
 
-    // Dynamic 3D Monolith Lighting & Glow modulation
+    // Dynamic 3D Hologram Lighting, Beam & Glow modulation
     projectMeshes.forEach((meshObj, i) => {
       const isTarget = i === targetMeshIdx;
-      const targetIntensity = isTarget ? 3.0 : 0.8;
+      const targetIntensity = isTarget ? 3.2 : 0.9;
       meshObj.pointLight.intensity += (targetIntensity - meshObj.pointLight.intensity) * 0.1;
-      meshObj.underGlow.material.opacity += ((isTarget ? 0.6 : 0.2) - meshObj.underGlow.material.opacity) * 0.1;
-      meshObj.screenPlaneMat.emissiveIntensity += ((isTarget ? 1.05 : 0.6) - meshObj.screenPlaneMat.emissiveIntensity) * 0.1;
+      meshObj.underGlow.material.opacity += ((isTarget ? 0.65 : 0.22) - meshObj.underGlow.material.opacity) * 0.1;
+      meshObj.screenPlaneMat.emissiveIntensity += ((isTarget ? 1.15 : 0.65) - meshObj.screenPlaneMat.emissiveIntensity) * 0.1;
+      if (meshObj.beamMesh) {
+        const targetBeam = isTarget ? 0.32 : 0.12;
+        meshObj.beamMesh.material.opacity += (targetBeam - meshObj.beamMesh.material.opacity) * 0.1;
+      }
     });
   }
 
@@ -848,11 +1083,31 @@ export function initProjects3DWorld() {
   // 6. RESIZE HANDLER & INTERSECTION OBSERVER
   // ═══════════════════════════════════════════════════════════════════════
   function onResize() {
+    if (window.innerWidth <= 820) {
+      if (canvas.__destroyProjects3D) {
+        canvas.__destroyProjects3D();
+      }
+      return;
+    }
     canvas.style.removeProperty('width');
     canvas.style.removeProperty('height');
     const w = getViewportWidth();
     const h = getViewportHeight();
-    camera.aspect = w / h;
+    const aspect = w / h;
+    camera.aspect = aspect;
+
+    // Dynamically adjust vertical FOV across device viewports
+    // Narrow portrait mobile screens require wider vertical FOV so the horizontal view spans the full hologram
+    if (aspect < 0.65) {
+      camera.fov = 58;
+    } else if (aspect < 0.85) {
+      camera.fov = 52;
+    } else if (aspect < 1.15) {
+      camera.fov = 48;
+    } else {
+      camera.fov = 44;
+    }
+
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(w, h, false);
@@ -904,9 +1159,40 @@ export function initProjects3DWorld() {
     const targetCamPos = cameraPath.getPointAt(t);
     const targetLookAt = getDynamicLookAt(currentProgress);
 
-    // Subtle interactive mouse parallax
-    targetCamPos.x += mouseX * 0.3;
-    targetCamPos.y += -mouseY * 0.15;
+    const isMobile = (camera.aspect < 0.85) || window.innerWidth <= 820;
+    const isTablet = !isMobile && ((camera.aspect < 1.18) || window.innerWidth <= 1024);
+
+    // Responsive camera position adjustment for active stations
+    if (isMobile) {
+      if (currentProgress >= 0.10 && currentProgress <= 0.35) {
+        // Station 1: center the left station (x = -2.8) in mobile view
+        targetCamPos.x = -1.8;
+        targetCamPos.y = 2.45;
+        targetCamPos.z = -14.0 + 8.4;
+      } else if (currentProgress >= 0.38 && currentProgress <= 0.62) {
+        // Station 2: center the right station (x = 2.8) in mobile view
+        targetCamPos.x = 1.8;
+        targetCamPos.y = 2.45;
+        targetCamPos.z = -36.0 + 8.4;
+      } else if (currentProgress >= 0.65 && currentProgress <= 0.83) {
+        // Station 3: center the left station (x = -2.8) in mobile view
+        targetCamPos.x = -1.8;
+        targetCamPos.y = 2.45;
+        targetCamPos.z = -58.0 + 8.4;
+      }
+    } else if (isTablet) {
+      if (currentProgress >= 0.10 && currentProgress <= 0.35) {
+        targetCamPos.x = -0.3;
+      } else if (currentProgress >= 0.38 && currentProgress <= 0.62) {
+        targetCamPos.x = 0.3;
+      } else if (currentProgress >= 0.65 && currentProgress <= 0.83) {
+        targetCamPos.x = -0.3;
+      }
+    }
+
+    // Subtle interactive mouse parallax (damped on touch/mobile)
+    targetCamPos.x += mouseX * (isMobile ? 0.1 : 0.3);
+    targetCamPos.y += -mouseY * (isMobile ? 0.05 : 0.15);
 
     // Smoothly interpolate camera position & lookAt
     currentCamPos.lerp(targetCamPos, 0.085);
@@ -923,9 +1209,22 @@ export function initProjects3DWorld() {
     }
     particleGeo.attributes.position.needsUpdate = true;
 
-    // Gentle organic breathing of project monoliths
+    // Dynamic 3D Hologram floating levitation & gimbal rings
     projectMeshes.forEach((meshObj, i) => {
-      meshObj.group.position.y = meshObj.originalY + Math.sin(time * 1.5 + i * 1.2) * 0.03;
+      // 1. Floating organic levitation hover for hologram assembly
+      if (meshObj.holoFloatGroup) {
+        meshObj.holoFloatGroup.position.y = meshObj.originalHoloY + Math.sin(time * 1.8 + i * 1.4) * 0.08;
+      }
+
+      // 2. Orbiting Holographic Gimbal Rings
+      if (meshObj.orbitRing1) {
+        meshObj.orbitRing1.rotation.z += 0.012;
+        meshObj.orbitRing1.rotation.y += 0.008;
+      }
+      if (meshObj.orbitRing2) {
+        meshObj.orbitRing2.rotation.x += 0.010;
+        meshObj.orbitRing2.rotation.z -= 0.014;
+      }
     });
 
     renderer.render(scene, camera);
