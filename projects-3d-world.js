@@ -11,20 +11,20 @@ export const projectsData = [
   {
     id: 1,
     number: '01',
-    title: 'GRAMIN SAHAY / VOICE AI',
-    category: 'MULTILINGUAL CONVERSATIONAL AI',
-    tagline: 'Voice-first multilingual assistant for rural agriculture & telemetry',
+    title: 'POSEAI // CAMERA AI',
+    category: 'COMPUTER VISION & POSE INFERENCE',
+    tagline: 'Context-aware mobile vision assistant optimizing subject composition & pose guidance',
     description:
-      'Voice-enabled intelligent assistant engineered specifically for farmers and rural communities across India. Features native speech-to-text across 4 regional languages with zero internet dependency fallbacks, delivering real-time mandi prices, weather forecasts, and government schemes.',
+      'Architected an intelligent mobile-camera application that scans scene context, lighting, and environment dynamics to recommend real-time photo poses tailored to specific subjects and framing.',
     metrics: [
-      { label: 'SPEECH ENGINE', value: 'Whisper + IndicNLP + Coqui' },
-      { label: 'DIALECTS', value: 'Hindi, Kannada, Telugu, English' },
-      { label: 'BACKEND', value: 'FastAPI + Async Python + Redis' },
+      { label: 'VISION ENGINE', value: 'MediaPipe Pose + Custom CNN' },
+      { label: 'FRAMEWORK', value: 'Flutter / Dart + Python Core' },
+      { label: 'INFERENCE', value: 'Real-Time Edge Computer Vision' },
     ],
-    technologies: ['Whisper AI', 'FastAPI', 'IndicNLP', 'Python', 'WebSockets', 'Tailwind'],
+    technologies: ['Computer Vision', 'Flutter', 'Dart', 'Python', 'AI Inference', 'MediaPipe'],
     image: './images/ai_rural.png',
-    liveUrl: 'https://github.com/arikrishna-03',
-    githubUrl: 'https://github.com/arikrishna-03',
+    liveUrl: 'https://github.com/arikrishna-03/PoseAI',
+    githubUrl: 'https://github.com/arikrishna-03/PoseAI',
     accentColor: '#00ffaa',
     accentHex: 0x00ffaa,
     worldPos: { x: -2.8, y: 0, z: -14 },
@@ -33,42 +33,42 @@ export const projectsData = [
   {
     id: 2,
     number: '02',
-    title: 'DUAL PORTFOLIO & TELEMETRY CORE',
+    title: 'DUAL PORTFOLIO // TELEMETRY',
     category: 'FULL-STACK WEBGL ARCHITECTURE',
-    tagline: 'High-performance WebGL graphics with live competitive coding API telemetry',
+    tagline: 'GPU-accelerated WebGL 3D world with live algorithmic telemetry sync',
     description:
-      'Dual-perspective digital experience combining an AI engineering lab with a high-impact brand visual portfolio. Features GPU-accelerated WebGL rendering, 0-dependency state transitions, and live competitive coding telemetry synchronizing over 1,080+ algorithmic solutions.',
+      'Dual-perspective digital experience combining an AI engineering laboratory with a high-impact creative portfolio. Features GPU-accelerated WebGL 3D scroll world, 0-dependency state transitions, and live competitive coding telemetry.',
     metrics: [
       { label: 'GRAPHICS ENGINE', value: 'Three.js WebGL + Custom Shaders' },
-      { label: 'SOLVED STATS', value: '1,080+ Problems (Rank #15,751)' },
+      { label: 'SOLVED STATS', value: '500+ CodeChef // 70+ LeetCode' },
       { label: 'BUILD SPEED', value: 'Vite 8 + Automated CI/CD Sync' },
     ],
-    technologies: ['Three.js', 'WebGL', 'JavaScript', 'Vite', 'CSS Spring', 'GitHub Actions'],
+    technologies: ['Three.js', 'WebGL', 'JavaScript', 'Vite', 'REST API', 'GitHub Actions'],
     image: './images/hero_poster.png',
     liveUrl: 'https://github.com/arikrishna-03/portfolio',
     githubUrl: 'https://github.com/arikrishna-03/portfolio',
-    accentColor: '#f7d059',
-    accentHex: 0xf7d059,
+    accentColor: '#67c7eb',
+    accentHex: 0x67c7eb,
     worldPos: { x: 2.8, y: 0, z: -36 },
     rotationY: -0.28,
   },
   {
     id: 3,
     number: '03',
-    title: 'NEURAL DEFECT & VISION ANALYZER',
-    category: 'DEEP LEARNING / INDUSTRIAL INSPECTION',
-    tagline: 'Automated surface defect detection with sub-millimeter precision',
+    title: 'EDUTRACK // ACADEMIC HUD',
+    category: 'FULL-STACK DATA PLATFORM',
+    tagline: 'Automated academic tracking & real-time competitive coding dashboard',
     description:
-      'Computer vision inspection platform built with custom CNN architectures and transfer learning. Analyzes high-resolution industrial sensor feeds to detect micro-cracks, surface anomalies, and quality deviations at 60 FPS on edge hardware.',
+      'Full-stack telemetry platform featuring mentor and student dashboards. Replaced manual spreadsheets by automating live problem-solving data streams directly from CodeChef and LeetCode APIs into actionable analytics.',
     metrics: [
-      { label: 'ARCHITECTURE', value: 'YOLOv8 + ResNet-50 Backbone' },
-      { label: 'INSPECTION mAP', value: '94.8% mAP@0.5' },
-      { label: 'EDGE DEPLOYMENT', value: 'ONNX Runtime + TensorRT' },
+      { label: 'FRONTEND STACK', value: 'React.js + Tailwind CSS' },
+      { label: 'BACKEND CORE', value: 'Node.js + Express + REST API' },
+      { label: 'DATABASE', value: 'MongoDB Document Collections' },
     ],
-    technologies: ['PyTorch', 'YOLOv8', 'TensorRT', 'ONNX', 'OpenCV', 'CUDA'],
+    technologies: ['React.js', 'Node.js', 'MongoDB', 'REST API', 'Tailwind CSS', 'Vercel'],
     image: './images/before_after.png',
-    liveUrl: 'https://github.com/arikrishna-03',
-    githubUrl: 'https://github.com/arikrishna-03',
+    liveUrl: 'https://edutr-ilnd-llvx5epyw-arikrishna-03s-projects.vercel.app',
+    githubUrl: 'https://github.com/arikrishna-03/EDUTR',
     accentColor: '#c084fc',
     accentHex: 0xc084fc,
     worldPos: { x: -2.8, y: 0, z: -58 },
@@ -257,7 +257,347 @@ export function initProjects3DWorld() {
   // ═══════════════════════════════════════════════════════════════════════
   // 3. 3D HOLOGRAPHIC PROJECTION STATIONS & FLOATING CORES
   // ═══════════════════════════════════════════════════════════════════════
-  const projectMeshes = [];
+  // Helper to generate dynamic project HUD screen textures
+  function createProjectScreenTexture(proj) {
+    const cvs = document.createElement('canvas');
+    cvs.width = 1024;
+    cvs.height = 700;
+    const ctx = cvs.getContext('2d');
+    const accent = proj.accentColor;
+
+    // Deep cyber backdrop
+    ctx.fillStyle = '#060a16';
+    ctx.fillRect(0, 0, 1024, 700);
+
+    // Subtle grid pattern
+    ctx.strokeStyle = 'rgba(103, 199, 235, 0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < 1024; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, 700);
+      ctx.stroke();
+    }
+    for (let y = 0; y < 700; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(1024, y);
+      ctx.stroke();
+    }
+
+    if (proj.id === 1) {
+      // ─── POSEAI REAL-TIME CAMERA VISION HUD ───
+      ctx.fillStyle = 'rgba(10, 20, 36, 0.88)';
+      ctx.fillRect(20, 20, 984, 52);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(20, 20, 984, 52);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 20px "Space Grotesk", sans-serif';
+      ctx.fillText('⚡ POSEAI // REAL-TIME CAMERA VISION ENGINE', 40, 52);
+
+      ctx.fillStyle = accent;
+      ctx.font = '600 15px "Roboto Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText('REC ● 60 FPS | 1080P | 14ms LATENCY', 980, 52);
+      ctx.textAlign = 'left';
+
+      // Camera Viewport Rule of Thirds
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.setLineDash([8, 8]);
+      ctx.strokeRect(80, 95, 864, 490);
+      ctx.setLineDash([]);
+
+      // Central Bounding Target Box with Corner Brackets
+      const bx = 340, by = 130, bw = 340, bh = 420;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(bx, by, bw, bh);
+
+      // AI Pose Skeleton Joint Overlay
+      const joints = [
+        [510, 190], [510, 250], [440, 270], [580, 270],
+        [410, 340], [610, 340], [390, 410], [630, 410],
+        [460, 420], [560, 420], [450, 500], [570, 500]
+      ];
+      const bones = [
+        [0, 1], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7],
+        [1, 8], [1, 9], [8, 10], [9, 11]
+      ];
+
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 3;
+      ctx.shadowColor = accent;
+      ctx.shadowBlur = 10;
+      bones.forEach(([i1, i2]) => {
+        ctx.beginPath();
+        ctx.moveTo(joints[i1][0], joints[i1][1]);
+        ctx.lineTo(joints[i2][0], joints[i2][1]);
+        ctx.stroke();
+      });
+
+      joints.forEach(([jx, jy]) => {
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(jx, jy, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.shadowBlur = 0;
+
+      // Detection Tag
+      ctx.fillStyle = accent;
+      ctx.fillRect(bx, by - 26, 175, 24);
+      ctx.fillStyle = '#060a16';
+      ctx.font = 'bold 12px "Roboto Mono", monospace';
+      ctx.fillText('TARGET: OPTIMAL_POSE_04', bx + 8, by - 9);
+
+      // Left Telemetry Readout Box
+      ctx.fillStyle = 'rgba(8, 16, 32, 0.88)';
+      ctx.fillRect(100, 125, 210, 190);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeRect(100, 125, 210, 190);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 13px "Roboto Mono", monospace';
+      ctx.fillText('[ TELEMETRY ]', 115, 150);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '12px "Roboto Mono", monospace';
+      ctx.fillText('CONFIDENCE: 98.4%', 115, 180);
+      ctx.fillText('SKELETON: 12 NODES', 115, 205);
+      ctx.fillText('LIGHTING: BALANCED', 115, 230);
+      ctx.fillText('ANGLE: 14° TILT', 115, 255);
+      ctx.fillText('STATUS: TRACKING', 115, 280);
+
+      // Bottom Action HUD Strip
+      ctx.fillStyle = 'rgba(10, 20, 36, 0.9)';
+      ctx.fillRect(20, 610, 984, 70);
+      ctx.strokeStyle = accent;
+      ctx.strokeRect(20, 610, 984, 70);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px "Space Grotesk", sans-serif';
+      ctx.fillText('POSE INFERENCE: RECOGNIZED PORTRAIT PROFILE // RECOMMENDING THREE-QUARTER SHOT', 40, 650);
+
+    } else if (proj.id === 2) {
+      // ─── DUAL PORTFOLIO & TELEMETRY MATRIX ───
+      ctx.fillStyle = 'rgba(10, 20, 36, 0.88)';
+      ctx.fillRect(20, 20, 984, 52);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(20, 20, 984, 52);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 20px "Space Grotesk", sans-serif';
+      ctx.fillText('🌐 DUAL PORTFOLIO // GPU WEBGL 3D MATRIX', 40, 52);
+
+      ctx.fillStyle = accent;
+      ctx.font = '600 15px "Roboto Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText('THREE.JS | SHADER CORES ACTIVE | 60 FPS', 980, 52);
+      ctx.textAlign = 'left';
+
+      // 3D Polytope / Wireframe Geometry in Center
+      const cx = 512, cy = 330;
+      const r = 160;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = accent;
+      ctx.shadowBlur = 14;
+
+      const pts = [
+        [cx, cy - r],
+        [cx + r * 0.86, cy - r * 0.45],
+        [cx + r * 0.86, cy + r * 0.45],
+        [cx, cy + r],
+        [cx - r * 0.86, cy + r * 0.45],
+        [cx - r * 0.86, cy - r * 0.45],
+        [cx, cy]
+      ];
+
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        ctx.moveTo(pts[i][0], pts[i][1]);
+        ctx.lineTo(pts[(i + 1) % 6][0], pts[(i + 1) % 6][1]);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(pts[6][0], pts[6][1]);
+        ctx.lineTo(pts[i][0], pts[i][1]);
+        ctx.stroke();
+      }
+      ctx.shadowBlur = 0;
+
+      // Left Telemetry Box
+      ctx.fillStyle = 'rgba(8, 16, 32, 0.88)';
+      ctx.fillRect(60, 120, 260, 200);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeRect(60, 120, 260, 200);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px "Roboto Mono", monospace';
+      ctx.fillText('// TELEMETRY SYNC', 80, 150);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '13px "Roboto Mono", monospace';
+      ctx.fillText('CODECHEF: 500+ SOLVED', 80, 185);
+      ctx.fillText('LEETCODE: 70+ SOLVED', 80, 215);
+      ctx.fillText('GLOBAL RANK: #15,751', 80, 245);
+      ctx.fillText('SYNC STATUS: 200 OK', 80, 275);
+
+      // Right Graphics Box
+      ctx.fillStyle = 'rgba(8, 16, 32, 0.88)';
+      ctx.fillRect(704, 120, 260, 200);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeRect(704, 120, 260, 200);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px "Roboto Mono", monospace';
+      ctx.fillText('// GPU PIPELINE', 724, 150);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '13px "Roboto Mono", monospace';
+      ctx.fillText('VERTICES: 14,200', 724, 185);
+      ctx.fillText('DRAW CALLS: 18/FRAME', 724, 215);
+      ctx.fillText('VITE BUNDLE: GZIP OK', 724, 245);
+      ctx.fillText('GPU BUFFER: 100% CLEAN', 724, 275);
+
+      // Bottom Strip
+      ctx.fillStyle = 'rgba(10, 20, 36, 0.9)';
+      ctx.fillRect(20, 610, 984, 70);
+      ctx.strokeStyle = accent;
+      ctx.strokeRect(20, 610, 984, 70);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px "Space Grotesk", sans-serif';
+      ctx.fillText('GITHUB: arikrishna-03/portfolio // HIGH-PERFORMANCE WEBGL GRAPHICS ARCHITECTURE', 40, 650);
+
+    } else {
+      // ─── EDUTRACK ACADEMIC HUD ───
+      ctx.fillStyle = 'rgba(10, 20, 36, 0.88)';
+      ctx.fillRect(20, 20, 984, 52);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(20, 20, 984, 52);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 20px "Space Grotesk", sans-serif';
+      ctx.fillText('📊 EDUTRACK // ACADEMIC & CODING HUD', 40, 52);
+
+      ctx.fillStyle = accent;
+      ctx.font = '600 15px "Roboto Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText('REACT.JS + NODE.JS + MONGODB | VERCEL PROD', 980, 52);
+      ctx.textAlign = 'left';
+
+      // Left Chart Card
+      ctx.fillStyle = 'rgba(8, 16, 32, 0.88)';
+      ctx.fillRect(60, 110, 420, 220);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeRect(60, 110, 420, 220);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px "Roboto Mono", monospace';
+      ctx.fillText('// PROBLEM SOLVING STREAM', 80, 140);
+
+      const barData = [65, 85, 120, 160, 210, 320, 410, 500];
+      barData.forEach((val, bi) => {
+        const bh = (val / 500) * 110;
+        ctx.fillStyle = accent;
+        ctx.fillRect(90 + bi * 45, 300 - bh, 30, bh);
+      });
+
+      // Right Mentor Card
+      ctx.fillStyle = 'rgba(8, 16, 32, 0.88)';
+      ctx.fillRect(544, 110, 420, 220);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeRect(544, 110, 420, 220);
+
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px "Roboto Mono", monospace';
+      ctx.fillText('// MENTOR DASHBOARD VERIFICATION', 564, 140);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '13px "Roboto Mono", monospace';
+      ctx.fillText('STUDENTS TRACKED: 120 ACTIVE', 564, 180);
+      ctx.fillText('AUTOMATED SYNC: CODECHEF / LEETCODE', 564, 210);
+      ctx.fillText('EXCEL REPLACEMENT: 100% COMPLETE', 564, 240);
+      ctx.fillText('API LATENCY: 42ms AVG', 564, 270);
+
+      // Bottom Strip
+      ctx.fillStyle = 'rgba(10, 20, 36, 0.9)';
+      ctx.fillRect(20, 610, 984, 70);
+      ctx.strokeStyle = accent;
+      ctx.strokeRect(20, 610, 984, 70);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px "Space Grotesk", sans-serif';
+      ctx.fillText('LIVE DEMO: edutr-ilnd-llvx5epyw-arikrishna-03s-projects.vercel.app', 40, 650);
+    }
+
+    // Corner HUD Brackets
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 4;
+    const blen = 30;
+    ctx.beginPath(); ctx.moveTo(6, 6 + blen); ctx.lineTo(6, 6); ctx.lineTo(6 + blen, 6); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(1018 - blen, 6); ctx.lineTo(1018, 6); ctx.lineTo(1018, 6 + blen); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(6, 694 - blen); ctx.lineTo(6, 694); ctx.lineTo(6 + blen, 694); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(1018 - blen, 694); ctx.lineTo(1018, 694); ctx.lineTo(1018, 694 - blen); ctx.stroke();
+
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.generateMipmaps = true;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  // Helper to create holographic lateral telemetry side-blade textures
+  function createDataBladeTexture(colorStr, isLeft) {
+    const cvs = document.createElement('canvas');
+    cvs.width = 160;
+    cvs.height = 512;
+    const ctx = cvs.getContext('2d');
+
+    ctx.fillStyle = 'rgba(6, 12, 24, 0.88)';
+    ctx.fillRect(4, 4, 152, 504);
+
+    ctx.strokeStyle = colorStr;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(4, 4, 152, 504);
+
+    ctx.fillStyle = colorStr;
+    for (let y = 30; y < 480; y += 18) {
+      const w = (y % 36 === 0) ? 24 : 12;
+      if (isLeft) {
+        ctx.fillRect(8, y, w, 2);
+      } else {
+        ctx.fillRect(152 - w, y, w, 2);
+      }
+    }
+
+    ctx.font = '11px "Roboto Mono", monospace';
+    ctx.fillStyle = '#ffffff';
+    if (isLeft) {
+      ctx.fillText('LOC_SYNC', 40, 60);
+      ctx.fillStyle = colorStr;
+      ctx.fillText('X: -2.80', 40, 90);
+      ctx.fillText('Y:  2.45', 40, 110);
+      ctx.fillText('Z: -14.0', 40, 130);
+      ctx.fillText('60 FPS', 40, 170);
+      ctx.fillText('GPU_OK', 40, 200);
+      ctx.fillText('NODE_01', 40, 230);
+    } else {
+      ctx.fillText('SYS_DIAG', 30, 60);
+      ctx.fillStyle = colorStr;
+      ctx.fillText('STATUS: OK', 30, 90);
+      ctx.fillText('CORE: V8', 30, 110);
+      ctx.fillText('I/O: LIVE', 30, 130);
+      ctx.fillText('NET: 100%', 30, 170);
+      ctx.fillText('SEC: HIGH', 30, 200);
+      ctx.fillText('PROD: YES', 30, 230);
+    }
+
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.needsUpdate = true;
+    return tex;
+  }
 
   // Helper to create holographic HUD header badge texture
   function createHoloBadgeTexture(number, category, colorHex) {
@@ -384,6 +724,7 @@ export function initProjects3DWorld() {
   }
 
   // Build each physical 3D Holographic Station
+  const projectMeshes = [];
   projectsData.forEach((proj, idx) => {
     const group = new THREE.Group();
     const colorHex = proj.accentHex;
@@ -1278,10 +1619,11 @@ function renderUICards(container, projects) {
     card.style.setProperty('--card-accent', proj.accentColor);
 
     let metricsHTML = '';
-    proj.metrics.forEach((m) => {
+    proj.metrics.forEach((m, idx) => {
       metricsHTML += `
         <div class="ac-spec-row">
-          <span class="ac-spec-label">${m.label}</span>
+          <span class="ac-spec-label"><span class="ac-spec-idx">[0${idx + 1}]</span> ${m.label}</span>
+          <span class="ac-spec-dots"></span>
           <span class="ac-spec-val" style="color: ${proj.accentColor}">${m.value}</span>
         </div>
       `;
@@ -1289,20 +1631,45 @@ function renderUICards(container, projects) {
 
     let techHTML = '';
     proj.technologies.forEach((t) => {
-      techHTML += `<span class="ac-tag">${t}</span>`;
+      techHTML += `<span class="ac-tag"><span class="ac-tag-bracket">[</span> ${t} <span class="ac-tag-bracket">]</span></span>`;
     });
 
     card.innerHTML = `
-      <div class="ac-glow" style="background: radial-gradient(circle at 50% 0%, ${proj.accentColor}33, transparent 70%);"></div>
+      <div class="hud-corner hud-corner--tl" style="border-color: ${proj.accentColor}"></div>
+      <div class="hud-corner hud-corner--tr" style="border-color: ${proj.accentColor}"></div>
+      <div class="hud-corner hud-corner--bl" style="border-color: ${proj.accentColor}"></div>
+      <div class="hud-corner hud-corner--br" style="border-color: ${proj.accentColor}"></div>
+      <div class="hud-scanlines"></div>
+      <div class="ac-glow" style="background: radial-gradient(circle at 50% 0%, ${proj.accentColor}38, transparent 70%);"></div>
+
+      <div class="hud-telemetry-header">
+        <div class="hud-status">
+          <span class="hud-status-led" style="background: ${proj.accentColor}; box-shadow: 0 0 10px ${proj.accentColor};"></span>
+          <span class="hud-status-text">NODE // TELEMETRY_SYNCED</span>
+        </div>
+        <div class="hud-sys-tag" style="border-color: ${proj.accentColor}; color: ${proj.accentColor};">
+          SYS_0${proj.number} // PROD
+        </div>
+      </div>
+
       <div class="ac-header">
-        <span class="ac-pill" style="border-color: ${proj.accentColor}; color: ${proj.accentColor};">SYSTEM ${proj.number}</span>
+        <span class="ac-pill" style="border-color: ${proj.accentColor}; color: ${proj.accentColor};">
+          <span class="ac-pill-prefix">//</span> SYSTEM ${proj.number}
+        </span>
         <span class="ac-category">${proj.category}</span>
       </div>
+
       <h3 class="ac-title">${proj.title}</h3>
-      <div class="ac-tagline" style="color: ${proj.accentColor}">${proj.tagline}</div>
+      <div class="ac-tagline" style="color: ${proj.accentColor}">
+        <span class="ac-tagline-prompt">&gt;&gt;</span> ${proj.tagline}
+      </div>
       <p class="ac-desc">${proj.description}</p>
       
       <div class="ac-specs">
+        <div class="ac-specs-bar">
+          <span class="ac-specs-title">TELEMETRY &amp; ARCHITECTURE SPECS</span>
+          <span class="ac-specs-code" style="color: ${proj.accentColor}">SEC_0${proj.number} // LIVE</span>
+        </div>
         ${metricsHTML}
       </div>
 
@@ -1312,11 +1679,15 @@ function renderUICards(container, projects) {
 
       <div class="ac-actions">
         <a href="${proj.liveUrl}" target="_blank" rel="noopener noreferrer" class="ac-btn" style="--btn-accent: ${proj.accentColor}">
-          <span>Explore System</span>
+          <span class="ac-btn-glimmer"></span>
+          <span class="ac-btn-text">Explore System</span>
           <span class="ac-arrow">→</span>
         </a>
         <a href="${proj.githubUrl}" target="_blank" rel="noopener noreferrer" class="ac-btn-sec" style="--btn-accent: ${proj.accentColor}">
-          <span>GitHub Code</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span class="ac-btn-text">GitHub Repo</span>
           <span class="ac-arrow">↗</span>
         </a>
       </div>
