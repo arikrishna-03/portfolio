@@ -441,43 +441,216 @@
         </div>
       </div>
 
-      <!-- ═══════ 3D IMMERSIVE PROJECTS SHOWCASE (THREE.JS SCROLL-DRIVEN WORLD) ═══════ -->
-      <div id="projects-ai" class="arcade-3d-section">
-        <div class="arcade-3d-sticky">
+      <!-- ═══════ RETRO CRT COMPUTER MONITOR PROJECT SHOWCASE (WINDOWS VISTA/7 DESKTOP) ═══════ -->
+      <div id="projects-ai" class="arcade-3d-section retro-pc-section">
+        <div class="retro-pc-sticky" id="retro-pc-sticky">
 
-          <!-- Fullscreen WebGL 3D Canvas -->
-          <canvas id="arcade-3d-canvas" class="arcade-3d-canvas"></canvas>
+          <!-- Ambient Darkness & Depth Gradients -->
+          <div class="retro-ambient-vignette"></div>
+          <div class="retro-top-fade"></div>
+          <div class="retro-bottom-fade"></div>
 
-          <!-- Ambient Vignette & Smooth Depth Gradients -->
-          <div class="arcade-vignette"></div>
-          <div class="arcade-top-fade"></div>
-          <div class="arcade-bottom-transition"></div>
-
-          <!-- Top Progress Bar -->
-          <div class="arcade-progress-container">
-            <div class="arcade-progress-bar" id="arcade-progress-bar"></div>
+          <!-- Entrance "Project Showcase" Two-Line Title -->
+          <div class="retro-intro-title" id="retro-intro-title">
+            <span class="ait-line">Project</span>
+            <span class="ait-line">Showcase</span>
+            <div class="retro-scroll-hint" id="retro-scroll-hint">
+              <span>SCROLL TO EXPLORE</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </div>
           </div>
 
-          <!-- Top Interactive HUD Bar -->
-
-
-          <!-- Floating Glassmorphic Spec Overlay Cards (Alternating Left/Right) -->
-          <div class="arcade-cards-overlay">
-            <!-- Initial accessible fallback intro title in two lines -->
-            <div class="arcade-intro-title" id="arcade-intro-title">
-              <span class="ait-line">Project</span>
-              <span class="ait-line">Showcase</span>
-              <div class="arcade-hud-bar">
-                <div class="arcade-hud-left"></div>
-                <div class="arcade-hud-right">
-                  <span class="arcade-scroll-hint" id="arcade-scroll-hint">SCROLL TO EXPLORE ↓</span>
+          <!-- CRT Monitor Viewport (Smoothly Zooms On Scroll) -->
+          <div class="retro-stage-viewport" id="retro-stage-viewport">
+            
+            <!-- Monitor Assembly (Entire Monitor including Stand & Chassis) -->
+            <div class="retro-monitor-assembly" id="retro-monitor-assembly">
+              
+              <!-- Monitor Chassis (Pastel Blue Vintage Plastic) -->
+              <div class="retro-monitor-chassis">
+                
+                <!-- Top Air Vents -->
+                <div class="retro-top-vents">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
-              </div>
-            </div>
-          </div><!-- end arcade-cards-overlay -->
 
-        </div><!-- end arcade-3d-sticky -->
-      </div><!-- end arcade-3d-section -->
+                <!-- Recessed Inner Screen Bezel -->
+                <div class="retro-screen-bezel">
+                  
+                  <!-- CRT Curved Glass Screen -->
+                  <div class="retro-crt-screen" id="retro-crt-screen">
+
+                    <!-- Side Bezel Edges (matching user's Image 2) -->
+                    <div class="retro-bezel-edge-left"></div>
+                    <div class="retro-bezel-edge-right"></div>
+
+                    <!-- CRT Glass Glare Reflection -->
+                    <div class="retro-glass-glare"></div>
+
+                    <!-- Interactive Windows Desktop -->
+                    <div class="retro-desktop" id="retro-desktop">
+
+                      <!-- Desktop Icons Layout -->
+                      <div class="retro-desktop-icons">
+                        
+                        <!-- Right Column: Project Icons with Picture Previews & System Files -->
+                        <div class="retro-icons-right">
+                          
+                          <!-- Project 1: PoseAI.png -->
+                          <div class="retro-icon-item" data-project-id="1" tabindex="0" role="button" aria-label="PoseAI.png">
+                            <div class="retro-icon-thumb-frame">
+                              <img src="./images/ai_rural.png" alt="PoseAI.png preview" class="retro-icon-thumb-img" />
+                            </div>
+                            <span class="retro-icon-label">PoseAI.png</span>
+                          </div>
+
+                          <!-- Project 2: Portfolio.png -->
+                          <div class="retro-icon-item" data-project-id="2" tabindex="0" role="button" aria-label="Portfolio.png">
+                            <div class="retro-icon-thumb-frame">
+                              <img src="./images/hero_poster.png" alt="Portfolio.png preview" class="retro-icon-thumb-img" />
+                            </div>
+                            <span class="retro-icon-label">Portfolio.png</span>
+                          </div>
+
+                          <!-- Project 3: EduTrack.png -->
+                          <div class="retro-icon-item" data-project-id="3" tabindex="0" role="button" aria-label="EduTrack.png">
+                            <div class="retro-icon-thumb-frame">
+                              <img src="./images/before_after.png" alt="EduTrack.png preview" class="retro-icon-thumb-img" />
+                            </div>
+                            <span class="retro-icon-label">EduTrack.png</span>
+                          </div>
+
+                          <!-- Testimonials Folder -->
+                          <div class="retro-icon-item" data-special-id="testimonials" tabindex="0" role="button" aria-label="Testimonials">
+                            <div class="retro-icon-svg-frame folder-icon">
+                              <svg viewBox="0 0 44 44" fill="none" class="retro-svg-graphic">
+                                <path d="M4 11a3 3 0 0 1 3-3h10l3.5 3.5H37a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V11z" fill="#4aa8f2"/>
+                                <path d="M4 16.5h36V33.5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V16.5z" fill="#75c7ff"/>
+                              </svg>
+                            </div>
+                            <span class="retro-icon-label">Testimonials</span>
+                          </div>
+
+                          <!-- FAQ.md Document -->
+                          <div class="retro-icon-item" data-special-id="faq" tabindex="0" role="button" aria-label="FAQ.md">
+                            <div class="retro-icon-svg-frame doc-icon">
+                              <svg viewBox="0 0 44 44" fill="none" class="retro-svg-graphic">
+                                <path d="M9 5a3 3 0 0 1 3-3h15l10 10v26a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3V5z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+                                <path d="M27 2v10h10" fill="#e2e8f0"/>
+                                <text x="23" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="9.5" fill="#64748b" text-anchor="middle">MD</text>
+                              </svg>
+                            </div>
+                            <span class="retro-icon-label">FAQ.md</span>
+                          </div>
+
+                        </div><!-- end retro-icons-right -->
+
+                        <!-- Bottom Left: Pricing / Certifications HTML File -->
+                        <div class="retro-icons-left">
+                          <div class="retro-icon-item" data-special-id="pricing" tabindex="0" role="button" aria-label="Pricing.html">
+                            <div class="retro-icon-svg-frame html-icon">
+                              <svg viewBox="0 0 44 44" fill="none" class="retro-svg-graphic">
+                                <rect width="44" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/>
+                                <circle cx="22" cy="18" r="11" fill="#0284c7"/>
+                                <polygon points="22,10 24.5,17 30,18 24.5,19 22,26 19.5,19 14,18 19.5,17" fill="#ef4444"/>
+                                <circle cx="22" cy="18" r="3" fill="#ffffff"/>
+                                <text x="22" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="8" fill="#64748b" text-anchor="middle">HTML</text>
+                              </svg>
+                            </div>
+                            <span class="retro-icon-label">Pricing.html</span>
+                          </div>
+                        </div>
+
+                      </div><!-- end retro-desktop-icons -->
+
+                      <!-- Retro Project Detail Window (Mac / Windows Vista Pop-Up) -->
+                      <div class="retro-window" id="retro-window" aria-hidden="true">
+                        <!-- Window Titlebar with 3 Control Dots -->
+                        <div class="retro-window-titlebar" id="retro-window-titlebar">
+                          <div class="retro-window-controls">
+                            <button class="retro-ctrl-btn retro-ctrl-close" id="retro-btn-close" title="Close Window" aria-label="Close"></button>
+                            <button class="retro-ctrl-btn retro-ctrl-min" id="retro-btn-min" title="Minimize Window" aria-label="Minimize"></button>
+                            <button class="retro-ctrl-btn retro-ctrl-max" id="retro-btn-max" title="Maximize Window" aria-label="Maximize"></button>
+                          </div>
+                          <div class="retro-window-title-text" id="retro-window-title">
+                            PoseAI - Context-Aware Mobile Vision Assistant
+                          </div>
+                          <div class="retro-window-titlebar-spacer"></div>
+                        </div>
+
+                        <!-- Window Scrollable Content -->
+                        <div class="retro-window-body" id="retro-window-body">
+                          <!-- Injected Dynamically Based on Clicked Item -->
+                        </div>
+                      </div><!-- end retro-window -->
+
+                      <!-- Windows Aero Taskbar & System Tray -->
+                      <div class="retro-taskbar">
+                        
+                        <!-- Right: System Tray (Battery, Display, Search, Wifi, Live Date/Clock) -->
+                        <div class="retro-taskbar-right">
+                          <div class="retro-tray-icons">
+                            <!-- Battery -->
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="20" y1="11" x2="20" y2="13"/><rect x="4" y="9" width="7" height="6" fill="currentColor"/></svg>
+                            <!-- Display / Screen -->
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="13" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <!-- Search -->
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/></svg>
+                            <!-- Wifi -->
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></svg>
+                          </div>
+                          <!-- Live Synchronized System Clock -->
+                          <div class="retro-clock" id="retro-clock">
+                            Fri, Oct 16 11:19 PM
+                          </div>
+                        </div>
+
+                      </div><!-- end retro-taskbar -->
+
+                    </div><!-- end retro-desktop -->
+
+                  </div><!-- end retro-crt-screen -->
+                </div><!-- end retro-screen-bezel -->
+
+                <!-- Monitor Chin (Lower Frame) -->
+                <div class="retro-monitor-chin">
+                  
+                  <!-- Left: Speaker Grille Slits -->
+                  <div class="retro-speaker-grille">
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+
+                  <!-- Center: Vintage Model Badge -->
+                  <div class="retro-monitor-badge">
+                    <span class="retro-badge-logo">◈</span>
+                    <span class="retro-badge-text">VINTAGE MULTISYNC 15</span>
+                  </div>
+
+                  <!-- Right: Power Control & Status LED (Matches Vintage Monitor) -->
+                  <div class="retro-power-cluster">
+                    <div class="retro-power-group">
+                      <div class="retro-power-led" title="Power: Online"></div>
+                      <button class="retro-power-btn" id="retro-power-btn" title="CRT Power Switch" aria-label="Toggle Monitor Power">
+                      </button>
+                    </div>
+                  </div>
+
+                </div><!-- end retro-monitor-chin -->
+
+              </div><!-- end retro-monitor-chassis -->
+
+              <!-- Monitor Pedestal Stand & Base -->
+              <div class="retro-monitor-stand">
+                <div class="retro-stand-neck"></div>
+                <div class="retro-stand-base"></div>
+              </div>
+
+            </div><!-- end retro-monitor-assembly -->
+
+          </div><!-- end retro-stage-viewport -->
+
+        </div><!-- end retro-pc-sticky -->
+      </div><!-- end projects-ai -->
 
       <!-- ═══════ SELECTED WORK / THINGS I'VE BUILT (2D MOBILE VIEW) ═══════ -->
       <section class="work-section mobile-work-section" id="work">

@@ -1584,8 +1584,8 @@ window.addEventListener('resize', () => {
     dsc.height = innerHeight;
   }
   if (mode === 'ai' && window.innerWidth > 820) {
-    const arcadeCanvas = document.getElementById('arcade-3d-canvas');
-    if (arcadeCanvas && !arcadeCanvas.__destroyProjects3D) {
+    const pcContainer = document.getElementById('projects-ai');
+    if (pcContainer) {
       initProjects3DWorld();
     }
   }
