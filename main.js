@@ -61,6 +61,10 @@ function updateCursorPos(clientX, clientY) {
     rx = mx; ry = my;
     tailPoints.forEach(p => { p.x = mx; p.y = my; });
     firstMove = false;
+    if (ring) {
+      ring.style.setProperty('--rx', rx + 'px');
+      ring.style.setProperty('--ry', ry + 'px');
+    }
   }
   if (cur) {
     cur.style.setProperty('--mx', mx + 'px');
@@ -68,7 +72,15 @@ function updateCursorPos(clientX, clientY) {
   }
 }
 
-// Mouse events
+// Mouse and pointer events for instant zero-lag cursor response
+window.addEventListener('pointermove', e => {
+  if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+    lastPointerType = 'mouse';
+    updateCursorPos(e.clientX, e.clientY);
+    showCursor();
+  }
+}, { passive: true });
+
 document.addEventListener('mousemove', e => {
   lastPointerType = 'mouse';
   updateCursorPos(e.clientX, e.clientY);

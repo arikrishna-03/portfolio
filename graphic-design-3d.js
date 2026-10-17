@@ -114,7 +114,7 @@ export const graphicDesignProjects = [
 /**
  * Creates a rounded rectangle alpha mask texture to give 3D curved cards anti-aliased rounded corners
  */
-function createRoundedCornerAlphaMap(width = 540, height = 690, radius = 32) {
+function createRoundedCornerAlphaMap(width = 400, height = 512, radius = 24) {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -144,103 +144,151 @@ function createRoundedCornerAlphaMap(width = 540, height = 690, radius = 32) {
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
   return texture;
 }
 
+// Queue for staggering texture uploads across frames to ensure the main thread and cursor never freeze
+const textureLoadQueue = [];
+let isProcessingQueue = false;
+
+function processNextTextureInQueue() {
+  if (textureLoadQueue.length === 0) {
+    isProcessingQueue = false;
+    return;
+  }
+  isProcessingQueue = true;
+
+  requestAnimationFrame(() => {
+    const task = textureLoadQueue.shift();
+    if (task) {
+      task();
+    }
+    // Yield 20ms to browser main thread so mouse movement and cursor stay 100% fluid
+    setTimeout(processNextTextureInQueue, 20);
+  });
+}
+
 /**
- * Creates high-fidelity canvas texture combining loaded design artwork, typographic hierarchy, and button
+ * Creates high-fidelity canvas texture combining loaded design artwork, typographic hierarchy, and button.
+ * Uses background img.decode() and a staggered queue to prevent main-thread stutter on page load.
  */
-function createCardTexture(item, onUpdate) {
+function createCardTexture(item, onUpdate, priority = false) {
   const canvas = document.createElement('canvas');
-  canvas.width = 1080;
-  canvas.height = 1380; // Natural 4:5 vertical poster length
+  canvas.width = 800;
+  canvas.height = 1024;
   const ctx = canvas.getContext('2d');
 
   // Initial dark placeholder while image loads
-  ctx.fillStyle = '#0d0809';
+  ctx.fillStyle = '#0e090b';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
 
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.src = item.image;
 
-  img.onload = () => {
-    // 1. Draw subtle ambient bleed in background
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(8, 4, 6, 0.78)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const renderArtwork = () => {
+    const task = () => {
+      // 1. Draw subtle ambient bleed in background
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(8, 4, 6, 0.82)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Draw base artwork in its PROPER FULL LENGTH without cropping height:
-    const scale = Math.min(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-    const drawW = img.naturalWidth * scale;
-    const drawH = img.naturalHeight * scale;
-    const drawX = (canvas.width - drawW) / 2;
-    const drawY = (canvas.height - drawH) / 2;
+      // 2. Draw base artwork in its proper full length without cropping height:
+      const scale = Math.min(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+      const drawW = img.naturalWidth * scale;
+      const drawH = img.naturalHeight * scale;
+      const drawX = (canvas.width - drawW) / 2;
+      const drawY = (canvas.height - drawH) / 2;
 
-    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+      ctx.drawImage(img, drawX, drawY, drawW, drawH);
 
-    // 3. Subtle bottom edge gradient for sleek typography contrast
-    const grad = ctx.createLinearGradient(0, 1160, 0, canvas.height);
-    grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    grad.addColorStop(0.5, 'rgba(6, 3, 5, 0.45)');
-    grad.addColorStop(1, 'rgba(5, 2, 4, 0.88)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 1160, canvas.width, canvas.height - 1160);
+      // 3. Subtle bottom edge gradient for sleek typography contrast
+      const grad = ctx.createLinearGradient(0, 840, 0, canvas.height);
+      grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      grad.addColorStop(0.5, 'rgba(6, 3, 5, 0.55)');
+      grad.addColorStop(1, 'rgba(5, 2, 4, 0.92)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 840, canvas.width, canvas.height - 840);
 
-    // 4. Category Tag
-    ctx.font = '700 16px "DM Sans", -apple-system, sans-serif';
-    ctx.letterSpacing = '2.5px';
-    ctx.fillStyle = 'rgba(247, 240, 151, 0.9)'; // Brand warm accent
-    ctx.fillText(item.category, 48, 1260);
+      // 4. Category Tag
+      ctx.font = '700 13px "DM Sans", -apple-system, sans-serif';
+      ctx.letterSpacing = '2.2px';
+      ctx.fillStyle = 'rgba(247, 240, 151, 0.9)';
+      ctx.fillText(item.category, 36, 928);
 
-    // 5. Main Title
-    ctx.font = 'bold 40px "Syne", "Space Grotesk", sans-serif';
-    ctx.letterSpacing = '-0.5px';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(item.title, 48, 1308);
+      // 5. Main Title
+      ctx.font = 'bold 30px "Syne", "Space Grotesk", sans-serif';
+      ctx.letterSpacing = '-0.5px';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(item.title, 36, 966);
 
-    // 6. Subtitle
-    ctx.font = '500 17px "DM Sans", sans-serif';
-    ctx.letterSpacing = '0.5px';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-    ctx.fillText(item.subtitle, 48, 1342);
+      // 6. Subtitle
+      ctx.font = '500 13px "DM Sans", sans-serif';
+      ctx.letterSpacing = '0.5px';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+      ctx.fillText(item.subtitle, 36, 994);
 
-    // 7. Circular Action Button on Bottom Right
-    const btnX = canvas.width - 48 - 28;
-    const btnY = 1308;
-    const btnR = 28;
+      // 7. Circular Action Button on Bottom Right
+      const btnX = canvas.width - 36 - 22;
+      const btnY = 966;
+      const btnR = 22;
 
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(btnX, btnY, btnR, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(8, 5, 7, 0.88)';
-    ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.stroke();
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(btnX, btnY, btnR, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(8, 5, 7, 0.88)';
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.stroke();
 
-    // Arrow icon
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(btnX - 8, btnY);
-    ctx.lineTo(btnX + 8, btnY);
-    ctx.moveTo(btnX + 2, btnY - 6);
-    ctx.lineTo(btnX + 8, btnY);
-    ctx.lineTo(btnX + 2, btnY + 6);
-    ctx.stroke();
-    ctx.restore();
+      // Arrow icon
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(btnX - 6, btnY);
+      ctx.lineTo(btnX + 6, btnY);
+      ctx.moveTo(btnX + 1, btnY - 5);
+      ctx.lineTo(btnX + 6, btnY);
+      ctx.lineTo(btnX + 1, btnY + 5);
+      ctx.stroke();
+      ctx.restore();
 
-    texture.needsUpdate = true;
-    if (onUpdate) onUpdate();
+      texture.needsUpdate = true;
+      if (onUpdate) onUpdate();
+    };
+
+    if (priority) {
+      textureLoadQueue.unshift(task);
+    } else {
+      textureLoadQueue.push(task);
+    }
+
+    if (!isProcessingQueue) {
+      processNextTextureInQueue();
+    }
   };
+
+  // Decode asynchronously off the main thread to ensure cursor never stutters
+  if (typeof img.decode === 'function') {
+    img.decode().then(renderArtwork).catch(() => {
+      img.onload = renderArtwork;
+    });
+  } else {
+    img.onload = renderArtwork;
+  }
 
   return texture;
 }
@@ -334,9 +382,13 @@ export function initGraphicDesign3D() {
   const cardMeshes = [];
 
   graphicDesignProjects.forEach((item, index) => {
-    const texture = createCardTexture(item, () => {
-      renderer.render(scene, camera);
-    });
+    const texture = createCardTexture(
+      item,
+      () => {
+        renderer.render(scene, camera);
+      },
+      index === 0 // Priority for front-facing initial card
+    );
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
