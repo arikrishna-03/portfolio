@@ -358,15 +358,16 @@ export function initGraphicDesign3D() {
     cardMeshes.push(mesh);
   });
 
-  // --- INTERACTION & SCROLL STATE ---
+  // --- INTERACTION & ROTATION STATE ---
   let currentRotation = 0;
   let targetRotation = 0;
+  let velocity = 0;
   let isDragging = false;
   let hasDragged = false;
   let startX = 0;
   let startY = 0;
   let lastX = 0;
-  let lastY = 0;
+  let lastTime = performance.now();
   let activeIndex = 0;
   let animId = null;
 
@@ -381,25 +382,6 @@ export function initGraphicDesign3D() {
   }
   updateHUD(0);
 
-  // Calculate scroll progress through the pinned 420vh runway
-  function getScrollProgress() {
-    if (!section) return 0;
-    const rect = section.getBoundingClientRect();
-    const maxScroll = section.offsetHeight - window.innerHeight;
-    if (maxScroll <= 0) return 0;
-    const current = -rect.top;
-    return Math.max(0, Math.min(1, current / maxScroll));
-  }
-
-  function syncScrollToTarget() {
-    const progress = getScrollProgress();
-    // Scroll progress from 0 to 1 smoothly rotates through all N cards
-    targetRotation = -progress * (N - 1) * deltaTheta;
-  }
-
-  window.addEventListener('scroll', syncScrollToTarget, { passive: true });
-  syncScrollToTarget();
-
   // --- MOUSE & TOUCH HORIZONTAL DRAG HANDLERS ---
   function onPointerDown(e) {
     isDragging = true;
@@ -407,7 +389,8 @@ export function initGraphicDesign3D() {
     startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
     startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
     lastX = startX;
-    lastY = startY;
+    velocity = 0;
+    lastTime = performance.now();
     container.style.cursor = 'grabbing';
   }
 
@@ -431,22 +414,19 @@ export function initGraphicDesign3D() {
     }
 
     const deltaX = clientX - lastX;
-    const deltaY = clientY - lastY;
-    if (Math.abs(clientX - startX) > 6 || Math.abs(clientY - startY) > 6) {
+    if (Math.abs(clientX - startX) > 6) {
       hasDragged = true;
     }
 
-    // Dragging horizontally smoothly adjusts page scroll in the runway
-    if (section) {
-      const dragDelta = Math.abs(deltaX) >= Math.abs(deltaY) ? -deltaX : -deltaY;
-      window.scrollBy({
-        top: dragDelta * 2.4,
-        behavior: 'instant'
-      });
-      syncScrollToTarget();
-    }
+    const now = performance.now();
+    const dt = Math.max(now - lastTime, 1);
+    velocity = (deltaX / dt) * 0.0035;
+    lastTime = now;
     lastX = clientX;
-    lastY = clientY;
+
+    // Horizontal drag directly spins the 3D cylinder
+    const rotSensitivity = (Math.PI * 2) / (window.innerWidth * 1.35);
+    targetRotation += deltaX * rotSensitivity;
   }
 
   function onPointerUp(e) {
@@ -454,7 +434,10 @@ export function initGraphicDesign3D() {
     isDragging = false;
     container.style.cursor = 'grab';
 
-    // Click on card if didn't drag
+    // Apply smooth flick inertia
+    targetRotation += velocity * 35;
+
+    // Click on card if user didn't drag
     if (!hasDragged) {
       const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || 0;
       const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY) || 0;
@@ -471,41 +454,44 @@ export function initGraphicDesign3D() {
         if (clickedIndex === activeIndex) {
           openArtworkLightbox(clickedIndex);
         } else {
-          scrollToCardIndex(clickedIndex);
+          rotateToIndex(clickedIndex);
         }
       }
     }
   }
 
-  function scrollToCardIndex(index) {
-    if (!section) return;
-    const maxScroll = section.offsetHeight - window.innerHeight;
-    const targetScrollTop = section.offsetTop + (index / (N - 1)) * maxScroll;
-    window.scrollTo({
-      top: targetScrollTop,
-      behavior: 'smooth'
-    });
+  // Smoothly rotate shortest angular distance to target card index
+  function rotateToIndex(index) {
+    const desiredAngle = -index * deltaTheta;
+    const diff = (desiredAngle - targetRotation) % (Math.PI * 2);
+    let normalizedDiff = diff;
+    if (normalizedDiff > Math.PI) normalizedDiff -= Math.PI * 2;
+    if (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
+    targetRotation += normalizedDiff;
   }
 
-  // Prev / Next button actions (step vertically)
-  function stepCard(direction) {
-    if (!section) return;
-    const maxScroll = section.offsetHeight - window.innerHeight;
-    const currentStep = Math.round(getScrollProgress() * (N - 1));
-    const nextStep = Math.max(0, Math.min(N - 1, currentStep + direction));
-    const targetScrollTop = section.offsetTop + (nextStep / (N - 1)) * maxScroll;
-    window.scrollTo({
-      top: targetScrollTop,
-      behavior: 'smooth'
-    });
-  }
-
-  btnPrev?.addEventListener('click', () => stepCard(-1));
-  btnNext?.addEventListener('click', () => stepCard(1));
+  // Prev / Next button actions (step horizontally)
+  btnPrev?.addEventListener('click', () => {
+    targetRotation += deltaTheta;
+  });
+  btnNext?.addEventListener('click', () => {
+    targetRotation -= deltaTheta;
+  });
 
   btnViewModal?.addEventListener('click', () => {
     openArtworkLightbox(activeIndex);
   });
+
+  // Horizontal wheel handler (trackpad swipe or Shift + wheel)
+  function onWheel(e) {
+    const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
+    if (isHorizontal) {
+      const delta = e.shiftKey ? e.deltaY : e.deltaX;
+      targetRotation -= delta * 0.0018;
+      e.preventDefault();
+    }
+    // Normal vertical mouse wheel is left alone so full webpage scrolls vertically!
+  }
 
   // Attach stage events
   container.addEventListener('mousedown', onPointerDown);
@@ -516,6 +502,8 @@ export function initGraphicDesign3D() {
   window.addEventListener('touchmove', onPointerMove, { passive: true });
   window.addEventListener('touchend', onPointerUp, { passive: true });
 
+  container.addEventListener('wheel', onWheel, { passive: false });
+
   // --- RESIZE HANDLER ---
   function handleResize() {
     if (!container || !canvas) return;
@@ -525,7 +513,6 @@ export function initGraphicDesign3D() {
     camera.position.z = w < 768 ? 7.6 : 5.85;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
-    syncScrollToTarget();
   }
   window.addEventListener('resize', handleResize);
 
@@ -537,11 +524,8 @@ export function initGraphicDesign3D() {
     currentRotation += (targetRotation - currentRotation) * 0.088;
     carouselGroup.rotation.y = currentRotation;
 
-    // Detect currently front-facing card (closest to center X = 0)
-    const normalizedIndex = Math.max(
-      0,
-      Math.min(N - 1, Math.round(-currentRotation / deltaTheta))
-    );
+    // Detect currently front-facing card
+    const normalizedIndex = ((Math.round(-currentRotation / deltaTheta) % N) + N) % N;
     if (normalizedIndex !== activeIndex) {
       activeIndex = normalizedIndex;
       updateHUD(activeIndex);
@@ -554,7 +538,6 @@ export function initGraphicDesign3D() {
   // Cleanup handler
   container.__destroyDS3D = () => {
     if (animId) cancelAnimationFrame(animId);
-    window.removeEventListener('scroll', syncScrollToTarget);
     window.removeEventListener('resize', handleResize);
     container.removeEventListener('mousedown', onPointerDown);
     window.removeEventListener('mousemove', onPointerMove);
@@ -562,6 +545,7 @@ export function initGraphicDesign3D() {
     container.removeEventListener('touchstart', onPointerDown);
     window.removeEventListener('touchmove', onPointerMove);
     window.removeEventListener('touchend', onPointerUp);
+    container.removeEventListener('wheel', onWheel);
     renderer.dispose();
   };
 
