@@ -331,12 +331,12 @@ export function initGraphicDesign3D() {
 
   // --- THREE.JS SCENE SETUP ---
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0d0809);
+  scene.background = null;
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: !isLowEnd,
-    alpha: false,
+    alpha: true,
     powerPreference: 'high-performance',
     stencil: false,
     depth: true,
