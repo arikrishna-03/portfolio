@@ -888,25 +888,43 @@
         </div>
       </div>
 
-      <!-- Featured Brands -->
-      <div id="featured-works" class="sec" style="padding-top:0">
-        <div class="sec-h rev rev-d1">Featured Brands</div>
+      <!-- Featured Brands (3D Curved Cylinder Showcase) -->
+      <div id="featured-works" class="sec ds-featured-section" style="padding-top:0">
+        <div class="ds-section-header rev rev-d1">
+          <div>
+            <div class="sec-lbl" style="color: var(--ds-accent2, #f7f097); letter-spacing: 0.25em;">FEATURED BRANDS // VISUAL ARCHIVE</div>
+            <div class="sec-h" style="margin-bottom: 0.8rem;">Featured Brands</div>
+          </div>
+          <div class="ds-stage-nav-hints">
+            <span class="ds-hint-pill">DRAG HORIZONTALLY OR SCROLL TO ROTATE</span>
+          </div>
+        </div>
 
-        <div class="ds-project-placeholder-container rev rev-d1">
-          <div class="ds-placeholder-card">
-            <div class="dpc-glow"></div>
-            <div class="dpc-content">
-              <div class="dpc-subtitle">CURATION IN PROGRESS</div>
-              <h3 class="dpc-title">Visual Systems &amp; Motion Assets</h3>
-              <p class="dpc-desc">Brand strategies, high-fidelity mockups, and cinematic motion designs are currently
-                being compiled for the digital gallery. Check back soon to explore complete visual identities and
-                marketing systems.</p>
-              <div class="dpc-visual">
-                <span class="dpc-tag">BRANDING</span>
-                <span class="dpc-tag">3D MOTION</span>
-                <span class="dpc-tag">UI/UX</span>
-                <span class="dpc-tag">MEDIA</span>
+        <div class="ds-3d-gallery-container rev rev-d1">
+          <div class="ds-3d-gallery-stage" id="ds-3d-gallery-stage">
+            <canvas id="ds-3d-canvas"></canvas>
+
+            <!-- Floating Side Navigation Buttons -->
+            <button class="ds-stage-arrow-btn ds-stage-arrow-left" id="ds-carousel-prev" aria-label="Previous artwork">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="ds-stage-arrow-btn ds-stage-arrow-right" id="ds-carousel-next" aria-label="Next artwork">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+
+            <!-- Bottom Floating HUD Bar (Matching Jesper Landberg Reference) -->
+            <div class="ds-stage-hud">
+              <div class="ds-hud-info">
+                <span class="ds-hud-count" id="ds-hud-count">01 / 09</span>
+                <span class="ds-hud-divider">|</span>
+                <span class="ds-hud-title" id="ds-hud-title">ROLEX OYSTER</span>
+                <span class="ds-hud-dot">·</span>
+                <span class="ds-hud-category" id="ds-hud-category">Luxury Horology &amp; Precision Campaign</span>
               </div>
+              <button class="ds-hud-view-btn" id="ds-hud-view-btn">
+                <span>View Full Artwork</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </button>
             </div>
           </div>
         </div>

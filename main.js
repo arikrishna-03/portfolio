@@ -1,4 +1,5 @@
 import { initProjects3DWorld } from './projects-3d-world.js';
+import { initGraphicDesign3D } from './graphic-design-3d.js';
 
 // Google Drive Real-Time Sync Config
 // Paste your deployed Google Apps Script URL here to fetch certifications from Google Drive in real-time.
@@ -1446,6 +1447,7 @@ function setMode(m){
     cancelAnimationFrame(aRaf);
     actx = null;
     setTimeout(initDS, 80);
+    setTimeout(initGraphicDesign3D, 100);
   }
 }
 

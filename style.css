@@ -7615,6 +7615,502 @@ body.ai-mode .arcade-intro-title .ait-line {
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.55), inset 0 2px 3px rgba(255, 255, 255, 0.4);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   GRAPHIC DESIGN 3D CURVED CAROUSEL SHOWCASE (FEATURED BRANDS)
+   Inspired by Jesper Landberg's Award-Winning 3D Curved Cylinder Carousel
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ds-featured-section {
+  position: relative;
+  width: 100%;
+  padding-bottom: 5rem;
+}
+
+.ds-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.ds-stage-nav-hints {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ds-hint-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--ds-muted, #b8a8a8);
+  text-transform: uppercase;
+}
+
+.ds-hint-pill::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ds-accent2, #f7f097);
+  box-shadow: 0 0 8px var(--ds-accent2, #f7f097);
+  animation: dsPulseDot 2s infinite ease-in-out;
+}
+
+@keyframes dsPulseDot {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* 3D Curved Cylinder Stage Container */
+.ds-3d-gallery-container {
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #060305;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.ds-3d-gallery-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(560px, 80vh, 840px);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.ds-3d-gallery-stage:active {
+  cursor: grabbing;
+}
+
+#ds-3d-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+}
+
+/* Floating Navigation Arrows */
+.ds-stage-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(18, 10, 14, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.ds-stage-arrow-btn:hover {
+  background: rgba(177, 19, 19, 0.85);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 12px 30px rgba(177, 19, 19, 0.45);
+}
+
+.ds-stage-arrow-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.ds-stage-arrow-left {
+  left: 28px;
+}
+
+.ds-stage-arrow-right {
+  right: 28px;
+}
+
+/* Bottom Floating HUD Bar */
+.ds-stage-hud {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(14, 8, 11, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 14px 24px;
+  z-index: 10;
+  pointer-events: auto;
+  gap: 1.5rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.55);
+}
+
+.ds-hud-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ds-hud-count {
+  font-family: 'Syne', monospace;
+  font-weight: 700;
+  color: var(--ds-accent2, #f7f097);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.ds-hud-divider {
+  opacity: 0.25;
+  color: #ffffff;
+}
+
+.ds-hud-title {
+  font-family: 'Syne', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-hud-dot {
+  opacity: 0.35;
+  color: #ffffff;
+}
+
+.ds-hud-category {
+  font-size: 0.85rem;
+  color: var(--ds-muted, #b8a8a8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-hud-view-btn {
+  background: linear-gradient(135deg, rgba(177, 19, 19, 0.95) 0%, rgba(135, 12, 17, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 9px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(177, 19, 19, 0.35);
+}
+
+.ds-hud-view-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #d31616 0%, #a81015 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 24px rgba(220, 20, 40, 0.5);
+}
+
+/* Lightbox Modal */
+.ds-artwork-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 2rem;
+}
+
+.ds-artwork-lightbox.lightbox-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.lightbox-locked {
+  overflow: hidden;
+}
+
+.ds-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 3, 5, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.ds-lightbox-container {
+  position: relative;
+  width: min(1200px, 94vw);
+  max-height: 90vh;
+  background: linear-gradient(145deg, rgba(24, 14, 19, 0.95) 0%, rgba(14, 8, 11, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  z-index: 2;
+  transform: scale(0.96);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ds-artwork-lightbox.lightbox-active .ds-lightbox-container {
+  transform: scale(1);
+}
+
+.ds-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.ds-lightbox-close:hover {
+  background: rgba(177, 19, 19, 0.85);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.08);
+}
+
+.ds-lightbox-content {
+  display: flex;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ds-lightbox-img-wrap {
+  flex: 1.35;
+  background: #030102;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 450px;
+}
+
+.ds-lightbox-img-wrap img {
+  max-width: 100%;
+  max-height: 74vh;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+}
+
+.ds-lightbox-meta {
+  flex: 1;
+  padding: 3rem 2.8rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.ds-modal-count-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.ds-modal-count {
+  font-family: 'Syne', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ds-accent2, #f7f097);
+}
+
+.ds-modal-year {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  color: var(--ds-muted, #b8a8a8);
+}
+
+.ds-modal-title {
+  font-family: 'Syne', 'Space Grotesk', sans-serif;
+  font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+
+.ds-modal-subtitle {
+  font-size: 1rem;
+  color: var(--ds-muted, #b8a8a8);
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+.ds-modal-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 1.6rem;
+}
+
+.ds-modal-desc-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0.8rem;
+}
+
+.ds-modal-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #e2d8d8;
+  margin-bottom: 1.8rem;
+  text-align: left;
+}
+
+.ds-modal-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ds-spec-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  gap: 1rem;
+}
+
+.ds-spec-label {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.ds-spec-val {
+  color: #ffffff;
+  font-weight: 500;
+  text-align: right;
+}
+
+.ds-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.2rem;
+}
+
+.ds-tag-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(177, 19, 19, 0.15);
+  border: 1px solid rgba(177, 19, 19, 0.35);
+  color: #ffb8be;
+}
+
+.ds-modal-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.ds-modal-nav-btn {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ds-modal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+  .ds-lightbox-content {
+    flex-direction: column;
+  }
+  .ds-lightbox-img-wrap {
+    min-height: 280px;
+    padding: 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .ds-lightbox-meta {
+    padding: 1.8rem;
+  }
+  .ds-stage-arrow-left {
+    left: 12px;
+  }
+  .ds-stage-arrow-right {
+    right: 12px;
+  }
+  .ds-hud-category {
+    display: none;
+  }
+  .ds-hud-dot {
+    display: none;
+  }
+}
+
+
 
 
 
