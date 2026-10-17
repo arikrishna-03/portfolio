@@ -7648,6 +7648,8 @@ body.ai-mode .arcade-intro-title .ait-line {
   touch-action: pan-y;
   overflow: hidden;
   background: #0d0809;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .ds-3d-gallery-stage:active {
@@ -7661,6 +7663,7 @@ body.ai-mode .arcade-intro-title .ait-line {
   height: 100%;
   display: block;
   outline: none;
+  transform: translateZ(0);
 }
 
 /* Floating Top Bar (Matching Jesper Landberg Layout) */

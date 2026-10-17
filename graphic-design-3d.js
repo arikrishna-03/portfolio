@@ -276,8 +276,10 @@ export function initGraphicDesign3D() {
     antialias: true,
     alpha: false,
     powerPreference: 'high-performance',
+    stencil: false,
+    depth: true,
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
@@ -312,8 +314,8 @@ export function initGraphicDesign3D() {
   const cardWidth = 2.65;
   const cardHeight = 3.40;
 
-  // Create horizontally curved plane geometry: width=2.65, height=3.40, 36 horizontal segments to bend smoothly along X axis
-  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 36, 18);
+  // Optimized curved plane geometry: 24 horizontal segments bend smoothly along cylinder X axis. 1 vertical segment.
+  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 24, 1);
   const posAttr = basePlane.attributes.position;
   for (let i = 0; i < posAttr.count; i++) {
     const x = posAttr.getX(i);
@@ -340,9 +342,9 @@ export function initGraphicDesign3D() {
       map: texture,
       alphaMap: alphaMap,
       transparent: true,
-      alphaTest: 0.01,
-      roughness: 0.28,
-      metalness: 0.08,
+      depthWrite: true,
+      roughness: 0.32,
+      metalness: 0.06,
       side: THREE.FrontSide,
     });
 
@@ -365,14 +367,25 @@ export function initGraphicDesign3D() {
   let isDragging = false;
   let hasDragged = false;
   let startX = 0;
-  let startY = 0;
   let lastX = 0;
   let lastTime = performance.now();
   let activeIndex = 0;
+  let isSectionVisible = true;
   let animId = null;
+  let hoverRaf = null;
+  let wheelSnapTimer = null;
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
+
+  // Cached canvas bounding rect to eliminate DOM reflow on mousemove
+  let cachedRect = null;
+  function updateCachedRect() {
+    if (canvas) cachedRect = canvas.getBoundingClientRect();
+  }
+  updateCachedRect();
+  window.addEventListener('resize', updateCachedRect);
+  window.addEventListener('scroll', updateCachedRect, { passive: true });
 
   function updateHUD(index) {
     if (hudCount) hudCount.textContent = `${String(index + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
@@ -386,47 +399,34 @@ export function initGraphicDesign3D() {
   function onPointerDown(e) {
     isDragging = true;
     hasDragged = false;
-    startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-    startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
-    lastX = startX;
+    const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
+    startX = clientX;
+    lastX = clientX;
     velocity = 0;
     lastTime = performance.now();
     container.style.cursor = 'grabbing';
   }
 
   function onPointerMove(e) {
-    const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-    const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    if (!isDragging) return;
 
-    // Raycast hover effect when not dragging
-    if (!isDragging) {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(cardMeshes);
-      if (intersects.length > 0) {
-        container.style.cursor = 'pointer';
-      } else {
-        container.style.cursor = 'grab';
-      }
-      return;
-    }
-
+    const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
     const deltaX = clientX - lastX;
-    if (Math.abs(clientX - startX) > 6) {
+    if (Math.abs(clientX - startX) > 4) {
       hasDragged = true;
     }
 
     const now = performance.now();
-    const dt = Math.max(now - lastTime, 1);
-    velocity = (deltaX / dt) * 0.0035;
+    const dt = Math.max(now - lastTime, 8);
+    const instantVel = (deltaX / dt) * 16;
+    velocity = velocity * 0.4 + instantVel * 0.6;
     lastTime = now;
     lastX = clientX;
 
-    // Horizontal drag directly spins the 3D cylinder
-    const rotSensitivity = (Math.PI * 2) / (window.innerWidth * 1.35);
+    // Direct, highly-responsive rotation during drag
+    const rotSensitivity = Math.max(0.0034, (Math.PI * 2) / (window.innerWidth * 1.05));
     targetRotation += deltaX * rotSensitivity;
+    currentRotation += (targetRotation - currentRotation) * 0.38;
   }
 
   function onPointerUp(e) {
@@ -434,23 +434,26 @@ export function initGraphicDesign3D() {
     isDragging = false;
     container.style.cursor = 'grab';
 
-    // Apply smooth flick inertia
-    targetRotation += velocity * 35;
+    if (hasDragged) {
+      // Natural flick velocity momentum
+      const rotSensitivity = Math.max(0.0034, (Math.PI * 2) / (window.innerWidth * 1.05));
+      const fling = velocity * rotSensitivity * 7.5;
+      targetRotation += fling;
 
-    // Click on card if user didn't drag
-    if (!hasDragged) {
-      const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || 0;
-      const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY) || 0;
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      // Soft magnetic snap to closest card
+      targetRotation = Math.round(targetRotation / deltaTheta) * deltaTheta;
+    } else {
+      // User clicked without dragging - raycast to select clicked card
+      const clientX = e.clientX ?? (e.changedTouches && e.changedTouches[0]?.clientX) ?? 0;
+      const clientY = e.clientY ?? (e.changedTouches && e.changedTouches[0]?.clientY) ?? 0;
+      if (!cachedRect) updateCachedRect();
+      mouse.x = ((clientX - cachedRect.left) / cachedRect.width) * 2 - 1;
+      mouse.y = -((clientY - cachedRect.top) / cachedRect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(cardMeshes);
+      const intersects = raycaster.intersectObjects(cardMeshes, false);
       if (intersects.length > 0) {
-        const clickedMesh = intersects[0].object;
-        const clickedIndex = clickedMesh.userData.index;
-
+        const clickedIndex = intersects[0].object.userData.index;
         if (clickedIndex === activeIndex) {
           openArtworkLightbox(clickedIndex);
         } else {
@@ -458,6 +461,22 @@ export function initGraphicDesign3D() {
         }
       }
     }
+  }
+
+  // Throttled container hover for cursor styling (zero lag, no window reflow)
+  function onContainerHover(e) {
+    if (isDragging) return;
+    if (hoverRaf) return;
+
+    hoverRaf = requestAnimationFrame(() => {
+      hoverRaf = null;
+      if (!cachedRect) updateCachedRect();
+      mouse.x = ((e.clientX - cachedRect.left) / cachedRect.width) * 2 - 1;
+      mouse.y = -((e.clientY - cachedRect.top) / cachedRect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(cardMeshes, false);
+      container.style.cursor = intersects.length > 0 ? 'pointer' : 'grab';
+    });
   }
 
   // Smoothly rotate shortest angular distance to target card index
@@ -482,21 +501,26 @@ export function initGraphicDesign3D() {
     openArtworkLightbox(activeIndex);
   });
 
-  // Horizontal wheel handler (trackpad swipe or Shift + wheel)
+  // Smooth horizontal wheel handler with debounced snap
   function onWheel(e) {
     const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
     if (isHorizontal) {
       const delta = e.shiftKey ? e.deltaY : e.deltaX;
-      targetRotation -= delta * 0.0018;
+      targetRotation -= delta * 0.0022;
       e.preventDefault();
+
+      clearTimeout(wheelSnapTimer);
+      wheelSnapTimer = setTimeout(() => {
+        targetRotation = Math.round(targetRotation / deltaTheta) * deltaTheta;
+      }, 140);
     }
-    // Normal vertical mouse wheel is left alone so full webpage scrolls vertically!
   }
 
   // Attach stage events
   container.addEventListener('mousedown', onPointerDown);
   window.addEventListener('mousemove', onPointerMove);
   window.addEventListener('mouseup', onPointerUp);
+  container.addEventListener('mousemove', onContainerHover, { passive: true });
 
   container.addEventListener('touchstart', onPointerDown, { passive: true });
   window.addEventListener('touchmove', onPointerMove, { passive: true });
@@ -513,15 +537,35 @@ export function initGraphicDesign3D() {
     camera.position.z = w < 768 ? 7.6 : 5.85;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
+    updateCachedRect();
   }
   window.addEventListener('resize', handleResize);
 
+  // --- INTERSECTION OBSERVER: PAUSE RENDERING WHEN OFFSCREEN ---
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        isSectionVisible = entry.isIntersecting;
+        if (isSectionVisible && !animId) {
+          animate();
+        }
+      });
+    },
+    { rootMargin: '100px 0px 100px 0px' }
+  );
+  if (section) observer.observe(section);
+
   // --- ANIMATION LOOP ---
   function animate() {
+    if (!isSectionVisible) {
+      animId = null;
+      return;
+    }
     animId = requestAnimationFrame(animate);
 
-    // Smooth damping / interpolation towards targetRotation
-    currentRotation += (targetRotation - currentRotation) * 0.088;
+    // Dynamic damping: snappy tracking while dragging, buttery smooth glide when released
+    const damping = isDragging ? 0.38 : 0.078;
+    currentRotation += (targetRotation - currentRotation) * damping;
     carouselGroup.rotation.y = currentRotation;
 
     // Detect currently front-facing card
@@ -538,10 +582,15 @@ export function initGraphicDesign3D() {
   // Cleanup handler
   container.__destroyDS3D = () => {
     if (animId) cancelAnimationFrame(animId);
+    if (hoverRaf) cancelAnimationFrame(hoverRaf);
+    clearTimeout(wheelSnapTimer);
+    if (observer && section) observer.unobserve(section);
     window.removeEventListener('resize', handleResize);
+    window.removeEventListener('scroll', updateCachedRect);
     container.removeEventListener('mousedown', onPointerDown);
     window.removeEventListener('mousemove', onPointerMove);
     window.removeEventListener('mouseup', onPointerUp);
+    container.removeEventListener('mousemove', onContainerHover);
     container.removeEventListener('touchstart', onPointerDown);
     window.removeEventListener('touchmove', onPointerMove);
     window.removeEventListener('touchend', onPointerUp);
