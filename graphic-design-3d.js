@@ -114,7 +114,7 @@ export const graphicDesignProjects = [
 /**
  * Creates a rounded rectangle alpha mask texture to give 3D curved cards anti-aliased rounded corners
  */
-function createRoundedCornerAlphaMap(width = 512, height = 640, radius = 40) {
+function createRoundedCornerAlphaMap(width = 540, height = 690, radius = 32) {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -153,15 +153,12 @@ function createRoundedCornerAlphaMap(width = 512, height = 640, radius = 40) {
 function createCardTexture(item, onUpdate) {
   const canvas = document.createElement('canvas');
   canvas.width = 1080;
-  canvas.height = 1350;
+  canvas.height = 1380; // Natural 4:5 vertical poster length
   const ctx = canvas.getContext('2d');
 
   // Initial dark placeholder while image loads
-  ctx.fillStyle = '#110b0e';
+  ctx.fillStyle = '#0d0809';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-  ctx.fillRect(30, 30, canvas.width - 60, canvas.height - 60);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -173,8 +170,13 @@ function createCardTexture(item, onUpdate) {
   img.src = item.image;
 
   img.onload = () => {
-    // 1. Draw base artwork centered with cover scaling
-    const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+    // 1. Draw subtle ambient bleed in background
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(8, 4, 6, 0.78)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 2. Draw base artwork in its PROPER FULL LENGTH without cropping height:
+    const scale = Math.min(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
     const drawW = img.naturalWidth * scale;
     const drawH = img.naturalHeight * scale;
     const drawX = (canvas.width - drawW) / 2;
@@ -182,65 +184,57 @@ function createCardTexture(item, onUpdate) {
 
     ctx.drawImage(img, drawX, drawY, drawW, drawH);
 
-    // 2. Subtle luxury dark gradient overlay at bottom for maximum typographic contrast
-    const grad = ctx.createLinearGradient(0, 850, 0, canvas.height);
+    // 3. Subtle bottom edge gradient for sleek typography contrast
+    const grad = ctx.createLinearGradient(0, 1160, 0, canvas.height);
     grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    grad.addColorStop(0.35, 'rgba(8, 4, 6, 0.45)');
-    grad.addColorStop(0.7, 'rgba(6, 3, 5, 0.85)');
-    grad.addColorStop(1, 'rgba(5, 2, 4, 0.94)');
+    grad.addColorStop(0.5, 'rgba(6, 3, 5, 0.45)');
+    grad.addColorStop(1, 'rgba(5, 2, 4, 0.88)');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 850, canvas.width, canvas.height - 850);
-
-    // 3. Subtle top ambient vignette
-    const topGrad = ctx.createLinearGradient(0, 0, 0, 180);
-    topGrad.addColorStop(0, 'rgba(0, 0, 0, 0.35)');
-    topGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = topGrad;
-    ctx.fillRect(0, 0, canvas.width, 180);
+    ctx.fillRect(0, 1160, canvas.width, canvas.height - 1160);
 
     // 4. Category Tag
-    ctx.font = '700 20px "DM Sans", -apple-system, sans-serif';
-    ctx.letterSpacing = '3px';
+    ctx.font = '700 16px "DM Sans", -apple-system, sans-serif';
+    ctx.letterSpacing = '2.5px';
     ctx.fillStyle = 'rgba(247, 240, 151, 0.9)'; // Brand warm accent
-    ctx.fillText(item.category, 64, 1180);
+    ctx.fillText(item.category, 48, 1260);
 
-    // 5. Main Title (bold & prominent matching Jesper Landberg reference)
-    ctx.font = 'bold 52px "Syne", "Space Grotesk", sans-serif';
+    // 5. Main Title
+    ctx.font = 'bold 40px "Syne", "Space Grotesk", sans-serif';
     ctx.letterSpacing = '-0.5px';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(item.title, 64, 1240);
+    ctx.fillText(item.title, 48, 1308);
 
     // 6. Subtitle
-    ctx.font = '500 22px "DM Sans", sans-serif';
+    ctx.font = '500 17px "DM Sans", sans-serif';
     ctx.letterSpacing = '0.5px';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-    ctx.fillText(item.subtitle, 64, 1282);
+    ctx.fillText(item.subtitle, 48, 1342);
 
     // 7. Circular Action Button on Bottom Right
-    const btnX = canvas.width - 64 - 36;
-    const btnY = 1240;
-    const btnR = 34;
+    const btnX = canvas.width - 48 - 28;
+    const btnY = 1308;
+    const btnR = 28;
 
     ctx.save();
     ctx.beginPath();
     ctx.arc(btnX, btnY, btnR, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(8, 5, 7, 0.9)';
+    ctx.fillStyle = 'rgba(8, 5, 7, 0.88)';
     ctx.fill();
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
     ctx.stroke();
 
     // Arrow icon
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 3.5;
+    ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(btnX - 10, btnY);
-    ctx.lineTo(btnX + 10, btnY);
-    ctx.moveTo(btnX + 3, btnY - 7);
-    ctx.lineTo(btnX + 10, btnY);
-    ctx.lineTo(btnX + 3, btnY + 7);
+    ctx.moveTo(btnX - 8, btnY);
+    ctx.lineTo(btnX + 8, btnY);
+    ctx.moveTo(btnX + 2, btnY - 6);
+    ctx.lineTo(btnX + 8, btnY);
+    ctx.lineTo(btnX + 2, btnY + 6);
     ctx.stroke();
     ctx.restore();
 
@@ -270,11 +264,12 @@ export function initGraphicDesign3D() {
   const btnPrev = document.getElementById('ds-carousel-prev');
   const btnNext = document.getElementById('ds-carousel-next');
   const btnViewModal = document.getElementById('ds-hud-view-btn');
+  const section = document.getElementById('featured-works');
 
   // --- THREE.JS SCENE SETUP ---
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x060305);
-  scene.fog = new THREE.FogExp2(0x060305, 0.022);
+  scene.background = new THREE.Color(0x0d0809);
+  scene.fog = new THREE.FogExp2(0x0d0809, 0.024);
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -294,46 +289,41 @@ export function initGraphicDesign3D() {
     0.1,
     100
   );
-  camera.position.set(0, 0.1, isMobile ? 8.2 : 6.35);
-  camera.lookAt(0, -0.05, 0);
+  camera.position.set(0, 0, isMobile ? 7.6 : 5.85);
+  camera.lookAt(0, 0, 0);
 
   // --- LIGHTING ---
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.05);
   scene.add(ambientLight);
 
   const mainLight = new THREE.DirectionalLight(0xfff6ea, 2.0);
-  mainLight.position.set(5, 7, 7);
+  mainLight.position.set(4, 7, 7);
   scene.add(mainLight);
 
-  const rimLight = new THREE.DirectionalLight(0x7090ff, 0.7);
-  rimLight.position.set(-6, -2, 4);
+  const rimLight = new THREE.DirectionalLight(0x7090ff, 0.65);
+  rimLight.position.set(-5, -3, 4);
   scene.add(rimLight);
 
-  // --- 3D PERSPECTIVE WIREFRAME GRID FLOOR (Matching Jesper Landberg Reference) ---
-  const gridHelper = new THREE.GridHelper(80, 80, 0x5a1820, 0x16080d);
-  gridHelper.position.set(0, -2.42, 0);
-  scene.add(gridHelper);
-
-  // --- CYLINDRICAL CURVED CAROUSEL GEOMETRY ---
+  // --- VERTICAL 3D CYLINDRICAL CAROUSEL GEOMETRY ---
   const N = graphicDesignProjects.length;
   const radius = 6.4;
   const deltaTheta = (Math.PI * 2) / N;
 
-  const cardWidth = 3.35;
-  const cardHeight = 4.25;
+  const cardWidth = 2.62;
+  const cardHeight = 3.35;
 
-  // Create curved plane geometry: width=3.35, height=4.25, 36 horizontal segments to bend smoothly
-  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 36, 18);
+  // Create vertically curved plane geometry: width=2.62, height=3.35, curved along vertical Y axis
+  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 18, 36);
   const posAttr = basePlane.attributes.position;
   for (let i = 0; i < posAttr.count; i++) {
-    const x = posAttr.getX(i);
-    // Bend in Z along cylinder radius
-    const z = radius * (Math.cos(x / radius) - 1);
+    const y = posAttr.getY(i);
+    // Bend in Z along vertical cylinder radius
+    const z = radius * (Math.cos(y / radius) - 1);
     posAttr.setZ(i, z);
   }
   basePlane.computeVertexNormals();
 
-  const alphaMap = createRoundedCornerAlphaMap(512, 640, 42);
+  const alphaMap = createRoundedCornerAlphaMap(540, 690, 32);
 
   const carouselGroup = new THREE.Group();
   carouselGroup.position.set(0, 0, -radius);
@@ -359,26 +349,22 @@ export function initGraphicDesign3D() {
     const mesh = new THREE.Mesh(basePlane, material);
 
     const phi = index * deltaTheta;
-    mesh.position.set(Math.sin(phi) * radius, 0, Math.cos(phi) * radius);
-    mesh.rotation.y = phi;
+    // Position on vertical cylinder along Y-Z axis
+    mesh.position.set(0, Math.sin(phi) * radius, Math.cos(phi) * radius);
+    mesh.rotation.x = -phi;
     mesh.userData = { index, item };
 
     carouselGroup.add(mesh);
     cardMeshes.push(mesh);
   });
 
-  // --- INTERACTION & PHYSICS STATE ---
+  // --- INTERACTION & SCROLL STATE ---
   let currentRotation = 0;
   let targetRotation = 0;
-  let velocity = 0;
   let isDragging = false;
   let hasDragged = false;
-  let startX = 0;
   let startY = 0;
-  let lastX = 0;
-  let lastTime = performance.now();
-  let isHovered = false;
-  let autoDrift = true;
+  let lastY = 0;
   let activeIndex = 0;
   let animId = null;
 
@@ -393,16 +379,31 @@ export function initGraphicDesign3D() {
   }
   updateHUD(0);
 
-  // --- MOUSE & TOUCH EVENT HANDLERS ---
+  // Calculate scroll progress through the pinned 420vh runway
+  function getScrollProgress() {
+    if (!section) return 0;
+    const rect = section.getBoundingClientRect();
+    const maxScroll = section.offsetHeight - window.innerHeight;
+    if (maxScroll <= 0) return 0;
+    const current = -rect.top;
+    return Math.max(0, Math.min(1, current / maxScroll));
+  }
+
+  function syncScrollToTarget() {
+    const progress = getScrollProgress();
+    // Scroll progress from 0 to 1 smoothly rotates through all N cards
+    targetRotation = -progress * (N - 1) * deltaTheta;
+  }
+
+  window.addEventListener('scroll', syncScrollToTarget, { passive: true });
+  syncScrollToTarget();
+
+  // --- MOUSE & TOUCH VERTICAL DRAG HANDLERS ---
   function onPointerDown(e) {
     isDragging = true;
     hasDragged = false;
-    autoDrift = false;
-    startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
     startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
-    lastX = startX;
-    velocity = 0;
-    lastTime = performance.now();
+    lastY = startY;
     container.style.cursor = 'grabbing';
   }
 
@@ -425,30 +426,26 @@ export function initGraphicDesign3D() {
       return;
     }
 
-    const deltaX = clientX - lastX;
-    const deltaY = clientY - startY;
-
-    if (Math.abs(clientX - startX) > 6 || Math.abs(deltaY) > 6) {
+    const deltaY = clientY - lastY;
+    if (Math.abs(clientY - startY) > 6) {
       hasDragged = true;
     }
 
-    const now = performance.now();
-    const dt = Math.max(now - lastTime, 1);
-    velocity = (deltaX / dt) * 0.0035;
-    lastTime = now;
-    lastX = clientX;
-
-    const rotSensitivity = (Math.PI * 2) / (window.innerWidth * 1.35);
-    targetRotation += deltaX * rotSensitivity;
+    // Dragging vertically smoothly adjusts page scroll in the runway
+    if (section) {
+      window.scrollBy({
+        top: -deltaY * 2.2,
+        behavior: 'instant'
+      });
+      syncScrollToTarget();
+    }
+    lastY = clientY;
   }
 
   function onPointerUp(e) {
     if (!isDragging) return;
     isDragging = false;
     container.style.cursor = 'grab';
-
-    // Apply flick inertia
-    targetRotation += velocity * 45;
 
     // Click on card if didn't drag
     if (!hasDragged) {
@@ -464,47 +461,43 @@ export function initGraphicDesign3D() {
         const clickedMesh = intersects[0].object;
         const clickedIndex = clickedMesh.userData.index;
 
-        // Check if clicked card is already active/centered
-        const currentActive = ((Math.round(-targetRotation / deltaTheta) % N) + N) % N;
-        if (clickedIndex === currentActive) {
+        if (clickedIndex === activeIndex) {
           openArtworkLightbox(clickedIndex);
         } else {
-          rotateToIndex(clickedIndex);
+          scrollToCardIndex(clickedIndex);
         }
       }
     }
   }
 
-  function rotateToIndex(index) {
-    autoDrift = false;
-    const targetAngle = -index * deltaTheta;
-    // Find closest rotation angle to current targetRotation
-    const diff = (targetAngle - targetRotation) % (Math.PI * 2);
-    let normalizedDiff = diff;
-    if (normalizedDiff > Math.PI) normalizedDiff -= Math.PI * 2;
-    if (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
-    targetRotation += normalizedDiff;
+  function scrollToCardIndex(index) {
+    if (!section) return;
+    const maxScroll = section.offsetHeight - window.innerHeight;
+    const targetScrollTop = section.offsetTop + (index / (N - 1)) * maxScroll;
+    window.scrollTo({
+      top: targetScrollTop,
+      behavior: 'smooth'
+    });
   }
 
-  function onWheel(e) {
-    // If wheeling inside stage, rotate carousel smoothly
-    const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
-    targetRotation -= delta * 0.0009;
-    autoDrift = false;
+  // Prev / Next button actions (step vertically)
+  function stepCard(direction) {
+    if (!section) return;
+    const maxScroll = section.offsetHeight - window.innerHeight;
+    const currentStep = Math.round(getScrollProgress() * (N - 1));
+    const nextStep = Math.max(0, Math.min(N - 1, currentStep + direction));
+    const targetScrollTop = section.offsetTop + (nextStep / (N - 1)) * maxScroll;
+    window.scrollTo({
+      top: targetScrollTop,
+      behavior: 'smooth'
+    });
   }
 
-  // Prev / Next button actions
-  function stepCarousel(direction) {
-    autoDrift = false;
-    targetRotation += direction * deltaTheta;
-  }
-
-  btnPrev?.addEventListener('click', () => stepCarousel(1));
-  btnNext?.addEventListener('click', () => stepCarousel(-1));
+  btnPrev?.addEventListener('click', () => stepCard(-1));
+  btnNext?.addEventListener('click', () => stepCard(1));
 
   btnViewModal?.addEventListener('click', () => {
-    const currentActive = ((Math.round(-targetRotation / deltaTheta) % N) + N) % N;
-    openArtworkLightbox(currentActive);
+    openArtworkLightbox(activeIndex);
   });
 
   // Attach stage events
@@ -516,24 +509,16 @@ export function initGraphicDesign3D() {
   window.addEventListener('touchmove', onPointerMove, { passive: true });
   window.addEventListener('touchend', onPointerUp, { passive: true });
 
-  container.addEventListener('wheel', onWheel, { passive: true });
-
-  container.addEventListener('mouseenter', () => {
-    isHovered = true;
-  });
-  container.addEventListener('mouseleave', () => {
-    isHovered = false;
-  });
-
   // --- RESIZE HANDLER ---
   function handleResize() {
     if (!container || !canvas) return;
     const w = container.clientWidth;
     const h = container.clientHeight;
     camera.aspect = w / h;
-    camera.position.z = w < 768 ? 8.2 : 6.35;
+    camera.position.z = w < 768 ? 7.6 : 5.85;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
+    syncScrollToTarget();
   }
   window.addEventListener('resize', handleResize);
 
@@ -541,17 +526,15 @@ export function initGraphicDesign3D() {
   function animate() {
     animId = requestAnimationFrame(animate);
 
-    // Idle gentle auto-drift when not interacting
-    if (autoDrift && !isDragging && !isHovered) {
-      targetRotation -= 0.0011;
-    }
-
     // Smooth damping / interpolation towards targetRotation
-    currentRotation += (targetRotation - currentRotation) * 0.085;
-    carouselGroup.rotation.y = currentRotation;
+    currentRotation += (targetRotation - currentRotation) * 0.088;
+    carouselGroup.rotation.x = currentRotation;
 
-    // Detect currently front-facing card
-    const normalizedIndex = ((Math.round(-currentRotation / deltaTheta) % N) + N) % N;
+    // Detect currently front-facing card (closest to center Y = 0)
+    const normalizedIndex = Math.max(
+      0,
+      Math.min(N - 1, Math.round(-currentRotation / deltaTheta))
+    );
     if (normalizedIndex !== activeIndex) {
       activeIndex = normalizedIndex;
       updateHUD(activeIndex);
@@ -564,6 +547,7 @@ export function initGraphicDesign3D() {
   // Cleanup handler
   container.__destroyDS3D = () => {
     if (animId) cancelAnimationFrame(animId);
+    window.removeEventListener('scroll', syncScrollToTarget);
     window.removeEventListener('resize', handleResize);
     container.removeEventListener('mousedown', onPointerDown);
     window.removeEventListener('mousemove', onPointerMove);
@@ -571,7 +555,6 @@ export function initGraphicDesign3D() {
     container.removeEventListener('touchstart', onPointerDown);
     window.removeEventListener('touchmove', onPointerMove);
     window.removeEventListener('touchend', onPointerUp);
-    container.removeEventListener('wheel', onWheel);
     renderer.dispose();
   };
 
