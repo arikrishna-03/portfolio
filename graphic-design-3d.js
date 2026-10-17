@@ -8,7 +8,8 @@ export const graphicDesignProjects = [
     category: 'BRAND IDENTITY // ADVERTISING',
     year: '2026',
     client: 'Rolex Luxury Swiss Concept',
-    image: './images/graphic design/ROLEX.jpg',
+    image: './images/graphic design/web/ROLEX.jpg',
+    fullImage: './images/graphic design/ROLEX.jpg',
     description:
       'End-to-end luxury brand campaign featuring precision timepiece art direction, architectural layout hierarchy, and high-contrast macro rendering for Swiss horology.',
     tags: ['Branding', 'Art Direction', 'Typography', 'Swiss Design'],
@@ -20,7 +21,8 @@ export const graphicDesignProjects = [
     category: 'EDITORIAL // CAMPAIGN',
     year: '2026',
     client: 'Nike Sportswear Concept',
-    image: './images/graphic design/NIKE  2.jpg',
+    image: './images/graphic design/web/NIKE  2.jpg',
+    fullImage: './images/graphic design/NIKE  2.jpg',
     description:
       'High-energy typographical poster and dynamic composite lighting exploring kinetic athletic movement and futuristic footwear engineering.',
     tags: ['Editorial', 'Poster Art', 'Kinetic Typography', 'Brand Campaign'],
@@ -32,7 +34,8 @@ export const graphicDesignProjects = [
     category: 'SPORTS VISUALS // KEY ART',
     year: '2025',
     client: 'Cristiano Ronaldo Athletic Concept',
-    image: './images/graphic design/cr7.jpg',
+    image: './images/graphic design/web/cr7.jpg',
+    fullImage: './images/graphic design/cr7.jpg',
     description:
       'Athletic personal branding combining high-contrast studio rim lighting, bold numbering, and championship aesthetic for a global sports icon.',
     tags: ['Sports Branding', 'Key Art', 'Visual Identity', 'Composite Lighting'],
@@ -44,7 +47,8 @@ export const graphicDesignProjects = [
     category: 'TYPOGRAPHY // MOTORSPORT',
     year: '2025',
     client: 'F1 Championship Tribute',
-    image: './images/graphic design/LEWIS HAMILTON.jpg',
+    image: './images/graphic design/web/LEWIS HAMILTON.jpg',
+    fullImage: './images/graphic design/LEWIS HAMILTON.jpg',
     description:
       'Experimental typographic poster fusing brutalist Swiss layout principles with Formula 1 motorsport velocity and bold polychromatic color grading.',
     tags: ['Motorsport', 'Swiss Style', 'Editorial', 'Poster Art'],
@@ -56,7 +60,8 @@ export const graphicDesignProjects = [
     category: 'KEY ART // SPORTS BRANDING',
     year: '2025',
     client: 'VK18 Cricket Brand Concept',
-    image: './images/graphic design/virat.png',
+    image: './images/graphic design/web/virat.jpg',
+    fullImage: './images/graphic design/virat.png',
     description:
       'Striking portrait composite celebrating intensity, mastery, and visual dominance with sharp geometric framing and national athletic pride.',
     tags: ['Portraiture', 'Sports Identity', 'Key Art', 'Brand Strategy'],
@@ -68,7 +73,8 @@ export const graphicDesignProjects = [
     category: 'BRAND SYSTEM // PUBLICATION',
     year: '2026',
     client: 'Editorial Redesign System',
-    image: './images/graphic design/redesign.png',
+    image: './images/graphic design/web/redesign.jpg',
+    fullImage: './images/graphic design/redesign.png',
     description:
       'Comprehensive grid system overhaul with asymmetric whitespace, macro headlines, and modular content blocks designed for modern editorial media.',
     tags: ['Typography', 'Grid System', 'Editorial', 'Magazine Design'],
@@ -80,7 +86,8 @@ export const graphicDesignProjects = [
     category: 'EDITORIAL // ART DIRECTION',
     year: '2025',
     client: 'Visual Systems Monograph',
-    image: './images/graphic design/page 1.png',
+    image: './images/graphic design/web/page 1.jpg',
+    fullImage: './images/graphic design/page 1.png',
     description:
       'Clean typographic rhythm and architectural grid pacing designed for contemporary publications and visual identity manuals.',
     tags: ['Minimalism', 'Grid System', 'Art Direction', 'Editorial'],
@@ -92,7 +99,8 @@ export const graphicDesignProjects = [
     category: 'EDITORIAL // ART DIRECTION',
     year: '2025',
     client: 'Visual Systems Monograph',
-    image: './images/graphic design/PAGE 2.png',
+    image: './images/graphic design/web/PAGE 2.jpg',
+    fullImage: './images/graphic design/PAGE 2.png',
     description:
       'Exploration of high contrast, negative space, and modern editorial storytelling in print and digital mediums.',
     tags: ['Monochrome', 'Typography', 'Spread Layout', 'Brand Guidelines'],
@@ -104,7 +112,8 @@ export const graphicDesignProjects = [
     category: 'EDITORIAL // ART DIRECTION',
     year: '2026',
     client: 'Visual Systems Monograph',
-    image: './images/graphic design/page 3.png',
+    image: './images/graphic design/web/page 3.jpg',
+    fullImage: './images/graphic design/page 3.png',
     description:
       'Systematic visual identity manual with precise typographic scales, proportion matrices, and multi-column architectural rhythm.',
     tags: ['Brand Guidelines', 'Modernism', 'Typography', 'Print Systems'],
@@ -112,9 +121,10 @@ export const graphicDesignProjects = [
 ];
 
 /**
- * Creates a rounded rectangle alpha mask texture to give 3D curved cards anti-aliased rounded corners
+ * Creates a rounded rectangle alpha mask texture to give 3D curved cards anti-aliased rounded corners.
+ * Uses a lightweight 256x328 canvas to minimize GPU texture memory on low-end hardware.
  */
-function createRoundedCornerAlphaMap(width = 400, height = 512, radius = 24) {
+function createRoundedCornerAlphaMap(width = 256, height = 328, radius = 18) {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -164,26 +174,27 @@ function processNextTextureInQueue() {
     if (task) {
       task();
     }
-    // Yield 20ms to browser main thread so mouse movement and cursor stay 100% fluid
-    setTimeout(processNextTextureInQueue, 20);
+    // Yield 25ms to browser main thread so mouse movement and cursor stay 100% fluid
+    setTimeout(processNextTextureInQueue, 25);
   });
 }
 
 /**
  * Creates high-fidelity canvas texture combining loaded design artwork, typographic hierarchy, and button.
+ * Scaled to 600x768 to save over 45% GPU memory and draw time on low-end devices.
  * Uses background img.decode() and a staggered queue to prevent main-thread stutter on page load.
  */
 function createCardTexture(item, onUpdate, priority = false) {
   const canvas = document.createElement('canvas');
-  canvas.width = 800;
-  canvas.height = 1024;
+  canvas.width = 600;
+  canvas.height = 768;
   const ctx = canvas.getContext('2d');
 
   // Initial dark placeholder while image loads
   ctx.fillStyle = '#0e090b';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1.5;
   ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -213,56 +224,56 @@ function createCardTexture(item, onUpdate, priority = false) {
       ctx.drawImage(img, drawX, drawY, drawW, drawH);
 
       // 3. Subtle bottom edge gradient for sleek typography contrast
-      const grad = ctx.createLinearGradient(0, 840, 0, canvas.height);
+      const grad = ctx.createLinearGradient(0, 610, 0, canvas.height);
       grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      grad.addColorStop(0.5, 'rgba(6, 3, 5, 0.55)');
-      grad.addColorStop(1, 'rgba(5, 2, 4, 0.92)');
+      grad.addColorStop(0.5, 'rgba(6, 3, 5, 0.65)');
+      grad.addColorStop(1, 'rgba(5, 2, 4, 0.94)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 840, canvas.width, canvas.height - 840);
+      ctx.fillRect(0, 610, canvas.width, canvas.height - 610);
 
       // 4. Category Tag
-      ctx.font = '700 13px "DM Sans", -apple-system, sans-serif';
-      ctx.letterSpacing = '2.2px';
-      ctx.fillStyle = 'rgba(247, 240, 151, 0.9)';
-      ctx.fillText(item.category, 36, 928);
+      ctx.font = '700 11px "DM Sans", -apple-system, sans-serif';
+      ctx.letterSpacing = '1.8px';
+      ctx.fillStyle = 'rgba(247, 240, 151, 0.95)';
+      ctx.fillText(item.category, 26, 686);
 
       // 5. Main Title
-      ctx.font = 'bold 30px "Syne", "Space Grotesk", sans-serif';
-      ctx.letterSpacing = '-0.5px';
+      ctx.font = 'bold 22px "Syne", "Space Grotesk", sans-serif';
+      ctx.letterSpacing = '-0.4px';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(item.title, 36, 966);
+      ctx.fillText(item.title, 26, 715);
 
       // 6. Subtitle
-      ctx.font = '500 13px "DM Sans", sans-serif';
-      ctx.letterSpacing = '0.5px';
+      ctx.font = '500 11px "DM Sans", sans-serif';
+      ctx.letterSpacing = '0.4px';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-      ctx.fillText(item.subtitle, 36, 994);
+      ctx.fillText(item.subtitle, 26, 736);
 
       // 7. Circular Action Button on Bottom Right
-      const btnX = canvas.width - 36 - 22;
-      const btnY = 966;
-      const btnR = 22;
+      const btnX = canvas.width - 26 - 18;
+      const btnY = 715;
+      const btnR = 18;
 
       ctx.save();
       ctx.beginPath();
       ctx.arc(btnX, btnY, btnR, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(8, 5, 7, 0.88)';
       ctx.fill();
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.2;
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
       ctx.stroke();
 
       // Arrow icon
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.2;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
-      ctx.moveTo(btnX - 6, btnY);
-      ctx.lineTo(btnX + 6, btnY);
-      ctx.moveTo(btnX + 1, btnY - 5);
-      ctx.lineTo(btnX + 6, btnY);
-      ctx.lineTo(btnX + 1, btnY + 5);
+      ctx.moveTo(btnX - 5, btnY);
+      ctx.lineTo(btnX + 5, btnY);
+      ctx.moveTo(btnX + 1, btnY - 4);
+      ctx.lineTo(btnX + 5, btnY);
+      ctx.lineTo(btnX + 1, btnY + 4);
       ctx.stroke();
       ctx.restore();
 
@@ -312,25 +323,28 @@ export function initGraphicDesign3D() {
   const btnPrev = document.getElementById('ds-carousel-prev');
   const btnNext = document.getElementById('ds-carousel-next');
   const btnViewModal = document.getElementById('ds-hud-view-btn');
-  const section = document.getElementById('featured-works');
+  // Low-end PC / hardware concurrency detection
+  const isLowEnd =
+    typeof navigator !== 'undefined' &&
+    ((navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+      (navigator.deviceMemory && navigator.deviceMemory <= 4));
 
   // --- THREE.JS SCENE SETUP ---
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0d0809);
-  scene.fog = new THREE.FogExp2(0x0d0809, 0.024);
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: true,
+    antialias: !isLowEnd,
     alpha: false,
     powerPreference: 'high-performance',
     stencil: false,
     depth: true,
+    precision: isLowEnd ? 'mediump' : 'highp',
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  const targetDPR = isLowEnd ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.25);
+  renderer.setPixelRatio(targetDPR);
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
 
   const isMobile = container.clientWidth < 768;
   const camera = new THREE.PerspectiveCamera(
@@ -342,18 +356,6 @@ export function initGraphicDesign3D() {
   camera.position.set(0, 0, isMobile ? 7.6 : 5.85);
   camera.lookAt(0, 0, 0);
 
-  // --- LIGHTING ---
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.05);
-  scene.add(ambientLight);
-
-  const mainLight = new THREE.DirectionalLight(0xfff6ea, 2.0);
-  mainLight.position.set(4, 7, 7);
-  scene.add(mainLight);
-
-  const rimLight = new THREE.DirectionalLight(0x7090ff, 0.65);
-  rimLight.position.set(-5, -3, 4);
-  scene.add(rimLight);
-
   // --- HORIZONTAL 3D CYLINDRICAL CAROUSEL GEOMETRY ---
   const N = graphicDesignProjects.length;
   const radius = 6.4;
@@ -362,8 +364,8 @@ export function initGraphicDesign3D() {
   const cardWidth = 2.65;
   const cardHeight = 3.40;
 
-  // Optimized curved plane geometry: 24 horizontal segments bend smoothly along cylinder X axis. 1 vertical segment.
-  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 24, 1);
+  // Optimized curved plane geometry: 16 horizontal segments bend smoothly along cylinder X axis. 1 vertical segment.
+  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 16, 1);
   const posAttr = basePlane.attributes.position;
   for (let i = 0; i < posAttr.count; i++) {
     const x = posAttr.getX(i);
@@ -373,7 +375,7 @@ export function initGraphicDesign3D() {
   }
   basePlane.computeVertexNormals();
 
-  const alphaMap = createRoundedCornerAlphaMap(540, 690, 32);
+  const alphaMap = createRoundedCornerAlphaMap(256, 328, 18);
 
   const carouselGroup = new THREE.Group();
   carouselGroup.position.set(0, 0, -radius);
@@ -381,22 +383,44 @@ export function initGraphicDesign3D() {
 
   const cardMeshes = [];
 
+  // Interaction & render state
+  let currentRotation = 0;
+  let targetRotation = 0;
+  let velocity = 0;
+  let isDragging = false;
+  let hasDragged = false;
+  let startX = 0;
+  let lastX = 0;
+  let lastTime = performance.now();
+  let activeIndex = 0;
+  let isSectionVisible = true;
+  let animId = null;
+  let hoverRaf = null;
+  let wheelSnapTimer = null;
+  let needsRender = true;
+
+  function requestRender() {
+    needsRender = true;
+    if (!animId && isSectionVisible) {
+      animate();
+    }
+  }
+
   graphicDesignProjects.forEach((item, index) => {
     const texture = createCardTexture(
       item,
       () => {
-        renderer.render(scene, camera);
+        requestRender();
       },
       index === 0 // Priority for front-facing initial card
     );
 
-    const material = new THREE.MeshStandardMaterial({
+    // MeshBasicMaterial eliminates dynamic lighting calculations, saving massive GPU fill-rate on low-end systems
+    const material = new THREE.MeshBasicMaterial({
       map: texture,
       alphaMap: alphaMap,
       transparent: true,
       depthWrite: true,
-      roughness: 0.32,
-      metalness: 0.06,
       side: THREE.FrontSide,
     });
 
@@ -411,21 +435,6 @@ export function initGraphicDesign3D() {
     carouselGroup.add(mesh);
     cardMeshes.push(mesh);
   });
-
-  // --- INTERACTION & ROTATION STATE ---
-  let currentRotation = 0;
-  let targetRotation = 0;
-  let velocity = 0;
-  let isDragging = false;
-  let hasDragged = false;
-  let startX = 0;
-  let lastX = 0;
-  let lastTime = performance.now();
-  let activeIndex = 0;
-  let isSectionVisible = true;
-  let animId = null;
-  let hoverRaf = null;
-  let wheelSnapTimer = null;
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -457,6 +466,7 @@ export function initGraphicDesign3D() {
     velocity = 0;
     lastTime = performance.now();
     container.style.cursor = 'grabbing';
+    requestRender();
   }
 
   function onPointerMove(e) {
@@ -479,6 +489,7 @@ export function initGraphicDesign3D() {
     const rotSensitivity = Math.max(0.0034, (Math.PI * 2) / (window.innerWidth * 1.05));
     targetRotation += deltaX * rotSensitivity;
     currentRotation += (targetRotation - currentRotation) * 0.38;
+    requestRender();
   }
 
   function onPointerUp(e) {
@@ -513,6 +524,7 @@ export function initGraphicDesign3D() {
         }
       }
     }
+    requestRender();
   }
 
   // Throttled container hover for cursor styling (zero lag, no window reflow)
@@ -539,14 +551,17 @@ export function initGraphicDesign3D() {
     if (normalizedDiff > Math.PI) normalizedDiff -= Math.PI * 2;
     if (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
     targetRotation += normalizedDiff;
+    requestRender();
   }
 
   // Prev / Next button actions (step horizontally)
   btnPrev?.addEventListener('click', () => {
     targetRotation += deltaTheta;
+    requestRender();
   });
   btnNext?.addEventListener('click', () => {
     targetRotation -= deltaTheta;
+    requestRender();
   });
 
   btnViewModal?.addEventListener('click', () => {
@@ -564,7 +579,9 @@ export function initGraphicDesign3D() {
       clearTimeout(wheelSnapTimer);
       wheelSnapTimer = setTimeout(() => {
         targetRotation = Math.round(targetRotation / deltaTheta) * deltaTheta;
+        requestRender();
       }, 140);
+      requestRender();
     }
   }
 
@@ -590,16 +607,33 @@ export function initGraphicDesign3D() {
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     updateCachedRect();
+    requestRender();
   }
   window.addEventListener('resize', handleResize);
+
+  // Tab visibility change handler to prevent rendering when browser tab is inactive
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    } else if (isSectionVisible) {
+      requestRender();
+    }
+  }
+  document.addEventListener('visibilitychange', handleVisibilityChange);
 
   // --- INTERSECTION OBSERVER: PAUSE RENDERING WHEN OFFSCREEN ---
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         isSectionVisible = entry.isIntersecting;
-        if (isSectionVisible && !animId) {
-          animate();
+        if (isSectionVisible) {
+          requestRender();
+        } else if (animId) {
+          cancelAnimationFrame(animId);
+          animId = null;
         }
       });
     },
@@ -607,18 +641,26 @@ export function initGraphicDesign3D() {
   );
   if (section) observer.observe(section);
 
-  // --- ANIMATION LOOP ---
+  // --- ANIMATION LOOP (ON-DEMAND IDLE SLEEPING) ---
   function animate() {
-    if (!isSectionVisible) {
+    if (!isSectionVisible || document.hidden) {
       animId = null;
       return;
     }
-    animId = requestAnimationFrame(animate);
 
-    // Dynamic damping: snappy tracking while dragging, buttery smooth glide when released
-    const damping = isDragging ? 0.38 : 0.078;
-    currentRotation += (targetRotation - currentRotation) * damping;
-    carouselGroup.rotation.y = currentRotation;
+    const rotDiff = Math.abs(targetRotation - currentRotation);
+
+    if (isDragging || rotDiff > 0.0001) {
+      // Dynamic damping: snappy tracking while dragging, buttery smooth glide when released
+      const damping = isDragging ? 0.38 : 0.078;
+      currentRotation += (targetRotation - currentRotation) * damping;
+      carouselGroup.rotation.y = currentRotation;
+      needsRender = true;
+    } else if (currentRotation !== targetRotation) {
+      currentRotation = targetRotation;
+      carouselGroup.rotation.y = currentRotation;
+      needsRender = true;
+    }
 
     // Detect currently front-facing card
     const normalizedIndex = ((Math.round(-currentRotation / deltaTheta) % N) + N) % N;
@@ -627,9 +669,20 @@ export function initGraphicDesign3D() {
       updateHUD(activeIndex);
     }
 
-    renderer.render(scene, camera);
+    if (needsRender) {
+      renderer.render(scene, camera);
+      needsRender = false;
+    }
+
+    // When carousel comes to a stop and user is not dragging, pause RAF to use 0% CPU & 0% GPU
+    if (!isDragging && rotDiff <= 0.0001) {
+      animId = null;
+      return;
+    }
+
+    animId = requestAnimationFrame(animate);
   }
-  animate();
+  requestRender();
 
   // Cleanup handler
   container.__destroyDS3D = () => {
@@ -637,6 +690,7 @@ export function initGraphicDesign3D() {
     if (hoverRaf) cancelAnimationFrame(hoverRaf);
     clearTimeout(wheelSnapTimer);
     if (observer && section) observer.unobserve(section);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
     window.removeEventListener('resize', handleResize);
     window.removeEventListener('scroll', updateCachedRect);
     container.removeEventListener('mousedown', onPointerDown);
@@ -676,7 +730,7 @@ export function openArtworkLightbox(index) {
   const yearEl = modal.querySelector('.ds-modal-year');
 
   if (imgEl) {
-    imgEl.src = project.image;
+    imgEl.src = project.fullImage || project.image;
     imgEl.alt = project.title;
   }
   if (countEl) countEl.textContent = `${String(index + 1).padStart(2, '0')} / ${String(graphicDesignProjects.length).padStart(2, '0')}`;
