@@ -7791,36 +7791,38 @@ body.ai-mode .arcade-intro-title .ait-line {
 
 .ds-stage-arrow-prev,
 .ds-stage-arrow-left {
-  top: calc(50% - 34px);
-  right: max(1.8rem, 3vw);
-  transform: none;
+  top: 50%;
+  left: max(1.8rem, 3vw);
+  right: auto;
+  transform: translateY(-50%);
 }
 
 .ds-stage-arrow-prev:hover,
 .ds-stage-arrow-left:hover {
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .ds-stage-arrow-prev:active,
 .ds-stage-arrow-left:active {
-  transform: scale(0.95);
+  transform: translateY(-50%) scale(0.95);
 }
 
 .ds-stage-arrow-next,
 .ds-stage-arrow-right {
-  top: calc(50% + 34px);
+  top: 50%;
   right: max(1.8rem, 3vw);
-  transform: none;
+  left: auto;
+  transform: translateY(-50%);
 }
 
 .ds-stage-arrow-next:hover,
 .ds-stage-arrow-right:hover {
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .ds-stage-arrow-next:active,
 .ds-stage-arrow-right:active {
-  transform: scale(0.95);
+  transform: translateY(-50%) scale(0.95);
 }
 
 /* Bottom Floating HUD Bar - High-End Frosted Glassmorphism */

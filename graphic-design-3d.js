@@ -304,21 +304,21 @@ export function initGraphicDesign3D() {
   rimLight.position.set(-5, -3, 4);
   scene.add(rimLight);
 
-  // --- VERTICAL 3D CYLINDRICAL CAROUSEL GEOMETRY ---
+  // --- HORIZONTAL 3D CYLINDRICAL CAROUSEL GEOMETRY ---
   const N = graphicDesignProjects.length;
   const radius = 6.4;
   const deltaTheta = (Math.PI * 2) / N;
 
-  const cardWidth = 2.62;
-  const cardHeight = 3.35;
+  const cardWidth = 2.65;
+  const cardHeight = 3.40;
 
-  // Create vertically curved plane geometry: width=2.62, height=3.35, curved along vertical Y axis
-  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 18, 36);
+  // Create horizontally curved plane geometry: width=2.65, height=3.40, 36 horizontal segments to bend smoothly along X axis
+  const basePlane = new THREE.PlaneGeometry(cardWidth, cardHeight, 36, 18);
   const posAttr = basePlane.attributes.position;
   for (let i = 0; i < posAttr.count; i++) {
-    const y = posAttr.getY(i);
-    // Bend in Z along vertical cylinder radius
-    const z = radius * (Math.cos(y / radius) - 1);
+    const x = posAttr.getX(i);
+    // Bend in Z along horizontal cylinder radius
+    const z = radius * (Math.cos(x / radius) - 1);
     posAttr.setZ(i, z);
   }
   basePlane.computeVertexNormals();
@@ -349,9 +349,9 @@ export function initGraphicDesign3D() {
     const mesh = new THREE.Mesh(basePlane, material);
 
     const phi = index * deltaTheta;
-    // Position on vertical cylinder along Y-Z axis
-    mesh.position.set(0, Math.sin(phi) * radius, Math.cos(phi) * radius);
-    mesh.rotation.x = -phi;
+    // Position on horizontal cylinder along X-Z axis
+    mesh.position.set(Math.sin(phi) * radius, 0, Math.cos(phi) * radius);
+    mesh.rotation.y = phi;
     mesh.userData = { index, item };
 
     carouselGroup.add(mesh);
@@ -363,7 +363,9 @@ export function initGraphicDesign3D() {
   let targetRotation = 0;
   let isDragging = false;
   let hasDragged = false;
+  let startX = 0;
   let startY = 0;
+  let lastX = 0;
   let lastY = 0;
   let activeIndex = 0;
   let animId = null;
@@ -398,11 +400,13 @@ export function initGraphicDesign3D() {
   window.addEventListener('scroll', syncScrollToTarget, { passive: true });
   syncScrollToTarget();
 
-  // --- MOUSE & TOUCH VERTICAL DRAG HANDLERS ---
+  // --- MOUSE & TOUCH HORIZONTAL DRAG HANDLERS ---
   function onPointerDown(e) {
     isDragging = true;
     hasDragged = false;
+    startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
     startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    lastX = startX;
     lastY = startY;
     container.style.cursor = 'grabbing';
   }
@@ -426,19 +430,22 @@ export function initGraphicDesign3D() {
       return;
     }
 
+    const deltaX = clientX - lastX;
     const deltaY = clientY - lastY;
-    if (Math.abs(clientY - startY) > 6) {
+    if (Math.abs(clientX - startX) > 6 || Math.abs(clientY - startY) > 6) {
       hasDragged = true;
     }
 
-    // Dragging vertically smoothly adjusts page scroll in the runway
+    // Dragging horizontally smoothly adjusts page scroll in the runway
     if (section) {
+      const dragDelta = Math.abs(deltaX) >= Math.abs(deltaY) ? -deltaX : -deltaY;
       window.scrollBy({
-        top: -deltaY * 2.2,
+        top: dragDelta * 2.4,
         behavior: 'instant'
       });
       syncScrollToTarget();
     }
+    lastX = clientX;
     lastY = clientY;
   }
 
@@ -528,9 +535,9 @@ export function initGraphicDesign3D() {
 
     // Smooth damping / interpolation towards targetRotation
     currentRotation += (targetRotation - currentRotation) * 0.088;
-    carouselGroup.rotation.x = currentRotation;
+    carouselGroup.rotation.y = currentRotation;
 
-    // Detect currently front-facing card (closest to center Y = 0)
+    // Detect currently front-facing card (closest to center X = 0)
     const normalizedIndex = Math.max(
       0,
       Math.min(N - 1, Math.round(-currentRotation / deltaTheta))
